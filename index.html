@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Script Hub | ศูนย์รวมสคริปต์</title>
+
+  <meta
+    name="description"
+    content="Script Hub ศูนย์รวมสคริปต์พร้อมใช้งาน"
+  >
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  >
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+
+  <style>
+
+    * {
+      font-family: 'Prompt', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(99,102,241,.12),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at top right,
+          rgba(59,130,246,.10),
+          transparent 35%
+        ),
+        #f8fafc;
+
+      color: #0f172a;
+    }
+
+    .glass {
+      background: rgba(255,255,255,.88);
+
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .soft-shadow {
+      box-shadow:
+        0 20px 50px rgba(15,23,42,.08),
+        0 4px 14px rgba(15,23,42,.05);
+    }
+
+    .card-hover {
+      transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-4px);
+
+      box-shadow:
+        0 24px 55px rgba(15,23,42,.12),
+        0 6px 18px rgba(15,23,42,.06);
+    }
+
+    .fade-in {
+      animation: fadeIn .35s ease;
+    }
+
+    @keyframes fadeIn {
+
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+    }
+
+    .loading-spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+
+    }
+
+    .line-clamp-2 {
+
+      display: -webkit-box;
+
+      -webkit-line-clamp: 2;
+
+      -webkit-box-orient: vertical;
+
+      overflow: hidden;
+
+    }
+
+    .line-clamp-3 {
+
+      display: -webkit-box;
+
+      -webkit-line-clamp: 3;
+
+      -webkit-box-orient: vertical;
+
+      overflow: hidden;
+
+    }
+
+    .hero-pattern {
+
+      background-image:
+        radial-gradient(
+          rgba(255,255,255,.16) 1px,
+          transparent 1px
+        );
+
+      background-size: 24px 24px;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================================
+       LOADING SCREEN
+  ========================================== -->
+
+  <div
+    id="loadingScreen"
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-50"
+  >
+
+    <div class="text-center">
+
+      <div
+        class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-xl"
+      >
+
+        <i
+          class="fa-solid fa-code loading-spin"
+        ></i>
+
+      </div>
+
+      <p class="text-slate-600 font-medium">
+        กำลังโหลด Script Hub...
+      </p>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =========================================
+       HEADER
+  ========================================== -->
+
+  <header
+    class="sticky top-0 z-50 glass border-b border-slate-200/70"
+  >
+
+    <div
+      class="max-w-7xl mx-auto px-4 py-3"
+    >
+
+      <div
+        class="flex items-center justify-between gap-3"
+      >
+
+
+        <!-- Logo -->
+
+        <a
+          href="./"
+          class="flex items-center gap-3 min-w-0"
+        >
+
+          <div
+            id="logoBox"
+            class="w-11 h-11 shrink-0 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg overflow-hidden"
+          >
+
+            <i
+              class="fa-solid fa-code text-lg"
+            ></i>
+
+          </div>
+
+
+          <div class="min-w-0">
+
+            <div
+              id="siteNameHeader"
+              class="font-bold text-slate-900 truncate"
+            >
+              Script Hub
+            </div>
+
+            <div
+              class="text-xs text-slate-500 truncate"
+            >
+              ศูนย์รวมสคริปต์
+            </div>
+
+          </div>
+
+        </a>
+
+
+
+        <!-- Admin -->
+
+        <a
+          href="./admin/"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition"
+        >
+
+          <i class="fa-solid fa-shield-halved"></i>
+
+          <span class="hidden sm:inline">
+            เข้าสู่ระบบ Admin
+          </span>
+
+          <span class="sm:hidden">
+            Admin
+          </span>
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =========================================
+       HERO
+  ========================================== -->
+
+  <section class="px-4 pt-6 md:pt-8">
+
+    <div
+      class="max-w-7xl mx-auto relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white shadow-2xl hero-pattern"
+    >
+
+      <div
+        class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl"
+      ></div>
+
+      <div
+        class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-blue-300/10 blur-3xl"
+      ></div>
+
+
+      <div
+        class="relative px-6 py-10 md:px-12 md:py-14"
+      >
+
+        <div class="max-w-3xl">
+
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 border border-white/20 text-sm mb-5"
+          >
+
+            <span
+              class="w-2 h-2 rounded-full bg-emerald-300"
+            ></span>
+
+            Script Hub พร้อมใช้งาน
+
+          </div>
+
+
+          <h1
+            id="heroTitle"
+            class="text-3xl md:text-5xl font-bold leading-tight"
+          >
+            ค้นหาและคัดลอกสคริปต์พร้อมใช้งาน
+          </h1>
+
+
+          <p
+            id="heroDescription"
+            class="mt-4 text-blue-50 text-base md:text-lg leading-8"
+          >
+            รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย
+          </p>
+
+
+
+          <!-- Search -->
+
+          <div class="mt-7">
+
+            <div class="relative">
+
+              <i
+                class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"
+              ></i>
+
+              <input
+                id="searchInput"
+                type="search"
+                placeholder="พิมพ์ชื่อสคริปต์ หรือคำอธิบาย..."
+                autocomplete="off"
+                class="w-full pl-13 pr-5 py-4 rounded-2xl bg-white text-slate-900 placeholder:text-slate-400 outline-none ring-0 focus:ring-4 focus:ring-white/20 shadow-xl"
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================
+       FILTERS
+  ========================================== -->
+
+  <section class="max-w-7xl mx-auto px-4 pt-6">
+
+    <div
+      class="flex items-center gap-2 overflow-x-auto pb-2"
+      id="categoryFilters"
+    >
+
+      <button
+        type="button"
+        data-category="all"
+        class="category-filter shrink-0 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-medium shadow-md"
+      >
+        ทั้งหมด
+      </button>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================
+       SCRIPT SECTION
+  ========================================== -->
+
+  <main
+    id="scriptSection"
+    class="max-w-7xl mx-auto px-4 py-6 md:py-8"
+  >
+
+    <div
+      class="flex items-end justify-between gap-4 mb-5"
+    >
+
+      <div>
+
+        <h2
+          class="text-2xl font-bold text-slate-900"
+        >
+          Scripts
+        </h2>
+
+        <p
+          id="resultText"
+          class="text-sm text-slate-500 mt-1"
+        >
+          กำลังโหลด...
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- Script Grid -->
+
+    <div
+      id="scriptGrid"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+    ></div>
+
+
+    <!-- Empty -->
+
+    <div
+      id="emptyState"
+      class="hidden bg-white rounded-3xl border border-slate-200 soft-shadow p-10 text-center"
+    >
+
+      <div
+        class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center text-2xl"
+      >
+
+        <i class="fa-solid fa-box-open"></i>
+
+      </div>
+
+      <h3
+        class="font-bold text-slate-900 text-lg"
+      >
+        ไม่พบ Script
+      </h3>
+
+      <p class="text-slate-500 mt-1">
+        ลองเปลี่ยนคำค้นหาหรือหมวดหมู่
+      </p>
+
+    </div>
+
+
+  </main>
+  <!-- =========================================
+       FOOTER
+  ========================================== -->
+
+  <footer class="max-w-7xl mx-auto px-4 pb-8">
+
+    <div
+      class="bg-white rounded-3xl border border-slate-200 soft-shadow px-5 py-6"
+    >
+
+      <div
+        class="flex flex-col sm:flex-row items-center justify-between gap-3"
+      >
+
+        <div class="text-center sm:text-left">
+
+          <div
+            id="footerSiteName"
+            class="font-bold text-slate-800"
+          >
+            Script Hub
+          </div>
+
+          <div class="text-sm text-slate-400 mt-1">
+            ศูนย์รวมสคริปต์พร้อมใช้งาน
+          </div>
+
+        </div>
+
+
+        <div
+          class="text-xs text-slate-400 text-center"
+        >
+
+          ©
+          <span id="footerYear"></span>
+          Script Hub
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- =========================================
+       TOAST
+  ========================================== -->
+
+  <div
+    id="toast"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[200] hidden"
+  >
+
+    <div
+      id="toastInner"
+      class="px-5 py-3 rounded-2xl bg-slate-900 text-white shadow-2xl flex items-center gap-3"
+    >
+
+      <i
+        id="toastIcon"
+        class="fa-solid fa-check text-emerald-400"
+      ></i>
+
+      <span id="toastText">
+        สำเร็จ
+      </span>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =========================================
+       JAVASCRIPT
+  ========================================== -->
+
+  <script>
+
+    /* =========================================
+       SUPABASE CONFIG
+    ========================================== */
+
+    const SUPABASE_URL =
+      'https://ofwlofzqxfdqctmogntu.supabase.co';
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+
+    /* =========================================
+       STATE
+    ========================================== */
+
+    let allScripts = [];
+
+    let allCategories = [];
+
+    let currentCategory = 'all';
+
+    let currentSearch = '';
+
+
+
+    /* =========================================
+       DOM
+    ========================================== */
+
+    const loadingScreen =
+      document.getElementById(
+        'loadingScreen'
+      );
+
+    const scriptGrid =
+      document.getElementById(
+        'scriptGrid'
+      );
+
+    const emptyState =
+      document.getElementById(
+        'emptyState'
+      );
+
+    const resultText =
+      document.getElementById(
+        'resultText'
+      );
+
+    const searchInput =
+      document.getElementById(
+        'searchInput'
+      );
+
+    const categoryFilters =
+      document.getElementById(
+        'categoryFilters'
+      );
+
+    const siteNameHeader =
+      document.getElementById(
+        'siteNameHeader'
+      );
+
+    const footerSiteName =
+      document.getElementById(
+        'footerSiteName'
+      );
+
+    const heroTitle =
+      document.getElementById(
+        'heroTitle'
+      );
+
+    const heroDescription =
+      document.getElementById(
+        'heroDescription'
+      );
+
+    const logoBox =
+      document.getElementById(
+        'logoBox'
+      );
+
+    const footerYear =
+      document.getElementById(
+        'footerYear'
+      );
+
+
+
+    /* =========================================
+       INIT
+    ========================================== */
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+
+        if (footerYear) {
+
+          footerYear.textContent =
+            new Date().getFullYear();
+
+        }
+
+        loadHomepage();
+
+      }
+    );
+
+
+
+    /* =========================================
+       LOAD HOMEPAGE
+    ========================================== */
+
+    async function loadHomepage() {
+
+      try {
+
+        await Promise.all([
+          loadSiteSettings(),
+          loadCategories(),
+          loadScripts()
+        ]);
+
+        renderCategories();
+
+        renderScripts();
+
+      } catch (error) {
+
+        console.error(
+          'Homepage load error:',
+          error
+        );
+
+        showToast(
+          'ไม่สามารถโหลดข้อมูลเว็บไซต์ได้',
+          'error'
+        );
+
+      } finally {
+
+        loadingScreen.classList.add(
+          'hidden'
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       LOAD SITE SETTINGS
+    ========================================== */
+
+    async function loadSiteSettings() {
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from('site_settings')
+        .select(`
+          site_name,
+          logo_url,
+          banner_url,
+          hero_title,
+          hero_description
+        `)
+        .eq('id', true)
+        .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          'Settings error:',
+          error
+        );
+
+        return;
+
+      }
+
+
+      if (!data) {
+        return;
+      }
+
+
+      const siteName =
+        data.site_name ||
+        'Script Hub';
+
+
+      if (siteNameHeader) {
+
+        siteNameHeader.textContent =
+          siteName;
+
+      }
+
+
+      if (footerSiteName) {
+
+        footerSiteName.textContent =
+          siteName;
+
+      }
+
+
+      if (heroTitle) {
+
+        heroTitle.textContent =
+          data.hero_title ||
+          'ค้นหาและคัดลอกสคริปต์พร้อมใช้งาน';
+
+      }
+
+
+      if (heroDescription) {
+
+        heroDescription.textContent =
+          data.hero_description ||
+          'รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย';
+
+      }
+
+
+      if (
+        data.logo_url &&
+        logoBox
+      ) {
+
+        logoBox.innerHTML = `
+          <img
+            src="${escapeAttribute(data.logo_url)}"
+            alt="${escapeAttribute(siteName)}"
+            class="w-full h-full object-cover"
+          >
+        `;
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       LOAD CATEGORIES
+    ========================================== */
+
+    async function loadCategories() {
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from('categories')
+        .select(`
+          id,
+          name
+        `)
+        .order(
+          'name',
+          {
+            ascending: true
+          }
+        );
+
+
+      if (error) {
+
+        console.error(
+          'Categories error:',
+          error
+        );
+
+        allCategories = [];
+
+        return;
+
+      }
+
+
+      allCategories =
+        data || [];
+
+    }
+
+
+
+    /* =========================================
+       LOAD SCRIPTS
+    ========================================== */
+
+    async function loadScripts() {
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from('scripts')
+        .select(`
+          id,
+          title,
+          description,
+          image,
+          code,
+          status,
+          distributor,
+          created_at,
+          updated_at,
+          is_visible,
+          category_id,
+          categories (
+            id,
+            name
+          )
+        `)
+        .eq(
+          'is_visible',
+          true
+        )
+        .order(
+          'created_at',
+          {
+            ascending: false
+          }
+        );
+
+
+      if (error) {
+
+        console.error(
+          'Scripts error:',
+          error
+        );
+
+        throw error;
+
+      }
+
+
+      allScripts =
+        data || [];
+
+    }
+
+
+
+    /* =========================================
+       RENDER CATEGORIES
+    ========================================== */
+
+    function renderCategories() {
+
+      if (!categoryFilters) {
+        return;
+      }
+
+
+      let html = `
+
+        <button
+          type="button"
+          data-category="all"
+          class="category-filter shrink-0 px-4 py-2.5 rounded-xl font-medium transition"
+        >
+          ทั้งหมด
+        </button>
+
+      `;
+
+
+      allCategories.forEach(
+        (category) => {
+
+          html += `
+
+            <button
+              type="button"
+              data-category="${escapeAttribute(category.id)}"
+              class="category-filter shrink-0 px-4 py-2.5 rounded-xl font-medium transition"
+            >
+              ${escapeHtml(category.name)}
+            </button>
+
+          `;
+
+        }
+      );
+
+
+      categoryFilters.innerHTML =
+        html;
+
+
+      updateCategoryButtons();
+
+
+      document
+        .querySelectorAll(
+          '.category-filter'
+        )
+        .forEach(
+          (button) => {
+
+            button.addEventListener(
+              'click',
+              () => {
+
+                currentCategory =
+                  button.dataset.category ||
+                  'all';
+
+                updateCategoryButtons();
+
+                renderScripts();
+
+              }
+            );
+
+          }
+        );
+
+    }
+
+
+
+    /* =========================================
+       CATEGORY BUTTON STATE
+    ========================================== */
+
+    function updateCategoryButtons() {
+
+      document
+        .querySelectorAll(
+          '.category-filter'
+        )
+        .forEach(
+          (button) => {
+
+            const active =
+              button.dataset.category ===
+              currentCategory;
+
+
+            button.className =
+              active
+
+                ? 'category-filter shrink-0 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-medium shadow-md transition'
+
+                : 'category-filter shrink-0 px-4 py-2.5 rounded-xl bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 font-medium transition';
+
+          }
+        );
+
+    }
+
+
+
+    /* =========================================
+       SEARCH
+    ========================================== */
+
+    if (searchInput) {
+
+      searchInput.addEventListener(
+        'input',
+        () => {
+
+          currentSearch =
+            searchInput.value
+              .trim()
+              .toLowerCase();
+
+          renderScripts();
+
+        }
+      );
+
+    }
+
+
+
+    /* =========================================
+       FILTER SCRIPTS
+    ========================================== */
+
+    function getFilteredScripts() {
+
+      return allScripts.filter(
+        (script) => {
+
+          const matchesCategory =
+            currentCategory === 'all' ||
+            script.category_id ===
+            currentCategory;
+
+
+          if (!matchesCategory) {
+            return false;
+          }
+
+
+          if (!currentSearch) {
+            return true;
+          }
+
+
+          const text = [
+
+            script.title,
+
+            script.description,
+
+            script.distributor,
+
+            script.status,
+
+            script.categories?.name
+
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+
+          return text.includes(
+            currentSearch
+          );
+
+        }
+      );
+
+    }
+
+
+
+    /* =========================================
+       RENDER SCRIPTS
+    ========================================== */
+
+    function renderScripts() {
+
+      const scripts =
+        getFilteredScripts();
+
+
+      if (resultText) {
+
+        resultText.textContent =
+          `พบ ${scripts.length} Script`;
+
+      }
+
+
+      if (!scriptGrid) {
+        return;
+      }
+
+
+      if (scripts.length === 0) {
+
+        scriptGrid.innerHTML = '';
+
+        emptyState.classList.remove(
+          'hidden'
+        );
+
+        return;
+
+      }
+
+
+      emptyState.classList.add(
+        'hidden'
+      );
+
+
+      scriptGrid.innerHTML =
+        scripts
+          .map(
+            (script) =>
+              createScriptCard(script)
+          )
+          .join('');
+
+    }
+
+    /* =========================================
+       SCRIPT CARD
+    ========================================== */
+
+    function createScriptCard(script) {
+
+      const title =
+        script.title ||
+        'ไม่มีชื่อ Script';
+
+
+      const description =
+        script.description ||
+        'ไม่มีคำอธิบาย';
+
+
+      const distributor =
+        script.distributor ||
+        'ไม่ระบุ';
+
+
+      const category =
+        script.categories?.name ||
+        'ทั่วไป';
+
+
+      const image =
+        script.image ||
+        createPlaceholderImage(title);
+
+
+      const status =
+        createStatusBadge(
+          script.status
+        );
+
+
+      const date =
+        formatThaiDate(
+          script.created_at
+        );
+
+
+      return `
+
+        <article
+          class="bg-white rounded-3xl border border-slate-200 overflow-hidden soft-shadow card-hover fade-in"
+        >
+
+          <!-- Image -->
+
+          <a
+            href="./script/?id=${encodeURIComponent(script.id)}"
+            class="block aspect-[16/10] bg-slate-100 overflow-hidden"
+          >
+
+            <img
+              src="${escapeAttribute(image)}"
+              alt="${escapeAttribute(title)}"
+              class="w-full h-full object-cover transition duration-300 hover:scale-105"
+              loading="lazy"
+              onerror="this.src='${escapeAttribute(createPlaceholderImage(title))}'"
+            >
+
+          </a>
+
+
+          <!-- Content -->
+
+          <div class="p-5">
+
+
+            <!-- Badges -->
+
+            <div
+              class="flex flex-wrap items-center gap-2 mb-3"
+            >
+
+              ${status}
+
+
+              <span
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium"
+              >
+
+                <i class="fa-solid fa-folder text-[10px]"></i>
+
+                ${escapeHtml(category)}
+
+              </span>
+
+            </div>
+
+
+            <!-- Title -->
+
+            <a
+              href="./script/?id=${encodeURIComponent(script.id)}"
+              class="block text-lg font-bold text-slate-900 hover:text-blue-600 transition line-clamp-2"
+            >
+
+              ${escapeHtml(title)}
+
+            </a>
+
+
+            <!-- Description -->
+
+            <p
+              class="text-sm text-slate-500 leading-6 mt-2 line-clamp-3"
+            >
+
+              ${escapeHtml(description)}
+
+            </p>
+
+
+            <!-- Meta -->
+
+            <div
+              class="mt-4 pt-4 border-t border-slate-100 space-y-2"
+            >
+
+              <div
+                class="flex items-center gap-2 text-xs text-slate-400"
+              >
+
+                <i
+                  class="fa-solid fa-user-tag w-4 text-center"
+                ></i>
+
+                <span>
+                  ${escapeHtml(distributor)}
+                </span>
+
+              </div>
+
+
+              <div
+                class="flex items-center gap-2 text-xs text-slate-400"
+              >
+
+                <i
+                  class="fa-regular fa-calendar w-4 text-center"
+                ></i>
+
+                <span>
+                  ${escapeHtml(date)}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div
+              class="grid grid-cols-2 gap-2 mt-5"
+            >
+
+              <a
+                href="./script/?id=${encodeURIComponent(script.id)}"
+                class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition"
+              >
+
+                <i
+                  class="fa-solid fa-eye"
+                ></i>
+
+                ดูรายละเอียด
+
+              </a>
+
+
+              <button
+                type="button"
+                onclick="copyScriptFromHome(${JSON.stringify(script.id)})"
+                class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-md hover:shadow-lg transition"
+              >
+
+                <i
+                  class="fa-regular fa-copy"
+                ></i>
+
+                คัดลอก
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      `;
+
+    }
+
+
+
+    /* =========================================
+       STATUS BADGE
+    ========================================== */
+
+    function createStatusBadge(status) {
+
+      const value =
+        status || 'online';
+
+
+      if (value === 'maintenance') {
+
+        return `
+
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold"
+          >
+
+            <i
+              class="fa-solid fa-screwdriver-wrench text-[10px]"
+            ></i>
+
+            ปรับปรุง
+
+          </span>
+
+        `;
+
+      }
+
+
+      if (value === 'offline') {
+
+        return `
+
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-xs font-semibold"
+          >
+
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-red-500"
+            ></span>
+
+            ออฟไลน์
+
+          </span>
+
+        `;
+
+      }
+
+
+      return `
+
+        <span
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold"
+        >
+
+          <span
+            class="w-1.5 h-1.5 rounded-full bg-emerald-500"
+          ></span>
+
+          ออนไลน์
+
+        </span>
+
+      `;
+
+    }
+
+
+
+    /* =========================================
+       COPY FROM HOMEPAGE
+    ========================================== */
+
+    async function copyScriptFromHome(id) {
+
+      const script =
+        allScripts.find(
+          item =>
+            String(item.id) ===
+            String(id)
+        );
+
+
+      if (!script) {
+
+        showToast(
+          'ไม่พบ Script',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      const code =
+        script.code || '';
+
+
+      if (!code) {
+
+        showToast(
+          'Script นี้ยังไม่มีโค้ด',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          code
+        );
+
+
+        showToast(
+          'คัดลอก Script เรียบร้อยแล้ว',
+          'success'
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          'Clipboard error:',
+          error
+        );
+
+
+        fallbackCopy(
+          code
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       COPY FALLBACK
+    ========================================== */
+
+    function fallbackCopy(text) {
+
+      try {
+
+        const textarea =
+          document.createElement(
+            'textarea'
+          );
+
+
+        textarea.value =
+          text;
+
+
+        textarea.style.position =
+          'fixed';
+
+        textarea.style.left =
+          '-9999px';
+
+        textarea.style.top =
+          '-9999px';
+
+
+        document.body.appendChild(
+          textarea
+        );
+
+
+        textarea.focus();
+
+        textarea.select();
+
+
+        const successful =
+          document.execCommand(
+            'copy'
+          );
+
+
+        textarea.remove();
+
+
+        if (successful) {
+
+          showToast(
+            'คัดลอก Script เรียบร้อยแล้ว',
+            'success'
+          );
+
+        } else {
+
+          showToast(
+            'ไม่สามารถคัดลอก Script ได้',
+            'error'
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          'Fallback copy error:',
+          error
+        );
+
+
+        showToast(
+          'ไม่สามารถคัดลอก Script ได้',
+          'error'
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       PLACEHOLDER IMAGE
+    ========================================== */
+
+    function createPlaceholderImage(title) {
+
+      const safeTitle =
+        String(
+          title || 'Script'
+        )
+        .substring(0, 20);
+
+
+      const svg = `
+
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="800"
+          height="500"
+          viewBox="0 0 800 500"
+        >
+
+          <defs>
+
+            <linearGradient
+              id="gradient"
+              x1="0"
+              y1="0"
+              x2="1"
+              y2="1"
+            >
+
+              <stop
+                offset="0%"
+                stop-color="#2563eb"
+              />
+
+              <stop
+                offset="100%"
+                stop-color="#4f46e5"
+              />
+
+            </linearGradient>
+
+          </defs>
+
+
+          <rect
+            width="800"
+            height="500"
+            fill="url(#gradient)"
+          />
+
+
+          <circle
+            cx="400"
+            cy="205"
+            r="70"
+            fill="rgba(255,255,255,.15)"
+          />
+
+
+          <text
+            x="400"
+            y="235"
+            text-anchor="middle"
+            font-size="70"
+            fill="white"
+          >
+            &lt;/&gt;
+          </text>
+
+
+          <text
+            x="400"
+            y="360"
+            text-anchor="middle"
+            font-size="34"
+            font-family="Arial"
+            font-weight="bold"
+            fill="white"
+          >
+            ${escapeSvgText(safeTitle)}
+          </text>
+
+        </svg>
+
+      `;
+
+
+      return (
+        'data:image/svg+xml;charset=UTF-8,' +
+        encodeURIComponent(svg)
+      );
+
+    }
+
+
+
+    /* =========================================
+       ESCAPE SVG
+    ========================================== */
+
+    function escapeSvgText(value) {
+
+      return String(value)
+        .replace(
+          /&/g,
+          '&amp;'
+        )
+        .replace(
+          /</g,
+          '&lt;'
+        )
+        .replace(
+          />/g,
+          '&gt;'
+        )
+        .replace(
+          /"/g,
+          '&quot;'
+        )
+        .replace(
+          /'/g,
+          '&#039;'
+        );
+
+    }
+
+
+
+    /* =========================================
+       HTML ESCAPE
+    ========================================== */
+
+    function escapeHtml(value) {
+
+      return String(
+        value ?? ''
+      )
+      .replace(
+        /&/g,
+        '&amp;'
+      )
+      .replace(
+        /</g,
+        '&lt;'
+      )
+      .replace(
+        />/g,
+        '&gt;'
+      )
+      .replace(
+        /"/g,
+        '&quot;'
+      )
+      .replace(
+        /'/g,
+        '&#039;'
+      );
+
+    }
+
+
+
+    /* =========================================
+       ATTRIBUTE ESCAPE
+    ========================================== */
+
+    function escapeAttribute(value) {
+
+      return escapeHtml(
+        value
+      );
+
+    }
+
+
+
+    /* =========================================
+       DATE
+    ========================================== */
+
+    function formatThaiDate(value) {
+
+      if (!value) {
+
+        return 'ไม่ระบุ';
+
+      }
+
+
+      const date =
+        new Date(value);
+
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        return 'ไม่ระบุ';
+
+      }
+
+
+      return new Intl.DateTimeFormat(
+        'th-TH',
+        {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        }
+      ).format(date);
+
+    }
+
+
+
+    /* =========================================
+       TOAST
+    ========================================== */
+
+    let toastTimer =
+      null;
+
+
+    function showToast(
+      message,
+      type = 'success'
+    ) {
+
+      if (!toast) {
+        return;
+      }
+
+
+      clearTimeout(
+        toastTimer
+      );
+
+
+      toastText.textContent =
+        message;
+
+
+      if (
+        type === 'error'
+      ) {
+
+        toastIcon.className =
+          'fa-solid fa-circle-exclamation text-red-400';
+
+      } else {
+
+        toastIcon.className =
+          'fa-solid fa-check text-emerald-400';
+
+      }
+
+
+      toast.classList.remove(
+        'hidden'
+      );
+
+
+      toastTimer =
+        setTimeout(
+          () => {
+
+            toast.classList.add(
+              'hidden'
+            );
+
+          },
+          2600
+        );
+
+    }
+
+
+
+    /* =========================================
+       EXPOSE FUNCTIONS
+    ========================================== */
+
+    window.copyScriptFromHome =
+      copyScriptFromHome;
+
+    /* =========================================
+       SEARCH KEYBOARD
+    ========================================== */
+
+    if (searchInput) {
+
+      searchInput.addEventListener(
+        'keydown',
+        (event) => {
+
+          if (
+            event.key === 'Escape'
+          ) {
+
+            searchInput.value = '';
+
+            currentSearch = '';
+
+            renderScripts();
+
+            searchInput.blur();
+
+          }
+
+        }
+      );
+
+    }
+
+
+
+    /* =========================================
+       IMAGE FALLBACK
+    ========================================== */
+
+    document.addEventListener(
+      'error',
+      (event) => {
+
+        const target =
+          event.target;
+
+
+        if (
+          target &&
+          target.tagName === 'IMG' &&
+          target.dataset.fallbackApplied !== 'true'
+        ) {
+
+          target.dataset.fallbackApplied =
+            'true';
+
+
+          const title =
+            target.alt ||
+            'Script';
+
+
+          target.src =
+            createPlaceholderImage(
+              title
+            );
+
+        }
+
+      },
+      true
+    );
+
+
+
+    /* =========================================
+       URL HASH SEARCH
+    ========================================== */
+
+    function loadSearchFromUrl() {
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+
+      const search =
+        params.get(
+          'search'
+        );
+
+
+      if (
+        search &&
+        searchInput
+      ) {
+
+        searchInput.value =
+          search;
+
+        currentSearch =
+          search
+            .trim()
+            .toLowerCase();
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       URL CATEGORY
+    ========================================== */
+
+    function loadCategoryFromUrl() {
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+
+      const category =
+        params.get(
+          'category'
+        );
+
+
+      if (
+        category &&
+        allCategories.some(
+          item =>
+            String(item.id) ===
+            String(category)
+        )
+      ) {
+
+        currentCategory =
+          category;
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       REFRESH DATA
+    ========================================== */
+
+    async function refreshHomepage() {
+
+      try {
+
+        await Promise.all([
+          loadSiteSettings(),
+          loadCategories(),
+          loadScripts()
+        ]);
+
+
+        renderCategories();
+
+        renderScripts();
+
+      } catch (error) {
+
+        console.error(
+          'Refresh error:',
+          error
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       PAGE VISIBILITY
+    ========================================== */
+
+    document.addEventListener(
+      'visibilitychange',
+      () => {
+
+        if (
+          document.visibilityState ===
+          'visible'
+        ) {
+
+          refreshHomepage();
+
+        }
+
+      }
+    );
+
+
+
+    /* =========================================
+       REAL-TIME SCRIPT UPDATES
+    ========================================== */
+
+    const scriptsChannel =
+      supabaseClient
+        .channel(
+          'public-scripts-homepage'
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'scripts'
+          },
+          () => {
+
+            refreshHomepage();
+
+          }
+        )
+        .subscribe();
+
+
+
+    /* =========================================
+       REAL-TIME CATEGORY UPDATES
+    ========================================== */
+
+    const categoriesChannel =
+      supabaseClient
+        .channel(
+          'public-categories-homepage'
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'categories'
+          },
+          () => {
+
+            refreshHomepage();
+
+          }
+        )
+        .subscribe();
+
+
+
+    /* =========================================
+       REAL-TIME SITE SETTINGS
+    ========================================== */
+
+    const settingsChannel =
+      supabaseClient
+        .channel(
+          'public-site-settings-homepage'
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'site_settings'
+          },
+          () => {
+
+            loadSiteSettings();
+
+          }
+        )
+        .subscribe();
+
+
+
+    /* =========================================
+       INITIAL URL FILTERS
+    ========================================== */
+
+    const originalLoadHomepage =
+      loadHomepage;
+
+
+    loadHomepage = async function () {
+
+      await originalLoadHomepage();
+
+      loadSearchFromUrl();
+
+      loadCategoryFromUrl();
+
+      updateCategoryButtons();
+
+      renderScripts();
+
+    };
+
+
+
+    /* =========================================
+       CLEANUP
+    ========================================== */
+
+    window.addEventListener(
+      'beforeunload',
+      () => {
+
+        try {
+
+          supabaseClient.removeChannel(
+            scriptsChannel
+          );
+
+          supabaseClient.removeChannel(
+            categoriesChannel
+          );
+
+          supabaseClient.removeChannel(
+            settingsChannel
+          );
+
+        } catch (error) {
+
+          console.error(
+            'Channel cleanup error:',
+            error
+          );
+
+        }
+
+      }
+    );
+
+
+
+    /* =========================================
+       MOBILE SEARCH FOCUS
+    ========================================== */
+
+    const searchButton =
+      document.createElement(
+        'button'
+      );
+
+
+    /*
+     * No visible floating button is added.
+     * This keeps the original mobile design clean.
+     */
+
+
+
+    /* =========================================
+       GLOBAL ERROR HANDLING
+    ========================================== */
+
+    window.addEventListener(
+      'unhandledrejection',
+      (event) => {
+
+        console.error(
+          'Unhandled promise rejection:',
+          event.reason
+        );
+
+      }
+    );
+
+
+
+    /* =========================================
+       PAGE READY
+    ========================================== */
+
+    console.log(
+      'Script Hub homepage initialized.'
+    );
+
+  </script>
+  <script>
+
+    /* =========================================
+       FINAL PAGE SETUP
+    ========================================== */
+
+    function finalizeHomepage() {
+
+      if (loadingScreen) {
+
+        loadingScreen.classList.add(
+          'hidden'
+        );
+
+      }
+
+      if (footerYear) {
+
+        footerYear.textContent =
+          new Date().getFullYear();
+
+      }
+
+    }
+
+
+
+    /* =========================================
+       ADMIN LINK
+    ========================================== */
+
+    const adminLink =
+      document.querySelector(
+        'a[href="./admin/"]'
+      );
+
+
+    if (adminLink) {
+
+      adminLink.setAttribute(
+        'aria-label',
+        'เข้าสู่ระบบ Admin'
+      );
+
+    }
+
+
+
+    /* =========================================
+       SEARCH ACCESSIBILITY
+    ========================================== */
+
+    if (searchInput) {
+
+      searchInput.setAttribute(
+        'aria-label',
+        'ค้นหา Script'
+      );
+
+    }
+
+
+
+    /* =========================================
+       SCRIPT GRID ACCESSIBILITY
+    ========================================== */
+
+    if (scriptGrid) {
+
+      scriptGrid.setAttribute(
+        'aria-live',
+        'polite'
+      );
+
+    }
+
+
+
+    /* =========================================
+       FINALIZE
+    ========================================== */
+
+    finalizeHomepage();
+
+  </script>
+
+
+</body>
+</html>
