@@ -10,7 +10,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
   <link
     rel="stylesheet"
@@ -27,8 +30,16 @@
     body {
       margin: 0;
       background:
-        radial-gradient(circle at top left, rgba(99,102,241,.12), transparent 35%),
-        radial-gradient(circle at top right, rgba(59,130,246,.10), transparent 35%),
+        radial-gradient(
+          circle at top left,
+          rgba(99,102,241,.12),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at top right,
+          rgba(59,130,246,.10),
+          transparent 35%
+        ),
         #f8fafc;
       color: #0f172a;
     }
@@ -99,6 +110,10 @@
         transform: scale(1);
       }
     }
+
+    .code-gate {
+      min-height: 220px;
+    }
   </style>
 </head>
 
@@ -110,13 +125,19 @@
     class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50"
   >
     <div class="text-center">
-      <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg">
+
+      <div
+        class="w-14 h-14 mx-auto mb-4 rounded-2xl
+        bg-gradient-to-br from-blue-600 to-indigo-600
+        flex items-center justify-center text-white text-2xl shadow-lg"
+      >
         <i class="fa-solid fa-code loading-spin"></i>
       </div>
 
       <p class="text-slate-600 font-medium">
         กำลังโหลด Script...
       </p>
+
     </div>
   </div>
 
@@ -125,6 +146,28 @@
   <header class="sticky top-0 z-40 glass border-b border-slate-200/70">
 
     <div class="max-w-6xl mx-auto px-4 py-3">
+
+      <!-- Google Login -->
+      <div class="flex justify-center mb-3">
+
+        <button
+          id="googleButton"
+          onclick="signInWithGoogle()"
+          class="inline-flex items-center justify-center gap-2
+          px-5 py-2.5 rounded-xl
+          bg-white border border-slate-200
+          text-slate-700 font-semibold
+          shadow-sm hover:shadow-md hover:bg-slate-50
+          transition"
+        >
+          <i class="fa-brands fa-google text-red-500"></i>
+          <span id="googleButtonText">
+            ดำเนินการต่อด้วย Google
+          </span>
+        </button>
+
+      </div>
+
 
       <div class="flex items-center justify-between gap-3">
 
@@ -135,19 +178,28 @@
         >
 
           <div
-            class="w-11 h-11 shrink-0 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg"
+            id="siteLogoBox"
+            class="w-11 h-11 shrink-0 rounded-2xl
+            bg-gradient-to-br from-blue-600 to-indigo-600
+            flex items-center justify-center
+            text-white shadow-lg overflow-hidden"
           >
             <i class="fa-solid fa-code text-lg"></i>
           </div>
 
           <div class="min-w-0">
-            <div class="font-bold text-slate-900 truncate">
+
+            <div
+              id="siteName"
+              class="font-bold text-slate-900 truncate"
+            >
               Script Hub
             </div>
 
             <div class="text-xs text-slate-500 truncate">
               ศูนย์รวมสคริปต์
             </div>
+
           </div>
 
         </a>
@@ -156,10 +208,15 @@
         <!-- Back -->
         <a
           href="../"
-          class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition"
+          class="shrink-0 inline-flex items-center gap-2
+          px-4 py-2.5 rounded-xl
+          bg-slate-100 hover:bg-slate-200
+          text-slate-700 font-medium transition"
         >
           <i class="fa-solid fa-arrow-left"></i>
-          <span class="hidden sm:inline">กลับหน้าหลัก</span>
+          <span class="hidden sm:inline">
+            กลับหน้าหลัก
+          </span>
         </a>
 
       </div>
@@ -177,9 +234,17 @@
       id="errorBox"
       class="hidden fade-in"
     >
-      <div class="bg-white rounded-3xl p-8 soft-shadow border border-slate-200 text-center">
 
-        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-2xl">
+      <div
+        class="bg-white rounded-3xl p-8 soft-shadow
+        border border-slate-200 text-center"
+      >
+
+        <div
+          class="w-16 h-16 mx-auto mb-5 rounded-2xl
+          bg-red-50 text-red-500
+          flex items-center justify-center text-2xl"
+        >
           <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
 
@@ -196,13 +261,18 @@
 
         <a
           href="../"
-          class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-xl transition"
+          class="inline-flex items-center gap-2
+          px-5 py-3 rounded-xl
+          bg-gradient-to-r from-blue-600 to-indigo-600
+          text-white font-semibold shadow-lg
+          hover:shadow-xl transition"
         >
           <i class="fa-solid fa-house"></i>
           กลับหน้าหลัก
         </a>
 
       </div>
+
     </div>
 
 
@@ -213,19 +283,24 @@
     >
 
       <!-- Script Header Card -->
-      <section class="bg-white rounded-3xl soft-shadow border border-slate-200 overflow-hidden mb-6">
+      <section
+        class="bg-white rounded-3xl soft-shadow
+        border border-slate-200 overflow-hidden mb-6"
+      >
 
         <div class="grid md:grid-cols-[280px_1fr]">
 
           <!-- Image -->
-          <div class="bg-slate-100 aspect-square md:aspect-auto min-h-[240px]">
+          <div
+            class="bg-slate-100 aspect-square
+            md:aspect-auto min-h-[240px]"
+          >
 
             <img
               id="scriptImage"
               src=""
               alt="Script"
               class="w-full h-full object-cover"
-              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22500%22 viewBox=%220 0 500 500%22%3E%3Crect width=%22500%22 height=%22500%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%22250%22 y=%22250%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2260%22 fill=%22%2364758b%22%3EScript%3C/text%3E%3C/svg%3E'"
             >
 
           </div>
@@ -234,16 +309,23 @@
           <!-- Info -->
           <div class="p-6 md:p-8">
 
-            <div class="flex flex-wrap items-center gap-2 mb-4">
+            <div
+              class="flex flex-wrap items-center gap-2 mb-4"
+            >
 
               <span
                 id="statusBadge"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                class="inline-flex items-center gap-1.5
+                px-3 py-1.5 rounded-full
+                text-xs font-semibold"
               ></span>
 
               <span
                 id="categoryBadge"
-                class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold"
+                class="hidden inline-flex items-center gap-1.5
+                px-3 py-1.5 rounded-full
+                bg-blue-50 text-blue-700
+                text-xs font-semibold"
               >
                 <i class="fa-solid fa-folder"></i>
                 <span id="categoryText"></span>
@@ -254,7 +336,8 @@
 
             <h1
               id="scriptTitle"
-              class="text-2xl md:text-4xl font-bold text-slate-900 leading-tight mb-4"
+              class="text-2xl md:text-4xl font-bold
+              text-slate-900 leading-tight mb-4"
             >
               -
             </h1>
@@ -270,7 +353,11 @@
 
             <div class="grid sm:grid-cols-2 gap-3">
 
-              <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+              <div
+                class="rounded-2xl bg-slate-50
+                border border-slate-100 p-4"
+              >
+
                 <div class="text-xs text-slate-400 mb-1">
                   ผู้จัดจำหน่าย
                 </div>
@@ -281,10 +368,15 @@
                 >
                   -
                 </div>
+
               </div>
 
 
-              <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+              <div
+                class="rounded-2xl bg-slate-50
+                border border-slate-100 p-4"
+              >
+
                 <div class="text-xs text-slate-400 mb-1">
                   วันที่เพิ่ม
                 </div>
@@ -295,6 +387,7 @@
                 >
                   -
                 </div>
+
               </div>
 
             </div>
@@ -304,29 +397,43 @@
         </div>
 
       </section>
+            <!-- Code -->
+      <section
+        class="bg-white rounded-3xl soft-shadow
+        border border-slate-200 p-5 md:p-7"
+      >
 
-
-      <!-- Code -->
-      <section class="bg-white rounded-3xl soft-shadow border border-slate-200 p-5 md:p-7">
-
-        <div class="flex items-center justify-between gap-3 mb-4">
+        <div
+          class="flex flex-col sm:flex-row
+          sm:items-center justify-between gap-4 mb-4"
+        >
 
           <div>
+
             <h2 class="text-xl font-bold text-slate-900">
               <i class="fa-solid fa-terminal text-blue-600 mr-2"></i>
               Script Code
             </h2>
 
-            <p class="text-sm text-slate-500 mt-1">
+            <p
+              id="codeDescription"
+              class="text-sm text-slate-500 mt-1"
+            >
               คัดลอกโค้ดไปใช้งานได้ทันที
             </p>
+
           </div>
 
 
           <button
             id="copyButton"
             onclick="copyScript()"
-            class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-xl transition"
+            class="shrink-0 inline-flex items-center
+            justify-center gap-2 px-4 py-2.5
+            rounded-xl bg-gradient-to-r
+            from-blue-600 to-indigo-600
+            text-white font-semibold shadow-lg
+            hover:shadow-xl transition"
           >
             <i class="fa-regular fa-copy"></i>
             <span>คัดลอก</span>
@@ -335,9 +442,60 @@
         </div>
 
 
+        <!-- Login Gate -->
+        <div
+          id="loginGate"
+          class="code-box code-gate
+          flex items-center justify-center
+          p-6 text-center"
+        >
+
+          <div>
+
+            <div
+              class="w-16 h-16 mx-auto mb-4
+              rounded-2xl bg-blue-500/10
+              text-blue-400
+              flex items-center justify-center
+              text-2xl"
+            >
+              <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <h3
+              class="text-lg font-semibold text-white mb-2"
+            >
+              ต้องดำเนินการต่อด้วย Google ก่อน
+            </h3>
+
+            <p class="text-slate-400 text-sm mb-5">
+              โปรดดำเนินการต่อด้วย Google
+              ก่อนจึงสามารถคัดลอก Script ได้
+            </p>
+
+            <button
+              onclick="signInWithGoogle()"
+              class="inline-flex items-center
+              justify-center gap-2
+              px-5 py-3 rounded-xl
+              bg-white text-slate-800
+              font-semibold shadow-lg
+              hover:bg-slate-100 transition"
+            >
+              <i class="fa-brands fa-google text-red-500"></i>
+              ดำเนินการต่อด้วย Google
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Code -->
         <pre
           id="scriptCode"
-          class="code-box p-5 text-sm md:text-base min-h-[180px]"
+          class="hidden code-box p-5
+          text-sm md:text-base min-h-[180px]"
         ></pre>
 
       </section>
@@ -350,12 +508,17 @@
   <!-- Toast -->
   <div
     id="toast"
-    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden"
+    class="fixed bottom-5 left-1/2
+    -translate-x-1/2 z-50 hidden"
   >
+
     <div
       id="toastInner"
-      class="px-5 py-3 rounded-2xl bg-slate-900 text-white shadow-2xl flex items-center gap-3"
+      class="px-5 py-3 rounded-2xl
+      bg-slate-900 text-white shadow-2xl
+      flex items-center gap-3"
     >
+
       <i
         id="toastIcon"
         class="fa-solid fa-check text-green-400"
@@ -364,21 +527,26 @@
       <span id="toastText">
         สำเร็จ
       </span>
+
     </div>
+
   </div>
-<script>
+  <script>
   /* =========================================
      SUPABASE CONFIG
   ========================================= */
 
-  const SUPABASE_URL = 'https://ofwlofzqxfdqctmogntu.supabase.co';
+  const SUPABASE_URL =
+    'https://ofwlofzqxfdqctmogntu.supabase.co';
 
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
+  const SUPABASE_PUBLISHABLE_KEY =
+    'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
 
   /* =========================================
@@ -386,42 +554,99 @@
   ========================================= */
 
   let currentScript = null;
+  let currentUser = null;
+  let toastTimer = null;
 
 
   /* =========================================
      DOM
   ========================================= */
 
-  const loadingScreen = document.getElementById('loadingScreen');
-  const errorBox = document.getElementById('errorBox');
-  const errorMessage = document.getElementById('errorMessage');
-  const scriptContent = document.getElementById('scriptContent');
+  const loadingScreen =
+    document.getElementById('loadingScreen');
 
-  const scriptImage = document.getElementById('scriptImage');
-  const scriptTitle = document.getElementById('scriptTitle');
-  const scriptDescription = document.getElementById('scriptDescription');
-  const scriptDistributor = document.getElementById('scriptDistributor');
-  const scriptDate = document.getElementById('scriptDate');
-  const scriptCode = document.getElementById('scriptCode');
+  const errorBox =
+    document.getElementById('errorBox');
 
-  const statusBadge = document.getElementById('statusBadge');
-  const categoryBadge = document.getElementById('categoryBadge');
-  const categoryText = document.getElementById('categoryText');
+  const errorMessage =
+    document.getElementById('errorMessage');
 
-  const copyButton = document.getElementById('copyButton');
+  const scriptContent =
+    document.getElementById('scriptContent');
 
-  const toast = document.getElementById('toast');
-  const toastText = document.getElementById('toastText');
-  const toastIcon = document.getElementById('toastIcon');
+  const scriptImage =
+    document.getElementById('scriptImage');
+
+  const scriptTitle =
+    document.getElementById('scriptTitle');
+
+  const scriptDescription =
+    document.getElementById('scriptDescription');
+
+  const scriptDistributor =
+    document.getElementById('scriptDistributor');
+
+  const scriptDate =
+    document.getElementById('scriptDate');
+
+  const scriptCode =
+    document.getElementById('scriptCode');
+
+  const statusBadge =
+    document.getElementById('statusBadge');
+
+  const categoryBadge =
+    document.getElementById('categoryBadge');
+
+  const categoryText =
+    document.getElementById('categoryText');
+
+  const copyButton =
+    document.getElementById('copyButton');
+
+  const loginGate =
+    document.getElementById('loginGate');
+
+  const googleButton =
+    document.getElementById('googleButton');
+
+  const googleButtonText =
+    document.getElementById('googleButtonText');
+
+  const siteName =
+    document.getElementById('siteName');
+
+  const siteLogoBox =
+    document.getElementById('siteLogoBox');
+
+  const toast =
+    document.getElementById('toast');
+
+  const toastText =
+    document.getElementById('toastText');
+
+  const toastIcon =
+    document.getElementById('toastIcon');
 
 
   /* =========================================
-     INIT
+     PAGE START
   ========================================= */
 
-  document.addEventListener('DOMContentLoaded', () => {
-    loadScript();
-  });
+  document.addEventListener(
+    'DOMContentLoaded',
+    async () => {
+
+      await loadSiteSettings();
+
+      await loadCurrentUser();
+
+      await loadScript();
+
+      updateCopyAccess();
+
+    }
+  );
 
 
   /* =========================================
@@ -430,19 +655,372 @@
 
   function getScriptId() {
 
-    const params = new URLSearchParams(window.location.search);
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
-    const id = params.get('id');
+    return params.get('id');
 
-    if (!id) {
-      return null;
-    }
-
-    return id;
   }
 
 
   /* =========================================
+     LOAD SITE SETTINGS
+  ========================================= */
+
+  async function loadSiteSettings() {
+
+    try {
+
+      const { data, error } =
+        await supabaseClient
+          .from('site_settings')
+          .select(`
+            site_name,
+            logo_url
+          `)
+          .eq('id', true)
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          'Site settings error:',
+          error
+        );
+
+        return;
+      }
+
+
+      if (!data) {
+        return;
+      }
+
+
+      const name =
+        data.site_name ||
+        'Script Hub';
+
+
+      if (siteName) {
+
+        siteName.textContent =
+          name;
+
+      }
+
+
+      document.title =
+        `รายละเอียด Script | ${name}`;
+
+
+      if (
+        data.logo_url &&
+        siteLogoBox
+      ) {
+
+        siteLogoBox.innerHTML = '';
+
+        const img =
+          document.createElement('img');
+
+        img.src =
+          data.logo_url;
+
+        img.alt =
+          name;
+
+        img.className =
+          'w-full h-full object-cover';
+
+        siteLogoBox.appendChild(img);
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        'Unexpected settings error:',
+        error
+      );
+
+    }
+
+  }
+      /* =========================================
+     GOOGLE LOGIN
+  ========================================= */
+
+  async function signInWithGoogle() {
+
+    try {
+
+      if (googleButton) {
+
+        googleButton.disabled = true;
+
+        googleButton.classList.add(
+          'opacity-70',
+          'cursor-not-allowed'
+        );
+
+        if (googleButtonText) {
+
+          googleButtonText.textContent =
+            'กำลังเชื่อมต่อ Google...';
+
+        }
+
+      }
+
+
+      /*
+       * Return to this Script page after Google login.
+       * The redirect URL must be allowed in
+       * Supabase Authentication settings.
+       */
+
+      const redirectTo =
+        window.location.href;
+
+
+      const { error } =
+        await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo
+          }
+        });
+
+
+      if (error) {
+
+        console.error(
+          'Google sign in error:',
+          error
+        );
+
+        showToast(
+          'ไม่สามารถเข้าสู่ระบบด้วย Google ได้',
+          'error'
+        );
+
+        resetGoogleButton();
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        'Google login error:',
+        error
+      );
+
+      showToast(
+        'เกิดข้อผิดพลาดในการเข้าสู่ระบบ',
+        'error'
+      );
+
+      resetGoogleButton();
+
+    }
+
+  }
+
+
+  /* =========================================
+     LOAD CURRENT USER
+  ========================================= */
+
+  async function loadCurrentUser() {
+
+    try {
+
+      const { data, error } =
+        await supabaseClient.auth.getUser();
+
+
+      if (error) {
+
+        currentUser = null;
+
+        updateGoogleButton();
+
+        return;
+
+      }
+
+
+      currentUser =
+        data?.user || null;
+
+
+      updateGoogleButton();
+
+    } catch (error) {
+
+      console.error(
+        'Get user error:',
+        error
+      );
+
+      currentUser = null;
+
+      updateGoogleButton();
+
+    }
+
+  }
+
+
+  /* =========================================
+     AUTH STATE
+  ========================================= */
+
+  supabaseClient.auth.onAuthStateChange(
+    (event, session) => {
+
+      currentUser =
+        session?.user || null;
+
+      updateGoogleButton();
+
+      updateCopyAccess();
+
+    }
+  );
+
+
+  /* =========================================
+     UPDATE GOOGLE BUTTON
+  ========================================= */
+
+  function updateGoogleButton() {
+
+    if (
+      !googleButton ||
+      !googleButtonText
+    ) {
+      return;
+    }
+
+
+    if (currentUser) {
+
+      googleButton.disabled = false;
+
+      googleButton.classList.remove(
+        'opacity-70',
+        'cursor-not-allowed'
+      );
+
+      googleButtonText.textContent =
+        currentUser.email
+          ? `Google: ${currentUser.email}`
+          : 'เข้าสู่ระบบด้วย Google แล้ว';
+
+      return;
+
+    }
+
+
+    resetGoogleButton();
+
+  }
+
+
+  /* =========================================
+     RESET GOOGLE BUTTON
+  ========================================= */
+
+  function resetGoogleButton() {
+
+    if (!googleButton) {
+      return;
+    }
+
+
+    googleButton.disabled = false;
+
+    googleButton.classList.remove(
+      'opacity-70',
+      'cursor-not-allowed'
+    );
+
+
+    if (googleButtonText) {
+
+      googleButtonText.textContent =
+        'ดำเนินการต่อด้วย Google';
+
+    }
+
+  }
+
+
+  /* =========================================
+     UPDATE COPY ACCESS
+  ========================================= */
+
+  function updateCopyAccess() {
+
+    if (!loginGate || !scriptCode) {
+      return;
+    }
+
+
+    if (currentUser) {
+
+      loginGate.classList.add(
+        'hidden'
+      );
+
+      scriptCode.classList.remove(
+        'hidden'
+      );
+
+
+      if (copyButton) {
+
+        copyButton.disabled = false;
+
+        copyButton.classList.remove(
+          'opacity-60',
+          'cursor-not-allowed'
+        );
+
+      }
+
+      return;
+
+    }
+
+
+    loginGate.classList.remove(
+      'hidden'
+    );
+
+    scriptCode.classList.add(
+      'hidden'
+    );
+
+
+    if (copyButton) {
+
+      copyButton.disabled = false;
+
+      copyButton.classList.remove(
+        'opacity-60',
+        'cursor-not-allowed'
+      );
+
+    }
+
+  }
+      /* =========================================
      LOAD SCRIPT
   ========================================= */
 
@@ -450,77 +1028,113 @@
 
     try {
 
-      const scriptId = getScriptId();
+      const scriptId =
+        getScriptId();
+
 
       if (!scriptId) {
-        showError('ไม่พบรหัส Script ในลิงก์');
+
+        showError(
+          'ไม่พบรหัส Script ในลิงก์'
+        );
+
         return;
+
       }
 
 
-      const { data, error } = await supabaseClient
-        .from('scripts')
-        .select(`
-          id,
-          title,
-          description,
-          image,
-          code,
-          status,
-          distributor,
-          created_at,
-          updated_at,
-          is_visible,
-          category_id,
-          categories (
+      const { data, error } =
+        await supabaseClient
+          .from('scripts')
+          .select(`
             id,
-            name
-          )
-        `)
-        .eq('id', scriptId)
-        .maybeSingle();
+            title,
+            description,
+            image,
+            code,
+            status,
+            distributor,
+            created_at,
+            updated_at,
+            is_visible,
+            category_id,
+            categories (
+              id,
+              name
+            )
+          `)
+          .eq('id', scriptId)
+          .maybeSingle();
 
 
       if (error) {
-        console.error('Load script error:', error);
-        showError('ไม่สามารถโหลดข้อมูล Script ได้');
+
+        console.error(
+          'Load script error:',
+          error
+        );
+
+        showError(
+          'ไม่สามารถโหลดข้อมูล Script ได้'
+        );
+
         return;
+
       }
 
 
       if (!data) {
-        showError('ไม่พบ Script นี้ในระบบ');
+
+        showError(
+          'ไม่พบ Script นี้ในระบบ'
+        );
+
         return;
+
       }
 
 
       /*
-       * Public users must not see hidden scripts.
-       *
-       * Admin users can still open hidden scripts because
-       * the database RLS policy allows admins to read them.
-       *
-       * Since this page is public, we additionally check
-       * visibility on the client side.
+       * Public detail page must only show
+       * scripts that are visible.
        */
 
       if (data.is_visible !== true) {
-        showError('Script นี้ยังไม่เปิดให้แสดงบนเว็บไซต์');
+
+        showError(
+          'Script นี้ยังไม่เปิดให้แสดงบนเว็บไซต์'
+        );
+
         return;
+
       }
 
 
-      currentScript = data;
+      currentScript =
+        data;
 
-      renderScript(data);
 
-    } catch (err) {
+      renderScript(
+        data
+      );
 
-      console.error('Unexpected error:', err);
 
-      showError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+      updateCopyAccess();
+
+
+    } catch (error) {
+
+      console.error(
+        'Unexpected load error:',
+        error
+      );
+
+      showError(
+        'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง'
+      );
 
     }
+
   }
 
 
@@ -530,65 +1144,67 @@
 
   function renderScript(data) {
 
-    const title = data.title || 'ไม่มีชื่อ Script';
+    const title =
+      data.title ||
+      'ไม่มีชื่อ Script';
+
 
     const description =
       data.description ||
       'ไม่มีคำอธิบายสำหรับ Script นี้';
 
+
     const distributor =
       data.distributor ||
       'ไม่ระบุ';
+
 
     const code =
       data.code ||
       '';
 
 
-    /* Title */
-
-    scriptTitle.textContent = title;
-
-
-    /* Description */
-
-    scriptDescription.textContent = description;
+    scriptTitle.textContent =
+      title;
 
 
-    /* Distributor */
-
-    scriptDistributor.textContent = distributor;
-
-
-    /* Date */
-
-    scriptDate.textContent = formatThaiDate(data.created_at);
+    scriptDescription.textContent =
+      description;
 
 
-    /* Code */
+    scriptDistributor.textContent =
+      distributor;
 
-    scriptCode.textContent = code;
+
+    scriptDate.textContent =
+      formatThaiDate(
+        data.created_at
+      );
 
 
-    /* Image */
+    scriptCode.textContent =
+      code || '// ไม่มี Script Code';
+
 
     if (data.image) {
 
-      scriptImage.src = data.image;
+      scriptImage.src =
+        data.image;
 
     } else {
 
-      scriptImage.src = createPlaceholderImage(title);
+      scriptImage.src =
+        createPlaceholderImage(
+          title
+        );
 
     }
 
 
-    /* Status */
+    renderStatus(
+      data.status
+    );
 
-    renderStatus(data.status);
-
-
-    /* Category */
 
     if (
       data.categories &&
@@ -598,28 +1214,34 @@
       categoryText.textContent =
         data.categories.name;
 
-      categoryBadge.classList.remove('hidden');
+      categoryBadge.classList.remove(
+        'hidden'
+      );
 
     } else {
 
-      categoryBadge.classList.add('hidden');
+      categoryBadge.classList.add(
+        'hidden'
+      );
 
     }
 
 
-    /* Page title */
-
     document.title =
-      `${title} | Script Hub`;
+      `${title} | ${siteName?.textContent || 'Script Hub'}`;
 
 
-    /* Show page */
+    loadingScreen.classList.add(
+      'hidden'
+    );
 
-    loadingScreen.classList.add('hidden');
+    errorBox.classList.add(
+      'hidden'
+    );
 
-    errorBox.classList.add('hidden');
-
-    scriptContent.classList.remove('hidden');
+    scriptContent.classList.remove(
+      'hidden'
+    );
 
   }
 
@@ -630,7 +1252,8 @@
 
   function renderStatus(status) {
 
-    const value = status || 'online';
+    const value =
+      status || 'online';
 
 
     if (value === 'online') {
@@ -642,6 +1265,7 @@
         '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ออนไลน์';
 
       return;
+
     }
 
 
@@ -654,6 +1278,7 @@
         '<i class="fa-solid fa-screwdriver-wrench"></i> ปรับปรุง';
 
       return;
+
     }
 
 
@@ -662,10 +1287,9 @@
 
     statusBadge.innerHTML =
       '<span class="w-2 h-2 rounded-full bg-red-500"></span> ออฟไลน์';
+
   }
-
-
-  /* =========================================
+      /* =========================================
      FORMAT DATE
   ========================================= */
 
@@ -676,11 +1300,18 @@
     }
 
 
-    const date = new Date(value);
+    const date =
+      new Date(value);
 
 
-    if (Number.isNaN(date.getTime())) {
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+
       return 'ไม่ระบุ';
+
     }
 
 
@@ -714,7 +1345,9 @@
         height="800"
         viewBox="0 0 800 800"
       >
+
         <defs>
+
           <linearGradient
             id="g"
             x1="0"
@@ -722,6 +1355,7 @@
             x2="1"
             y2="1"
           >
+
             <stop
               offset="0%"
               stop-color="#2563eb"
@@ -731,8 +1365,11 @@
               offset="100%"
               stop-color="#4f46e5"
             />
+
           </linearGradient>
+
         </defs>
+
 
         <rect
           width="800"
@@ -740,12 +1377,14 @@
           fill="url(#g)"
         />
 
+
         <circle
           cx="400"
           cy="320"
           r="95"
           fill="rgba(255,255,255,.18)"
         />
+
 
         <text
           x="400"
@@ -756,6 +1395,7 @@
         >
           &lt;/&gt;
         </text>
+
 
         <text
           x="400"
@@ -773,24 +1413,41 @@
     `;
 
 
-    return 'data:image/svg+xml;charset=UTF-8,' +
-      encodeURIComponent(svg);
+    return (
+      'data:image/svg+xml;charset=UTF-8,' +
+      encodeURIComponent(svg)
+    );
 
   }
 
 
   /* =========================================
-     ESCAPE SVG TEXT
+     ESCAPE SVG
   ========================================= */
 
   function escapeSvgText(value) {
 
     return String(value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+      .replace(
+        /&/g,
+        '&amp;'
+      )
+      .replace(
+        /</g,
+        '&lt;'
+      )
+      .replace(
+        />/g,
+        '&gt;'
+      )
+      .replace(
+        /"/g,
+        '&quot;'
+      )
+      .replace(
+        /'/g,
+        '&#039;'
+      );
 
   }
 
@@ -802,7 +1459,33 @@
   async function copyScript() {
 
     if (!currentScript) {
+
+      showToast(
+        'ยังโหลด Script ไม่เสร็จ',
+        'error'
+      );
+
       return;
+
+    }
+
+
+    /*
+     * IMPORTANT:
+     * Google login is required before copying.
+     */
+
+    if (!currentUser) {
+
+      updateCopyAccess();
+
+      showToast(
+        'โปรดดำเนินการต่อด้วย Google ก่อนจึงสามารถคัดลอก Script ได้',
+        'error'
+      );
+
+      return;
+
     }
 
 
@@ -818,19 +1501,25 @@
       );
 
       return;
+
     }
 
 
     try {
 
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(
+        code
+      );
+
 
       showCopySuccess();
+
 
       showToast(
         'คัดลอก Script เรียบร้อยแล้ว',
         'success'
       );
+
 
     } catch (error) {
 
@@ -839,7 +1528,10 @@
         error
       );
 
-      fallbackCopy(code);
+
+      fallbackCopy(
+        code
+      );
 
     }
 
@@ -847,7 +1539,7 @@
 
 
   /* =========================================
-     COPY FALLBACK
+     FALLBACK COPY
   ========================================= */
 
   function fallbackCopy(text) {
@@ -855,24 +1547,39 @@
     try {
 
       const textarea =
-        document.createElement('textarea');
+        document.createElement(
+          'textarea'
+        );
 
 
-      textarea.value = text;
-
-      textarea.style.position = 'fixed';
-      textarea.style.left = '-9999px';
-      textarea.style.top = '-9999px';
+      textarea.value =
+        text;
 
 
-      document.body.appendChild(textarea);
+      textarea.style.position =
+        'fixed';
+
+      textarea.style.left =
+        '-9999px';
+
+      textarea.style.top =
+        '-9999px';
+
+
+      document.body.appendChild(
+        textarea
+      );
+
 
       textarea.focus();
+
       textarea.select();
 
 
       const successful =
-        document.execCommand('copy');
+        document.execCommand(
+          'copy'
+        );
 
 
       textarea.remove();
@@ -881,6 +1588,7 @@
       if (successful) {
 
         showCopySuccess();
+
 
         showToast(
           'คัดลอก Script เรียบร้อยแล้ว',
@@ -903,6 +1611,7 @@
         error
       );
 
+
       showToast(
         'ไม่สามารถคัดลอกได้',
         'error'
@@ -911,10 +1620,8 @@
     }
 
   }
-
-
-  /* =========================================
-     COPY BUTTON SUCCESS
+      /* =========================================
+     COPY SUCCESS
   ========================================= */
 
   function showCopySuccess() {
@@ -933,16 +1640,20 @@
       '<i class="fa-solid fa-check"></i><span>คัดลอกแล้ว</span>';
 
 
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      copyButton.classList.remove(
-        'copy-success'
-      );
+        copyButton.classList.remove(
+          'copy-success'
+        );
 
-      copyButton.innerHTML =
-        '<i class="fa-regular fa-copy"></i><span>คัดลอก</span>';
 
-    }, 1800);
+        copyButton.innerHTML =
+          '<i class="fa-regular fa-copy"></i><span>คัดลอก</span>';
+
+      },
+      1800
+    );
 
   }
 
@@ -953,14 +1664,24 @@
 
   function showError(message) {
 
-    loadingScreen.classList.add('hidden');
+    loadingScreen.classList.add(
+      'hidden'
+    );
 
-    scriptContent.classList.add('hidden');
 
-    errorBox.classList.remove('hidden');
+    scriptContent.classList.add(
+      'hidden'
+    );
+
+
+    errorBox.classList.remove(
+      'hidden'
+    );
+
 
     errorMessage.textContent =
-      message || 'เกิดข้อผิดพลาด';
+      message ||
+      'เกิดข้อผิดพลาด';
 
   }
 
@@ -969,12 +1690,14 @@
      TOAST
   ========================================= */
 
-  let toastTimer = null;
+  function showToast(
+    message,
+    type = 'success'
+  ) {
 
-
-  function showToast(message, type = 'success') {
-
-    clearTimeout(toastTimer);
+    clearTimeout(
+      toastTimer
+    );
 
 
     toastText.textContent =
@@ -994,76 +1717,52 @@
     }
 
 
-    toast.classList.remove('hidden');
+    toast.classList.remove(
+      'hidden'
+    );
 
 
-    toastTimer = setTimeout(() => {
+    toastTimer =
+      setTimeout(
+        () => {
 
-      toast.classList.add('hidden');
+          toast.classList.add(
+            'hidden'
+          );
 
-    }, 2600);
-
-  }
-
-</script>
-<script>
-  /* =========================================
-     EXTRA UTILITIES
-  ========================================= */
-
-  function escapeHtml(value) {
-
-    return String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+        },
+        2600
+      );
 
   }
 
 
   /* =========================================
-     PAGE VISIBILITY CHECK
+     KEYBOARD
   ========================================= */
 
-  function checkPageVisibility() {
+  document.addEventListener(
+    'keydown',
+    (event) => {
 
-    if (!currentScript) {
-      return false;
-    }
+      if (
+        event.key === 'Escape' &&
+        toast &&
+        !toast.classList.contains('hidden')
+      ) {
 
-    return currentScript.is_visible === true;
+        toast.classList.add(
+          'hidden'
+        );
 
-  }
-
-
-  /* =========================================
-     KEYBOARD SHORTCUT
-  ========================================= */
-
-  document.addEventListener('keydown', (event) => {
-
-    /*
-     * Ctrl + C is intentionally not overridden.
-     * Users can still select and copy code normally.
-     */
-
-    if (
-      event.key === 'Escape' &&
-      toast &&
-      !toast.classList.contains('hidden')
-    ) {
-
-      toast.classList.add('hidden');
+      }
 
     }
-
-  });
+  );
 
 
   /* =========================================
-     IMAGE ERROR HANDLER
+     IMAGE ERROR
   ========================================= */
 
   if (scriptImage) {
@@ -1076,10 +1775,26 @@
           return;
         }
 
-        scriptImage.src =
+
+        const placeholder =
           createPlaceholderImage(
             currentScript.title
           );
+
+
+        /*
+         * Prevent infinite image-error loop.
+         */
+
+        if (
+          scriptImage.src !==
+          placeholder
+        ) {
+
+          scriptImage.src =
+            placeholder;
+
+        }
 
       }
     );
@@ -1088,248 +1803,7 @@
 
 
   /* =========================================
-     PREVENT EMPTY CODE DISPLAY
-  ========================================= */
-
-  function normalizeCode(code) {
-
-    if (
-      code === null ||
-      code === undefined
-    ) {
-
-      return '';
-
-    }
-
-    return String(code);
-
-  }
-
-
-  /* =========================================
-     UPDATE CODE DISPLAY
-  ========================================= */
-
-  function refreshCodeDisplay() {
-
-    if (!scriptCode) {
-      return;
-    }
-
-    const code =
-      normalizeCode(
-        currentScript?.code
-      );
-
-    scriptCode.textContent =
-      code || '// ไม่มี Script Code';
-
-  }
-
-
-  /* =========================================
-     DOCUMENT TITLE
-  ========================================= */
-
-  function updateDocumentTitle() {
-
-    if (!currentScript) {
-      document.title =
-        'Script | Script Hub';
-
-      return;
-    }
-
-    const title =
-      currentScript.title ||
-      'Script';
-
-    document.title =
-      `${title} | Script Hub`;
-
-  }
-
-
-  /* =========================================
-     META DESCRIPTION
-  ========================================= */
-
-  function updateMetaDescription() {
-
-    if (!currentScript) {
-      return;
-    }
-
-    const description =
-      currentScript.description ||
-      'รายละเอียด Script จาก Script Hub';
-
-
-    let meta =
-      document.querySelector(
-        'meta[name="description"]'
-      );
-
-
-    if (!meta) {
-
-      meta =
-        document.createElement('meta');
-
-      meta.name =
-        'description';
-
-      document.head.appendChild(meta);
-
-    }
-
-
-    meta.content =
-      description
-        .replace(/\s+/g, ' ')
-        .trim()
-        .substring(0, 160);
-
-  }
-
-
-  /* =========================================
-     OPEN SCRIPT
-  ========================================= */
-
-  function openScript() {
-
-    if (!currentScript) {
-      return;
-    }
-
-    refreshCodeDisplay();
-
-    updateDocumentTitle();
-
-    updateMetaDescription();
-
-  }
-
-
-  /* =========================================
-     MOBILE COPY FEEDBACK
-  ========================================= */
-
-  function prepareMobileCopy() {
-
-    if (!copyButton) {
-      return;
-    }
-
-
-    copyButton.setAttribute(
-      'aria-label',
-      'คัดลอก Script'
-    );
-
-  }
-
-
-  /* =========================================
-     ACCESSIBILITY
-  ========================================= */
-
-  function setupAccessibility() {
-
-    if (scriptImage) {
-
-      scriptImage.setAttribute(
-        'alt',
-        currentScript?.title
-          ? `รูปภาพ ${currentScript.title}`
-          : 'รูปภาพ Script'
-      );
-
-    }
-
-
-    if (scriptCode) {
-
-      scriptCode.setAttribute(
-        'aria-label',
-        'โค้ด Script'
-      );
-
-    }
-
-  }
-
-
-  /* =========================================
-     FINALIZE PAGE
-  ========================================= */
-
-  function finalizePage() {
-
-    if (!checkPageVisibility()) {
-      return;
-    }
-
-    openScript();
-
-    prepareMobileCopy();
-
-    setupAccessibility();
-
-  }
-
-
-  /* =========================================
-     WATCH LOAD
-  ========================================= */
-
-  const originalLoadScript =
-    loadScript;
-
-
-  loadScript = async function () {
-
-    await originalLoadScript();
-
-    if (
-      currentScript &&
-      currentScript.is_visible === true
-    ) {
-
-      finalizePage();
-
-    }
-
-  };
-
-
-  /* =========================================
-     RETRY FUNCTION
-  ========================================= */
-
-  function retryLoadScript() {
-
-    if (!loadingScreen) {
-      return;
-    }
-
-
-    errorBox.classList.add('hidden');
-
-    scriptContent.classList.add('hidden');
-
-    loadingScreen.classList.remove('hidden');
-
-
-    loadScript();
-
-  }
-
-
-  /* =========================================
-     ONLINE / OFFLINE NOTICE
+     ONLINE / OFFLINE
   ========================================= */
 
   window.addEventListener(
@@ -1359,21 +1833,199 @@
 
 
   /* =========================================
+     ACCESSIBILITY
+  ========================================= */
+
+  function setupAccessibility() {
+
+    if (scriptImage) {
+
+      scriptImage.setAttribute(
+        'alt',
+        currentScript?.title
+          ? `รูปภาพ ${currentScript.title}`
+          : 'รูปภาพ Script'
+      );
+
+    }
+
+
+    if (scriptCode) {
+
+      scriptCode.setAttribute(
+        'aria-label',
+        'โค้ด Script'
+      );
+
+    }
+
+
+    if (copyButton) {
+
+      copyButton.setAttribute(
+        'aria-label',
+        'คัดลอก Script'
+      );
+
+    }
+
+  }
+      /* =========================================
+     META DESCRIPTION
+  ========================================= */
+
+  function updateMetaDescription() {
+
+    if (!currentScript) {
+      return;
+    }
+
+
+    const description =
+      currentScript.description ||
+      'รายละเอียด Script จาก Script Hub';
+
+
+    let meta =
+      document.querySelector(
+        'meta[name="description"]'
+      );
+
+
+    if (!meta) {
+
+      meta =
+        document.createElement(
+          'meta'
+        );
+
+
+      meta.name =
+        'description';
+
+
+      document.head.appendChild(
+        meta
+      );
+
+    }
+
+
+    meta.content =
+      description
+        .replace(/\s+/g, ' ')
+        .trim()
+        .substring(
+          0,
+          160
+        );
+
+  }
+
+
+  /* =========================================
+     REFRESH CODE
+  ========================================= */
+
+  function refreshCodeDisplay() {
+
+    if (!scriptCode) {
+      return;
+    }
+
+
+    const code =
+      currentScript?.code || '';
+
+
+    scriptCode.textContent =
+      code ||
+      '// ไม่มี Script Code';
+
+  }
+
+
+  /* =========================================
+     FINALIZE PAGE
+  ========================================= */
+
+  function finalizePage() {
+
+    if (!currentScript) {
+      return;
+    }
+
+
+    refreshCodeDisplay();
+
+    updateMetaDescription();
+
+    setupAccessibility();
+
+    updateCopyAccess();
+
+  }
+
+
+  /* =========================================
+     RETRY
+  ========================================= */
+
+  function retryLoadScript() {
+
+    if (!loadingScreen) {
+      return;
+    }
+
+
+    errorBox.classList.add(
+      'hidden'
+    );
+
+
+    scriptContent.classList.add(
+      'hidden'
+    );
+
+
+    loadingScreen.classList.remove(
+      'hidden'
+    );
+
+
+    loadScript();
+
+  }
+
+
+  /* =========================================
      EXPOSE FUNCTIONS
   ========================================= */
 
   window.copyScript =
     copyScript;
 
+
+  window.signInWithGoogle =
+    signInWithGoogle;
+
+
   window.retryLoadScript =
     retryLoadScript;
 
 
   /* =========================================
-     PAGE READY
+     INITIAL ACCESSIBILITY
   ========================================= */
 
-  prepareMobileCopy();
+  if (copyButton) {
+
+    copyButton.setAttribute(
+      'aria-label',
+      'คัดลอก Script'
+    );
+
+  }
 
 </script>
 <!-- =========================================
@@ -1382,13 +2034,64 @@
 
 <footer class="max-w-5xl mx-auto px-4 pb-8 pt-4">
 
-  <div class="text-center text-sm text-slate-400">
+  <div
+    class="bg-white rounded-3xl
+    border border-slate-200
+    soft-shadow p-6 text-center"
+  >
 
-    <p>
-      © <span id="footerYear"></span> Script Hub
+    <div
+      class="flex flex-wrap
+      items-center justify-center
+      gap-x-5 gap-y-2 text-sm"
+    >
+
+      <a
+        href="../"
+        class="text-slate-500 hover:text-blue-600
+        transition underline underline-offset-4"
+      >
+        หน้าหลัก
+      </a>
+
+      <span class="text-slate-300">
+        •
+      </span>
+
+      <button
+        type="button"
+        onclick="openLegalPage('privacy')"
+        class="text-slate-500 hover:text-blue-600
+        transition underline underline-offset-4"
+      >
+        นโยบายความเป็นส่วนตัว
+      </button>
+
+      <span class="text-slate-300">
+        •
+      </span>
+
+      <button
+        type="button"
+        onclick="openLegalPage('terms')"
+        class="text-slate-500 hover:text-blue-600
+        transition underline underline-offset-4"
+      >
+        ข้อกำหนดการให้บริการ
+      </button>
+
+    </div>
+
+
+    <p class="text-sm text-slate-400 mt-4">
+      ©
+      <span id="footerYear"></span>
+      <span id="footerSiteName">
+        Script Hub
+      </span>
     </p>
 
-    <p class="mt-1">
+    <p class="text-xs text-slate-400 mt-1">
       ศูนย์รวมสคริปต์พร้อมใช้งาน
     </p>
 
@@ -1397,13 +2100,296 @@
 </footer>
 
 
+<!-- =========================================
+     LEGAL MODAL
+========================================= -->
+
+<div
+  id="legalModal"
+  class="fixed inset-0 z-[60]
+  hidden items-center justify-center
+  bg-slate-950/50 backdrop-blur-sm p-4"
+>
+
+  <div
+    class="bg-white w-full max-w-2xl
+    max-h-[85vh] rounded-3xl
+    soft-shadow overflow-hidden
+    flex flex-col"
+  >
+
+    <div
+      class="flex items-center
+      justify-between gap-4
+      p-5 border-b border-slate-200"
+    >
+
+      <h2
+        id="legalTitle"
+        class="text-xl font-bold
+        text-slate-900"
+      >
+        -
+      </h2>
+
+      <button
+        type="button"
+        onclick="closeLegalPage()"
+        class="w-10 h-10 rounded-xl
+        bg-slate-100 hover:bg-slate-200
+        text-slate-600 transition
+        flex items-center justify-center"
+        aria-label="ปิด"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+    </div>
+
+
+    <div
+      id="legalContent"
+      class="p-5 md:p-7 overflow-y-auto
+      text-slate-600 leading-8
+      whitespace-pre-wrap"
+    >
+      กำลังโหลด...
+    </div>
+
+  </div>
+
+</div>
+
+
 <script>
+  /* =========================================
+     LEGAL STATE
+  ========================================= */
+
+  const legalPages = {
+    terms: null,
+    privacy: null
+  };
+
+
+  const legalModal =
+    document.getElementById(
+      'legalModal'
+    );
+
+
+  const legalTitle =
+    document.getElementById(
+      'legalTitle'
+    );
+
+
+  const legalContent =
+    document.getElementById(
+      'legalContent'
+    );
+
+
+  /* =========================================
+     LOAD LEGAL PAGES
+  ========================================= */
+
+  async function loadLegalPages() {
+
+    try {
+
+      const { data, error } =
+        await supabaseClient
+          .from('legal_pages')
+          .select(
+            'id,title,content,updated_at'
+          );
+
+
+      if (error) {
+
+        console.error(
+          'Legal pages error:',
+          error
+        );
+
+        return;
+
+      }
+
+
+      (data || []).forEach(
+        (page) => {
+
+          if (
+            page.id === 'terms' ||
+            page.id === 'privacy'
+          ) {
+
+            legalPages[
+              page.id
+            ] = page;
+
+          }
+
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Legal load error:',
+        error
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     OPEN LEGAL
+  ========================================= */
+
+  async function openLegalPage(id) {
+
+    if (
+      id !== 'terms' &&
+      id !== 'privacy'
+    ) {
+
+      return;
+
+    }
+
+
+    legalModal.classList.remove(
+      'hidden'
+    );
+
+
+    legalModal.classList.add(
+      'flex'
+    );
+
+
+    legalTitle.textContent =
+      id === 'terms'
+        ? 'ข้อกำหนดการให้บริการ'
+        : 'นโยบายความเป็นส่วนตัว';
+
+
+    legalContent.textContent =
+      'กำลังโหลด...';
+
+
+    if (!legalPages[id]) {
+
+      await loadLegalPages();
+
+    }
+
+
+    const page =
+      legalPages[id];
+
+
+    if (!page) {
+
+      legalContent.textContent =
+        'ยังไม่มีข้อมูลหน้านี้';
+
+      return;
+
+    }
+
+
+    legalTitle.textContent =
+      page.title ||
+      legalTitle.textContent;
+
+
+    legalContent.textContent =
+      page.content ||
+      'ยังไม่มีข้อมูลหน้านี้';
+
+  }
+
+
+  /* =========================================
+     CLOSE LEGAL
+  ========================================= */
+
+  function closeLegalPage() {
+
+    legalModal.classList.add(
+      'hidden'
+    );
+
+    legalModal.classList.remove(
+      'flex'
+    );
+
+  }
+
+
+  /* =========================================
+     LEGAL ESCAPE
+  ========================================= */
+
+  document.addEventListener(
+    'keydown',
+    (event) => {
+
+      if (
+        event.key === 'Escape' &&
+        legalModal &&
+        !legalModal.classList.contains(
+          'hidden'
+        )
+      ) {
+
+        closeLegalPage();
+
+      }
+
+    }
+  );
+
+
+  /* =========================================
+     LEGAL BACKDROP
+  ========================================= */
+
+  if (legalModal) {
+
+    legalModal.addEventListener(
+      'click',
+      (event) => {
+
+        if (
+          event.target === legalModal
+        ) {
+
+          closeLegalPage();
+
+        }
+
+      }
+    );
+
+  }
+
+
   /* =========================================
      FOOTER YEAR
   ========================================= */
 
   const footerYear =
-    document.getElementById('footerYear');
+    document.getElementById(
+      'footerYear'
+    );
+
 
   if (footerYear) {
 
@@ -1411,6 +2397,79 @@
       new Date().getFullYear();
 
   }
+    /* =========================================
+     FOOTER SITE NAME
+  ========================================= */
+
+  const footerSiteName =
+    document.getElementById(
+      'footerSiteName'
+    );
+
+
+  async function updateFooterSiteName() {
+
+    try {
+
+      const { data, error } =
+        await supabaseClient
+          .from('site_settings')
+          .select('site_name')
+          .eq('id', true)
+          .maybeSingle();
+
+
+      if (
+        error ||
+        !data ||
+        !data.site_name
+      ) {
+
+        return;
+
+      }
+
+
+      if (footerSiteName) {
+
+        footerSiteName.textContent =
+          data.site_name;
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        'Footer site name error:',
+        error
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     LOAD LEGAL + FOOTER
+  ========================================= */
+
+  loadLegalPages();
+
+  updateFooterSiteName();
+
+
+  /* =========================================
+     FINAL PAGE SETUP
+  ========================================= */
+
+  setTimeout(
+    () => {
+
+      finalizePage();
+
+    },
+    100
+  );
 
 
   /* =========================================
@@ -1423,23 +2482,12 @@
 
       console.error(
         'Page error:',
-        event.error || event.message
+        event.error ||
+        event.message
       );
 
     }
   );
-
-
-  /* =========================================
-     SUPABASE SESSION SAFETY
-  ========================================= */
-
-  /*
-   * This page is public.
-   *
-   * No login is required.
-   * Supabase only uses the public/publishable key.
-   */
 
 </script>
 
