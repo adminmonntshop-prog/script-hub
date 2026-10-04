@@ -1,0 +1,2802 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard | Script Hub</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+*{
+    font-family:'Prompt',sans-serif;
+}
+
+body{
+    background:#f8fafc;
+}
+
+.sidebar-gradient{
+    background:linear-gradient(180deg,#1d4ed8 0%,#312e81 100%);
+}
+
+.hero-gradient{
+    background:linear-gradient(135deg,#2563eb 0%,#4f46e5 55%,#7c3aed 100%);
+}
+
+.card{
+    background:#fff;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(15,23,42,.07);
+}
+
+.nav-item{
+    transition:.2s;
+}
+
+.nav-item:hover,
+.nav-item.active{
+    background:rgba(255,255,255,.16);
+}
+
+.modal-backdrop{
+    background:rgba(15,23,42,.65);
+    backdrop-filter:blur(5px);
+}
+
+.hidden-page{
+    display:none;
+}
+
+.loading-spinner{
+    width:28px;
+    height:28px;
+    border:3px solid #dbeafe;
+    border-top-color:#2563eb;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+textarea{
+    resize:vertical;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loadingScreen"
+     class="fixed inset-0 z-[200] bg-white flex items-center justify-center">
+    <div class="text-center">
+        <div class="loading-spinner mx-auto mb-4"></div>
+        <p class="text-slate-600">
+            กำลังโหลดระบบ Admin...
+        </p>
+    </div>
+</div>
+
+<div id="loginScreen"
+     class="hidden min-h-screen hero-gradient
+            flex items-center justify-center p-5">
+
+    <div class="w-full max-w-md bg-white rounded-[32px]
+                shadow-2xl p-7">
+
+        <div class="text-center mb-7">
+
+            <div class="w-20 h-20 mx-auto rounded-3xl
+                        hero-gradient flex items-center
+                        justify-center text-white text-3xl
+                        shadow-lg">
+                <i class="fa-solid fa-code"></i>
+            </div>
+
+            <h1 class="text-2xl font-bold text-slate-800 mt-5">
+                Script Hub
+            </h1>
+
+            <p class="text-slate-500 mt-1">
+                ระบบจัดการสำหรับ Admin
+            </p>
+
+        </div>
+
+        <div id="loginError"
+             class="hidden mb-4 rounded-2xl bg-red-50
+                    border border-red-200 text-red-600
+                    p-4 text-sm">
+        </div>
+
+        <button id="googleLoginBtn"
+                type="button"
+                class="w-full py-4 rounded-2xl border
+                       border-slate-200 bg-white
+                       hover:bg-slate-50 transition
+                       flex items-center justify-center gap-3
+                       font-medium text-slate-700 shadow-sm">
+
+            <span class="w-8 h-8 rounded-full
+                         flex items-center justify-center">
+                <i class="fa-brands fa-google text-red-500"></i>
+            </span>
+
+            เข้าสู่ระบบด้วย Google
+
+        </button>
+
+        <p class="text-center text-xs text-slate-400 mt-6">
+            เฉพาะบัญชีที่ได้รับอนุญาตเท่านั้น
+        </p>
+
+    </div>
+</div>
+
+<div id="app" class="hidden min-h-screen">
+
+<aside id="sidebar"
+       class="fixed inset-y-0 left-0 z-50 w-72
+              sidebar-gradient text-white
+              transform -translate-x-full
+              lg:translate-x-0
+              transition-transform duration-300">
+
+    <div class="p-5 h-full relative">
+
+        <div class="flex items-center gap-3 mb-8">
+
+            <div class="w-12 h-12 rounded-2xl bg-white/15
+                        flex items-center justify-center text-xl">
+                <i class="fa-solid fa-code"></i>
+            </div>
+
+            <div>
+                <div class="font-bold text-lg">
+                    Script Hub
+                </div>
+
+                <div class="text-xs text-blue-200">
+                    Admin Panel
+                </div>
+            </div>
+
+        </div>
+
+        <nav class="space-y-2">
+
+            <button data-page="dashboard"
+                    class="nav-item active w-full text-left
+                           px-4 py-3 rounded-2xl
+                           flex items-center gap-3">
+                <i class="fa-solid fa-chart-line w-5"></i>
+                Dashboard
+            </button>
+
+            <button data-page="scripts"
+                    class="nav-item w-full text-left
+                           px-4 py-3 rounded-2xl
+                           flex items-center gap-3">
+                <i class="fa-solid fa-code w-5"></i>
+                จัดการ Scripts
+            </button>
+
+            <button data-page="categories"
+                    class="nav-item w-full text-left
+                           px-4 py-3 rounded-2xl
+                           flex items-center gap-3">
+                <i class="fa-solid fa-layer-group w-5"></i>
+                จัดการหมวดหมู่
+            </button>
+
+            <button data-page="settings"
+                    class="nav-item w-full text-left
+                           px-4 py-3 rounded-2xl
+                           flex items-center gap-3">
+                <i class="fa-solid fa-gear w-5"></i>
+                ตั้งค่าเว็บไซต์
+            </button>
+
+        </nav>
+
+        <div class="absolute bottom-5 left-5 right-5">
+
+            <button id="logoutBtn"
+                    type="button"
+                    class="w-full px-4 py-3 rounded-2xl
+                           bg-white/10 hover:bg-white/20
+                           transition flex items-center gap-3">
+                <i class="fa-solid fa-right-from-bracket w-5"></i>
+                ออกจากระบบ
+            </button>
+
+        </div>
+
+    </div>
+</aside>
+
+<div id="sidebarOverlay"
+     class="hidden fixed inset-0 z-40
+            bg-black/40 lg:hidden">
+</div>
+
+<main class="lg:ml-72 min-h-screen">
+
+<header class="sticky top-0 z-30 bg-white/90
+               backdrop-blur border-b border-slate-200">
+
+    <div class="h-16 px-4 md:px-6
+                flex items-center justify-between">
+
+        <div class="flex items-center gap-3">
+
+            <button id="menuBtn"
+                    type="button"
+                    class="lg:hidden w-10 h-10
+                           rounded-xl bg-slate-100
+                           text-slate-700">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div>
+                <div class="font-bold text-slate-800">
+                    Admin Dashboard
+                </div>
+
+                <div class="text-xs text-slate-400">
+                    Script Hub Management
+                </div>
+            </div>
+
+        </div>
+
+        <span class="px-3 py-2 rounded-xl
+                     bg-emerald-50 text-emerald-600
+                     text-xs font-medium">
+            <i class="fa-solid fa-circle text-[7px] mr-2"></i>
+            Admin
+        </span>
+
+    </div>
+</header>
+
+<div class="p-4 md:p-6">
+<section id="page-dashboard">
+
+<div class="mb-6">
+    <h1 class="text-2xl md:text-3xl font-bold text-slate-800">
+        Dashboard
+    </h1>
+
+    <p class="text-slate-500 mt-1">
+        ภาพรวมระบบ Script Hub
+    </p>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
+    <div class="card p-5">
+        <p class="text-sm text-slate-500">
+            Scripts ทั้งหมด
+        </p>
+
+        <div class="flex items-center justify-between mt-2">
+            <p id="totalScripts"
+               class="text-3xl font-bold text-slate-800">
+                0
+            </p>
+
+            <div class="w-12 h-12 rounded-2xl bg-blue-50
+                        text-blue-600 flex items-center
+                        justify-center">
+                <i class="fa-solid fa-code"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5">
+        <p class="text-sm text-slate-500">
+            กำลังออนไลน์
+        </p>
+
+        <div class="flex items-center justify-between mt-2">
+            <p id="onlineScripts"
+               class="text-3xl font-bold text-emerald-600">
+                0
+            </p>
+
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50
+                        text-emerald-600 flex items-center
+                        justify-center">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5">
+        <p class="text-sm text-slate-500">
+            หมวดหมู่
+        </p>
+
+        <div class="flex items-center justify-between mt-2">
+            <p id="totalCategories"
+               class="text-3xl font-bold text-violet-600">
+                0
+            </p>
+
+            <div class="w-12 h-12 rounded-2xl bg-violet-50
+                        text-violet-600 flex items-center
+                        justify-center">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5">
+        <p class="text-sm text-slate-500">
+            แสดงบนเว็บ
+        </p>
+
+        <div class="flex items-center justify-between mt-2">
+            <p id="visibleScripts"
+               class="text-3xl font-bold text-indigo-600">
+                0
+            </p>
+
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50
+                        text-indigo-600 flex items-center
+                        justify-center">
+                <i class="fa-solid fa-eye"></i>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+
+<div class="lg:col-span-2 card p-5">
+
+<div class="flex items-center justify-between mb-5">
+
+    <div>
+        <h2 class="font-bold text-lg text-slate-800">
+            Scripts ล่าสุด
+        </h2>
+
+        <p class="text-sm text-slate-400">
+            รายการ Script ที่เพิ่มล่าสุด
+        </p>
+    </div>
+
+    <button id="addScriptFromDashboard"
+            type="button"
+            class="px-4 py-2.5 rounded-xl
+                   hero-gradient text-white
+                   text-sm font-medium shadow-lg">
+        <i class="fa-solid fa-plus mr-1"></i>
+        เพิ่ม Script
+    </button>
+
+</div>
+
+<div id="dashboardScriptsList"
+     class="space-y-3">
+</div>
+
+</div>
+
+<div class="card p-5">
+
+<h2 class="font-bold text-lg text-slate-800">
+    สถานะระบบ
+</h2>
+
+<div class="mt-5 space-y-4">
+
+<div class="flex items-center justify-between">
+    <span class="text-sm text-slate-500">
+        Database
+    </span>
+
+    <span class="px-3 py-1 rounded-full
+                 bg-emerald-50 text-emerald-600 text-xs">
+        Connected
+    </span>
+</div>
+
+<div class="flex items-center justify-between">
+    <span class="text-sm text-slate-500">
+        Authentication
+    </span>
+
+    <span class="px-3 py-1 rounded-full
+                 bg-emerald-50 text-emerald-600 text-xs">
+        Active
+    </span>
+</div>
+
+<div class="flex items-center justify-between">
+    <span class="text-sm text-slate-500">
+        Storage
+    </span>
+
+    <span class="px-3 py-1 rounded-full
+                 bg-emerald-50 text-emerald-600 text-xs">
+        Ready
+    </span>
+</div>
+
+</div>
+</div>
+
+</div>
+
+</section>
+<section id="page-scripts" class="hidden-page">
+
+<div class="mb-6 flex flex-col md:flex-row
+            md:items-end md:justify-between gap-4">
+
+<div>
+    <h1 class="text-2xl md:text-3xl font-bold text-slate-800">
+        จัดการ Scripts
+    </h1>
+
+    <p class="text-slate-500 mt-1">
+        เพิ่ม แก้ไข ลบ และจัดการ Scripts บนเว็บไซต์
+    </p>
+</div>
+
+<button id="addScriptButton"
+        type="button"
+        class="px-5 py-3 rounded-2xl
+               hero-gradient text-white
+               font-medium shadow-lg">
+    <i class="fa-solid fa-plus mr-2"></i>
+    เพิ่ม Script
+</button>
+
+</div>
+
+<div class="card p-4 mb-5">
+
+<div class="relative">
+
+<i class="fa-solid fa-magnifying-glass
+          absolute left-4 top-1/2
+          -translate-y-1/2 text-slate-400"></i>
+
+<input id="scriptSearch"
+       type="text"
+       placeholder="ค้นหาชื่อ Script, คำอธิบาย หรือผู้แจก..."
+       class="w-full pl-11 pr-4 py-3.5
+              rounded-2xl bg-slate-50
+              border border-slate-200
+              outline-none focus:ring-2
+              focus:ring-blue-500">
+
+</div>
+</div>
+
+<div id="scriptsList"
+     class="grid md:grid-cols-2
+            xl:grid-cols-3 gap-5">
+</div>
+
+</section>
+
+
+<section id="page-categories"
+         class="hidden-page">
+
+<div class="mb-6">
+
+<h1 class="text-2xl md:text-3xl
+           font-bold text-slate-800">
+    จัดการหมวดหมู่
+</h1>
+
+<p class="text-slate-500 mt-1">
+    สร้างและลบหมวดหมู่สำหรับ Scripts
+</p>
+
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+
+<div class="card p-5">
+
+<h2 class="font-bold text-lg text-slate-800 mb-1">
+    เพิ่มหมวดหมู่
+</h2>
+
+<p class="text-sm text-slate-400 mb-5">
+    สร้างหมวดหมู่ใหม่สำหรับจัดกลุ่ม Script
+</p>
+
+<form id="addCategoryForm">
+
+<input id="newCategoryName"
+       type="text"
+       required
+       maxlength="80"
+       placeholder="เช่น Roblox, Minecraft"
+       class="w-full px-4 py-3 rounded-2xl
+              bg-slate-50 border border-slate-200
+              outline-none focus:ring-2
+              focus:ring-blue-500 mb-3">
+
+<button id="addCategoryButton"
+        type="submit"
+        class="w-full py-3 rounded-2xl
+               hero-gradient text-white
+               font-medium">
+    <i class="fa-solid fa-plus mr-2"></i>
+    เพิ่มหมวดหมู่
+</button>
+
+</form>
+</div>
+
+<div class="lg:col-span-2 card p-5">
+
+<div class="flex items-center justify-between mb-5">
+
+<div>
+<h2 class="font-bold text-lg text-slate-800">
+    หมวดหมู่ทั้งหมด
+</h2>
+
+<p id="categoryCountText"
+   class="text-sm text-slate-400">
+    0 หมวดหมู่
+</p>
+</div>
+
+</div>
+
+<div id="categoriesList"
+     class="grid sm:grid-cols-2 gap-3">
+</div>
+
+</div>
+
+</div>
+
+</section>
+<section id="page-settings"
+         class="hidden-page">
+
+<div class="mb-6">
+
+<h1 class="text-2xl md:text-3xl
+           font-bold text-slate-800">
+    ตั้งค่าเว็บไซต์
+</h1>
+
+<p class="text-slate-500 mt-1">
+    เปลี่ยนชื่อ โลโก้ Banner และข้อความหน้าแรก
+</p>
+
+</div>
+
+<form id="settingsForm"
+      class="card p-5 md:p-7">
+
+<div class="grid lg:grid-cols-2 gap-6">
+
+<div class="lg:col-span-2">
+
+<label class="block text-sm font-medium
+              text-slate-700 mb-2">
+    ชื่อเว็บไซต์
+</label>
+
+<input id="siteName"
+       type="text"
+       maxlength="100"
+       class="w-full px-4 py-3 rounded-2xl
+              bg-slate-50 border border-slate-200
+              outline-none focus:ring-2
+              focus:ring-blue-500">
+
+</div>
+
+<div class="lg:col-span-2">
+
+<label class="block text-sm font-medium
+              text-slate-700 mb-2">
+    หัวข้อหน้าแรก
+</label>
+
+<input id="heroTitle"
+       type="text"
+       maxlength="200"
+       class="w-full px-4 py-3 rounded-2xl
+              bg-slate-50 border border-slate-200
+              outline-none focus:ring-2
+              focus:ring-blue-500">
+
+</div>
+
+<div class="lg:col-span-2">
+
+<label class="block text-sm font-medium
+              text-slate-700 mb-2">
+    คำอธิบายหน้าแรก
+</label>
+
+<textarea id="heroDescription"
+          rows="4"
+          maxlength="500"
+          class="w-full px-4 py-3 rounded-2xl
+                 bg-slate-50 border border-slate-200
+                 outline-none focus:ring-2
+                 focus:ring-blue-500"></textarea>
+
+</div>
+
+<div>
+
+<label class="block text-sm font-medium
+              text-slate-700 mb-2">
+    Logo
+</label>
+
+<input id="logoFile"
+       type="file"
+       accept="image/*"
+       class="w-full text-sm">
+
+<div class="mt-4 h-40 rounded-2xl
+            bg-slate-50 border border-slate-200
+            flex items-center justify-center
+            overflow-hidden">
+
+<img id="logoPreview"
+     src=""
+     alt="Logo Preview"
+     class="max-h-full max-w-full
+            object-contain hidden">
+
+<span id="logoPreviewPlaceholder"
+      class="text-sm text-slate-400">
+    ยังไม่มี Logo
+</span>
+
+</div>
+
+</div>
+
+<div>
+
+<label class="block text-sm font-medium
+              text-slate-700 mb-2">
+    Banner
+</label>
+
+<input id="bannerFile"
+       type="file"
+       accept="image/*"
+       class="w-full text-sm">
+
+<div class="mt-4 h-40 rounded-2xl
+            bg-slate-50 border border-slate-200
+            flex items-center justify-center
+            overflow-hidden">
+
+<img id="bannerPreview"
+     src=""
+     alt="Banner Preview"
+     class="max-h-full max-w-full
+            object-contain hidden">
+
+<span id="bannerPreviewPlaceholder"
+      class="text-sm text-slate-400">
+    ยังไม่มี Banner
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-7 pt-5 border-t
+            border-slate-200 flex justify-end">
+
+<button id="saveSettingsButton"
+        type="submit"
+        class="px-6 py-3 rounded-2xl
+               hero-gradient text-white
+               font-medium shadow-lg">
+
+    <i class="fa-solid fa-floppy-disk mr-2"></i>
+    บันทึกการตั้งค่า
+
+</button>
+
+</div>
+
+</form>
+
+</section>
+<!-- SCRIPT MODAL -->
+
+<div id="scriptModal"
+     class="hidden fixed inset-0 z-[100]
+            modal-backdrop items-center
+            justify-center p-4">
+
+    <div class="bg-white w-full max-w-3xl
+                max-h-[92vh] overflow-y-auto
+                rounded-[28px] shadow-2xl">
+
+        <div class="p-5 md:p-6 border-b
+                    border-slate-200 flex
+                    items-center justify-between">
+
+            <div>
+                <h2 id="scriptModalTitle"
+                    class="text-xl font-bold text-slate-800">
+                    เพิ่ม Script
+                </h2>
+
+                <p class="text-sm text-slate-400 mt-1">
+                    กรอกข้อมูล Script ให้ครบถ้วน
+                </p>
+            </div>
+
+            <button id="closeScriptModalButton"
+                    type="button"
+                    class="w-10 h-10 rounded-xl
+                           bg-slate-100 text-slate-500
+                           hover:bg-slate-200">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <form id="scriptForm"
+              class="p-5 md:p-6 space-y-5">
+
+            <div>
+
+                <label class="block text-sm font-medium
+                              text-slate-700 mb-2">
+                    ชื่อ Script
+                </label>
+
+                <input id="scriptTitle"
+                       type="text"
+                       required
+                       maxlength="150"
+                       placeholder="ชื่อ Script"
+                       class="w-full px-4 py-3
+                              rounded-2xl bg-slate-50
+                              border border-slate-200
+                              outline-none focus:ring-2
+                              focus:ring-blue-500">
+
+            </div>
+
+            <div>
+
+                <label class="block text-sm font-medium
+                              text-slate-700 mb-2">
+                    คำอธิบาย
+                </label>
+
+                <textarea id="scriptDescription"
+                          rows="4"
+                          maxlength="1000"
+                          placeholder="รายละเอียดเกี่ยวกับ Script..."
+                          class="w-full px-4 py-3
+                                 rounded-2xl bg-slate-50
+                                 border border-slate-200
+                                 outline-none focus:ring-2
+                                 focus:ring-blue-500"></textarea>
+
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+
+                <div>
+
+                    <label class="block text-sm font-medium
+                                  text-slate-700 mb-2">
+                        ผู้แจก / Distributor
+                    </label>
+
+                    <input id="scriptDistributor"
+                           type="text"
+                           maxlength="150"
+                           placeholder="เช่น MonntShop"
+                           class="w-full px-4 py-3
+                                  rounded-2xl bg-slate-50
+                                  border border-slate-200
+                                  outline-none focus:ring-2
+                                  focus:ring-blue-500">
+
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium
+                                  text-slate-700 mb-2">
+                        หมวดหมู่
+                    </label>
+
+                    <select id="scriptCategory"
+                            class="w-full px-4 py-3
+                                   rounded-2xl bg-slate-50
+                                   border border-slate-200
+                                   outline-none focus:ring-2
+                                   focus:ring-blue-500">
+
+                        <option value="">
+                            ไม่ระบุหมวดหมู่
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+
+                <div>
+
+                    <label class="block text-sm font-medium
+                                  text-slate-700 mb-2">
+                        สถานะ
+                    </label>
+
+                    <select id="scriptStatus"
+                            class="w-full px-4 py-3
+                                   rounded-2xl bg-slate-50
+                                   border border-slate-200
+                                   outline-none focus:ring-2
+                                   focus:ring-blue-500">
+
+                        <option value="online">
+                            🟢 Online
+                        </option>
+
+                        <option value="maintenance">
+                            🟡 Maintenance
+                        </option>
+
+                        <option value="offline">
+                            🔴 Offline
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium
+                                  text-slate-700 mb-2">
+                        การแสดงผล
+                    </label>
+
+                    <label class="flex items-center gap-3
+                                  h-[50px] px-4 rounded-2xl
+                                  bg-slate-50 border
+                                  border-slate-200
+                                  cursor-pointer">
+
+                        <input id="scriptVisible"
+                               type="checkbox"
+                               class="w-5 h-5 rounded
+                                      text-blue-600">
+
+                        <span class="text-sm text-slate-700">
+                            แสดง Script บนเว็บไซต์
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+            <div>
+
+                <label class="block text-sm font-medium
+                              text-slate-700 mb-2">
+                    รูปภาพ Script
+                </label>
+
+                <input id="scriptImageFile"
+                       type="file"
+                       accept="image/*"
+                       class="w-full text-sm">
+
+                <div class="mt-4 h-44 rounded-2xl
+                            bg-slate-50 border
+                            border-slate-200
+                            flex items-center
+                            justify-center
+                            overflow-hidden">
+
+                    <img id="scriptImagePreview"
+                         src=""
+                         alt="Script Image Preview"
+                         class="max-h-full max-w-full
+                                object-contain hidden">
+
+                    <span id="scriptImagePreviewPlaceholder"
+                          class="text-sm text-slate-400">
+                        ยังไม่ได้เลือกรูปภาพ
+                    </span>
+
+                </div>
+
+                <p class="text-xs text-slate-400 mt-2">
+                    รองรับรูปภาพ เช่น PNG, JPG, WEBP
+                </p>
+
+            </div>
+
+            <div>
+
+                <label class="block text-sm font-medium
+                              text-slate-700 mb-2">
+                    Script Code
+                </label>
+
+                <textarea id="scriptCode"
+                          rows="12"
+                          required
+                          placeholder="วางโค้ด Script ที่นี่..."
+                          class="w-full px-4 py-3
+                                 rounded-2xl bg-slate-900
+                                 text-green-300 font-mono
+                                 text-sm outline-none
+                                 focus:ring-2
+                                 focus:ring-blue-500"></textarea>
+
+                <p class="text-xs text-slate-400 mt-2">
+                    โค้ดจะถูกเก็บไว้ในฐานข้อมูล Supabase
+                </p>
+
+            </div>
+
+            <div class="flex flex-col-reverse
+                        sm:flex-row gap-3
+                        justify-end pt-3">
+
+                <button id="cancelScriptButton"
+                        type="button"
+                        class="px-5 py-3 rounded-2xl
+                               bg-slate-100
+                               text-slate-700
+                               hover:bg-slate-200">
+                    ยกเลิก
+                </button>
+
+                <button id="saveScriptButton"
+                        type="submit"
+                        class="px-6 py-3 rounded-2xl
+                               hero-gradient text-white
+                               font-medium shadow-lg">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i>
+                    บันทึก Script
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<!-- DELETE MODAL -->
+
+<div id="deleteModal"
+     class="hidden fixed inset-0 z-[110]
+            modal-backdrop items-center
+            justify-center p-4">
+
+    <div class="bg-white w-full max-w-md
+                rounded-[28px] shadow-2xl p-6">
+
+        <div class="w-14 h-14 rounded-2xl
+                    bg-red-50 text-red-600
+                    flex items-center justify-center
+                    text-xl mb-5">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+
+        <h2 class="text-xl font-bold text-slate-800">
+            ลบ Script?
+        </h2>
+
+        <p class="text-slate-500 mt-2">
+            คุณกำลังจะลบ
+            <span id="deleteScriptTitle"
+                  class="font-medium text-slate-800">
+            </span>
+        </p>
+
+        <p class="text-sm text-red-500 mt-3">
+            การลบนี้ไม่สามารถย้อนกลับได้
+        </p>
+
+        <div class="flex gap-3 justify-end mt-7">
+
+            <button id="cancelDeleteButton"
+                    type="button"
+                    class="px-5 py-3 rounded-2xl
+                           bg-slate-100 text-slate-700">
+                ยกเลิก
+            </button>
+
+            <button id="confirmDeleteButton"
+                    type="button"
+                    class="px-5 py-3 rounded-2xl
+                           bg-red-600 text-white
+                           hover:bg-red-700">
+                <i class="fa-solid fa-trash mr-2"></i>
+                ลบ Script
+            </button>
+
+        </div>
+
+    </div>
+</div>
+<!-- TOAST -->
+
+<div id="toastContainer"
+     class="fixed right-4 bottom-4 z-[300]
+            space-y-3 w-[calc(100%-2rem)]
+            max-w-sm">
+</div>
+
+</div>
+</main>
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://ofwlofzqxfdqctmogntu.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld";
+
+const ADMIN_EMAIL =
+"admin.monntshop@gmail.com";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+let currentUser = null;
+let scripts = [];
+let categories = [];
+let siteSettings = null;
+let editingScriptId = null;
+let deletingScriptId = null;
+let currentPage = "dashboard";
+
+function $(id){
+    return document.getElementById(id);
+}
+
+function showLoginScreen(){
+    $("loadingScreen").classList.add("hidden");
+    $("app").classList.add("hidden");
+    $("loginScreen").classList.remove("hidden");
+}
+
+function showApp(){
+    $("loadingScreen").classList.add("hidden");
+    $("loginScreen").classList.add("hidden");
+    $("app").classList.remove("hidden");
+}
+
+function showLoginError(message){
+    $("loginError").textContent = message;
+    $("loginError").classList.remove("hidden");
+}
+
+function hideLoginError(){
+    $("loginError").textContent = "";
+    $("loginError").classList.add("hidden");
+}
+
+function setLoading(button, loading, text){
+    if(!button) return;
+
+    if(loading){
+        button.disabled = true;
+        button.dataset.oldText = button.innerHTML;
+        button.innerHTML =
+            `<span class="inline-flex items-center gap-2">
+                <span class="loading-spinner"
+                      style="width:20px;height:20px;border-width:2px;"></span>
+                ${text || "กำลังทำงาน..."}
+             </span>`;
+    }else{
+        button.disabled = false;
+
+        if(button.dataset.oldText){
+            button.innerHTML = button.dataset.oldText;
+        }
+    }
+}
+
+function escapeHtml(value){
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function formatDate(value){
+    if(!value) return "-";
+
+    return new Date(value).toLocaleDateString("th-TH",{
+        year:"numeric",
+        month:"short",
+        day:"numeric"
+    });
+}
+
+function statusInfo(status){
+
+    if(status === "maintenance"){
+        return {
+            text:"Maintenance",
+            className:"bg-yellow-50 text-yellow-600",
+            icon:"fa-wrench"
+        };
+    }
+
+    if(status === "offline"){
+        return {
+            text:"Offline",
+            className:"bg-red-50 text-red-600",
+            icon:"fa-circle-xmark"
+        };
+    }
+
+    return {
+        text:"Online",
+        className:"bg-emerald-50 text-emerald-600",
+        icon:"fa-circle-check"
+    };
+}
+
+function statusBadge(status){
+
+    const info = statusInfo(status);
+
+    return `
+        <span class="inline-flex items-center gap-1
+                     px-2.5 py-1 rounded-full
+                     text-xs font-medium ${info.className}">
+            <i class="fa-solid ${info.icon}"></i>
+            ${info.text}
+        </span>
+    `;
+}
+
+function visibilityBadge(visible){
+
+    if(visible){
+        return `
+            <span class="px-2.5 py-1 rounded-full
+                         bg-blue-50 text-blue-600
+                         text-xs font-medium">
+                <i class="fa-solid fa-eye mr-1"></i>
+                แสดง
+            </span>
+        `;
+    }
+
+    return `
+        <span class="px-2.5 py-1 rounded-full
+                     bg-slate-100 text-slate-500
+                     text-xs font-medium">
+            <i class="fa-solid fa-eye-slash mr-1"></i>
+            ซ่อน
+        </span>
+    `;
+}
+function showToast(message, type="success"){
+
+    const container = $("toastContainer");
+
+    const isError = type === "error";
+
+    const toast = document.createElement("div");
+
+    toast.className =
+        `rounded-2xl px-4 py-3 shadow-xl
+         text-sm flex items-start gap-3
+         ${isError
+            ? "bg-red-600 text-white"
+            : "bg-slate-900 text-white"}`;
+
+    toast.innerHTML = `
+        <i class="fa-solid ${
+            isError
+            ? "fa-circle-exclamation"
+            : "fa-circle-check"
+        } mt-0.5"></i>
+
+        <span class="flex-1">
+            ${escapeHtml(message)}
+        </span>
+
+        <button type="button"
+                class="opacity-70 hover:opacity-100">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    `;
+
+    toast.querySelector("button")
+        .addEventListener("click",()=>{
+            toast.remove();
+        });
+
+    container.appendChild(toast);
+
+    setTimeout(()=>{
+        toast.remove();
+    },4000);
+}
+
+function openModal(id){
+    const modal = $(id);
+
+    if(!modal) return;
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+}
+
+function closeModal(id){
+    const modal = $(id);
+
+    if(!modal) return;
+
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+
+    if(
+        $("scriptModal").classList.contains("hidden") &&
+        $("deleteModal").classList.contains("hidden")
+    ){
+        document.body.classList.remove("overflow-hidden");
+    }
+}
+
+function toggleSidebar(){
+
+    $("sidebar").classList.toggle("-translate-x-full");
+    $("sidebarOverlay").classList.toggle("hidden");
+}
+
+function showPage(page){
+
+    currentPage = page;
+
+    document.querySelectorAll("[id^='page-']")
+        .forEach(section=>{
+            section.classList.add("hidden-page");
+        });
+
+    const target = $("page-" + page);
+
+    if(target){
+        target.classList.remove("hidden-page");
+    }
+
+    document.querySelectorAll("[data-page]")
+        .forEach(button=>{
+            button.classList.toggle(
+                "active",
+                button.dataset.page === page
+            );
+        });
+
+    if(window.innerWidth < 1024){
+        $("sidebar").classList.add("-translate-x-full");
+        $("sidebarOverlay").classList.add("hidden");
+    }
+
+    if(page === "dashboard"){
+        renderDashboard();
+    }
+
+    if(page === "scripts"){
+        renderScripts();
+    }
+
+    if(page === "categories"){
+        renderCategories();
+    }
+
+    if(page === "settings"){
+        renderSettings();
+    }
+}
+
+async function loginWithGoogle(){
+
+    hideLoginError();
+
+    const button = $("googleLoginBtn");
+
+    setLoading(
+        button,
+        true,
+        "กำลังเชื่อมต่อ Google..."
+    );
+
+    try{
+
+        const redirectTo =
+            window.location.origin + "/admin/";
+
+        const result =
+            await supabaseClient.auth.signInWithOAuth({
+                provider:"google",
+                options:{
+                    redirectTo:redirectTo
+                }
+            });
+
+        if(result.error){
+            throw result.error;
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        showLoginError(
+            "ไม่สามารถเข้าสู่ระบบด้วย Google ได้"
+        );
+
+        setLoading(button,false);
+    }
+}
+
+async function logout(){
+
+    try{
+
+        await supabaseClient.auth.signOut();
+
+    }catch(error){
+
+        console.error(error);
+
+    }finally{
+
+        currentUser = null;
+        showLoginScreen();
+
+    }
+}
+
+async function checkAdminUser(user){
+
+    if(!user){
+        return false;
+    }
+
+    const {data,error} =
+        await supabaseClient
+            .from("admin_users")
+            .select("user_id,email")
+            .eq("user_id",user.id)
+            .maybeSingle();
+
+    if(error){
+
+        console.error(error);
+
+        return false;
+    }
+
+    if(!data){
+        return false;
+    }
+
+    return data.email?.toLowerCase()
+        === ADMIN_EMAIL.toLowerCase();
+}
+
+async function handleUser(user){
+
+    if(!user){
+
+        currentUser = null;
+        showLoginScreen();
+
+        return;
+    }
+
+    const isAdmin =
+        await checkAdminUser(user);
+
+    if(!isAdmin){
+
+        await supabaseClient.auth.signOut();
+
+        currentUser = null;
+
+        showLoginScreen();
+
+        showLoginError(
+            "❌ อีเมลนี้ไม่มีสิทธิ์เข้าสู่ระบบ Admin"
+        );
+
+        return;
+    }
+
+    currentUser = user;
+
+    showApp();
+
+    await initializeAdmin();
+}
+
+async function loadScripts(){
+
+    const {data,error} =
+        await supabaseClient
+            .from("scripts")
+            .select(`
+                id,
+                created_at,
+                updated_at,
+                title,
+                description,
+                image,
+                code,
+                status,
+                distributor,
+                category_id,
+                is_visible,
+                categories (
+                    id,
+                    name
+                )
+            `)
+            .order("created_at",{ascending:false});
+
+    if(error){
+        throw error;
+    }
+
+    scripts = data || [];
+}
+
+async function loadCategories(){
+
+    const {data,error} =
+        await supabaseClient
+            .from("categories")
+            .select("id,name,created_at")
+            .order("name",{ascending:true});
+
+    if(error){
+        throw error;
+    }
+
+    categories = data || [];
+}
+
+async function loadSiteSettings(){
+
+    const {data,error} =
+        await supabaseClient
+            .from("site_settings")
+            .select("*")
+            .eq("id",true)
+            .maybeSingle();
+
+    if(error){
+        throw error;
+    }
+
+    siteSettings = data;
+}
+
+async function initializeAdmin(){
+
+    try{
+
+        await Promise.all([
+            loadCategories(),
+            loadScripts(),
+            loadSiteSettings()
+        ]);
+
+        populateCategorySelect();
+        updateDashboardStats();
+        renderDashboard();
+        renderScripts();
+        renderCategories();
+        renderSettings();
+
+        showPage(currentPage);
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "ไม่สามารถโหลดข้อมูลจาก Supabase ได้",
+            "error"
+        );
+    }
+}
+
+function updateDashboardStats(){
+
+    $("totalScripts").textContent =
+        scripts.length;
+
+    $("onlineScripts").textContent =
+        scripts.filter(
+            item=>item.status === "online"
+        ).length;
+
+    $("totalCategories").textContent =
+        categories.length;
+
+    $("visibleScripts").textContent =
+        scripts.filter(
+            item=>item.is_visible
+        ).length;
+}
+
+function renderDashboard(){
+
+    updateDashboardStats();
+
+    const container =
+        $("dashboardScriptsList");
+
+    if(!scripts.length){
+
+        container.innerHTML = `
+            <div class="py-10 text-center
+                        text-slate-400">
+                <i class="fa-solid fa-code
+                          text-3xl mb-3"></i>
+
+                <p>ยังไม่มี Script</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        scripts.slice(0,8).map(item=>{
+
+            const category =
+                item.categories?.name || "ไม่ระบุ";
+
+            return `
+                <div class="flex items-center gap-3
+                            p-3 rounded-2xl
+                            bg-slate-50">
+
+                    <div class="w-12 h-12 rounded-xl
+                                overflow-hidden
+                                bg-slate-200
+                                flex-shrink-0">
+
+                        ${
+                            item.image
+                            ? `
+                                <img src="${escapeHtml(item.image)}"
+                                     class="w-full h-full
+                                            object-cover"
+                                     alt="">
+                              `
+                            : `
+                                <div class="w-full h-full
+                                            flex items-center
+                                            justify-center
+                                            text-slate-400">
+                                    <i class="fa-solid fa-code"></i>
+                                </div>
+                              `
+                        }
+
+                    </div>
+
+                    <div class="min-w-0 flex-1">
+
+                        <div class="font-medium
+                                    text-slate-800
+                                    truncate">
+                            ${escapeHtml(item.title)}
+                        </div>
+
+                        <div class="text-xs
+                                    text-slate-400 mt-1">
+                            ${escapeHtml(category)}
+                            ·
+                            ${formatDate(item.created_at)}
+                        </div>
+
+                    </div>
+
+                    ${statusBadge(item.status)}
+
+                </div>
+            `;
+        }).join("");
+}
+
+function renderScripts(){
+
+    const container = $("scriptsList");
+
+    const keyword =
+        $("scriptSearch")?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+    const filtered =
+        scripts.filter(item=>{
+
+            const category =
+                item.categories?.name || "";
+
+            const text = [
+                item.title,
+                item.description,
+                item.distributor,
+                category
+            ].join(" ").toLowerCase();
+
+            return text.includes(keyword);
+        });
+
+    if(!filtered.length){
+
+        container.innerHTML = `
+            <div class="md:col-span-2
+                        xl:col-span-3
+                        card p-10 text-center
+                        text-slate-400">
+
+                <i class="fa-solid fa-magnifying-glass
+                          text-3xl mb-3"></i>
+
+                <p>ไม่พบ Script</p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        filtered.map(item=>{
+
+            const category =
+                item.categories?.name ||
+                "ไม่ระบุหมวดหมู่";
+
+            return `
+                <div class="card overflow-hidden">
+
+                    <div class="h-40 bg-slate-100
+                                overflow-hidden">
+
+                        ${
+                            item.image
+                            ? `
+                                <img src="${escapeHtml(item.image)}"
+                                     alt="${escapeHtml(item.title)}"
+                                     class="w-full h-full
+                                            object-cover">
+                              `
+                            : `
+                                <div class="w-full h-full
+                                            flex items-center
+                                            justify-center
+                                            text-slate-300
+                                            text-4xl">
+                                    <i class="fa-solid fa-code"></i>
+                                </div>
+                              `
+                        }
+
+                    </div>
+
+                    <div class="p-5">
+
+                        <div class="flex flex-wrap
+                                    items-center gap-2 mb-3">
+
+                            ${statusBadge(item.status)}
+
+                            ${visibilityBadge(
+                                item.is_visible
+                            )}
+
+                        </div>
+
+                        <h3 class="font-bold text-lg
+                                   text-slate-800
+                                   line-clamp-2">
+                            ${escapeHtml(item.title)}
+                        </h3>
+
+                        <p class="text-sm
+                                  text-slate-500
+                                  mt-2 line-clamp-3">
+                            ${escapeHtml(
+                                item.description ||
+                                "ไม่มีคำอธิบาย"
+                            )}
+                        </p>
+
+                        <div class="mt-4 space-y-2
+                                    text-xs text-slate-400">
+
+                            <div>
+                                <i class="fa-solid
+                                          fa-layer-group
+                                          w-4"></i>
+                                ${escapeHtml(category)}
+                            </div>
+
+                            <div>
+                                <i class="fa-solid
+                                          fa-user
+                                          w-4"></i>
+                                ${escapeHtml(
+                                    item.distributor ||
+                                    "ไม่ระบุ"
+                                )}
+                            </div>
+
+                            <div>
+                                <i class="fa-regular
+                                          fa-calendar
+                                          w-4"></i>
+                                ${formatDate(
+                                    item.created_at
+                                )}
+                            </div>
+
+                        </div>
+
+                        <div class="flex gap-2 mt-5">
+
+                            <button type="button"
+                                    data-edit-script="${item.id}"
+                                    class="flex-1 py-2.5
+                                           rounded-xl
+                                           bg-blue-50
+                                           text-blue-600
+                                           hover:bg-blue-100">
+                                <i class="fa-solid
+                                          fa-pen mr-1"></i>
+                                แก้ไข
+                            </button>
+
+                            <button type="button"
+                                    data-delete-script="${item.id}"
+                                    class="py-2.5 px-4
+                                           rounded-xl
+                                           bg-red-50
+                                           text-red-600
+                                           hover:bg-red-100">
+                                <i class="fa-solid
+                                          fa-trash"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+        }).join("");
+
+    container.querySelectorAll(
+        "[data-edit-script]"
+    ).forEach(button=>{
+
+        button.addEventListener("click",()=>{
+            openScriptModal(
+                Number(button.dataset.editScript)
+            );
+        });
+
+    });
+
+    container.querySelectorAll(
+        "[data-delete-script]"
+    ).forEach(button=>{
+
+        button.addEventListener("click",()=>{
+            openDeleteModal(
+                Number(button.dataset.deleteScript)
+            );
+        });
+
+    });
+}
+function renderCategories(){
+
+    const container =
+        $("categoriesList");
+
+    $("categoryCountText").textContent =
+        `${categories.length} หมวดหมู่`;
+
+    if(!categories.length){
+
+        container.innerHTML = `
+            <div class="sm:col-span-2
+                        py-10 text-center
+                        text-slate-400">
+                ยังไม่มีหมวดหมู่
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        categories.map(category=>`
+
+            <div class="flex items-center
+                        justify-between gap-3
+                        p-4 rounded-2xl
+                        bg-slate-50">
+
+                <div class="min-w-0">
+
+                    <div class="font-medium
+                                text-slate-800
+                                truncate">
+                        ${escapeHtml(category.name)}
+                    </div>
+
+                    <div class="text-xs
+                                text-slate-400 mt-1">
+                        ${formatDate(category.created_at)}
+                    </div>
+
+                </div>
+
+                <button type="button"
+                        data-delete-category="${category.id}"
+                        class="w-10 h-10 flex-shrink-0
+                               rounded-xl
+                               bg-red-50 text-red-600">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </div>
+
+        `).join("");
+
+    container.querySelectorAll(
+        "[data-delete-category]"
+    ).forEach(button=>{
+
+        button.addEventListener("click",()=>{
+            deleteCategory(
+                button.dataset.deleteCategory
+            );
+        });
+
+    });
+}
+
+function populateCategorySelect(){
+
+    const select =
+        $("scriptCategory");
+
+    select.innerHTML = `
+        <option value="">
+            ไม่ระบุหมวดหมู่
+        </option>
+    `;
+
+    categories.forEach(category=>{
+
+        const option =
+            document.createElement("option");
+
+        option.value = category.id;
+        option.textContent = category.name;
+
+        select.appendChild(option);
+    });
+}
+
+function renderSettings(){
+
+    if(!siteSettings){
+        return;
+    }
+
+    $("siteName").value =
+        siteSettings.site_name || "";
+
+    $("heroTitle").value =
+        siteSettings.hero_title || "";
+
+    $("heroDescription").value =
+        siteSettings.hero_description || "";
+
+    if(siteSettings.logo_url){
+
+        $("logoPreview").src =
+            siteSettings.logo_url;
+
+        $("logoPreview").classList.remove("hidden");
+
+        $("logoPreviewPlaceholder")
+            .classList.add("hidden");
+
+    }
+
+    if(siteSettings.banner_url){
+
+        $("bannerPreview").src =
+            siteSettings.banner_url;
+
+        $("bannerPreview").classList.remove("hidden");
+
+        $("bannerPreviewPlaceholder")
+            .classList.add("hidden");
+
+    }
+}
+
+async function uploadImage(file,bucket){
+
+    if(!file){
+        return null;
+    }
+
+    if(!file.type.startsWith("image/")){
+        throw new Error(
+            "ไฟล์ที่เลือกไม่ใช่รูปภาพ"
+        );
+    }
+
+    if(file.size > 8 * 1024 * 1024){
+        throw new Error(
+            "รูปภาพต้องมีขนาดไม่เกิน 8MB"
+        );
+    }
+
+    const extension =
+        file.name.split(".").pop()
+            .toLowerCase();
+
+    const fileName =
+        `${crypto.randomUUID()}.${extension}`;
+
+    const path =
+        `uploads/${fileName}`;
+
+    const {error} =
+        await supabaseClient
+            .storage
+            .from(bucket)
+            .upload(path,file,{
+                cacheControl:"3600",
+                upsert:false,
+                contentType:file.type
+            });
+
+    if(error){
+        throw error;
+    }
+
+    const {data} =
+        supabaseClient
+            .storage
+            .from(bucket)
+            .getPublicUrl(path);
+
+    return data.publicUrl;
+}
+
+function openScriptModal(id=null){
+
+    editingScriptId = id;
+
+    $("scriptForm").reset();
+
+    $("scriptVisible").checked = true;
+
+    $("scriptStatus").value = "online";
+
+    populateCategorySelect();
+
+    if(id === null){
+
+        $("scriptModalTitle").textContent =
+            "เพิ่ม Script";
+
+    }else{
+
+        const item =
+            scripts.find(
+                script => Number(script.id) === Number(id)
+            );
+
+        if(!item){
+            return;
+        }
+
+        $("scriptModalTitle").textContent =
+            "แก้ไข Script";
+
+        $("scriptTitle").value =
+            item.title || "";
+
+        $("scriptDescription").value =
+            item.description || "";
+
+        $("scriptDistributor").value =
+            item.distributor || "";
+
+        $("scriptCategory").value =
+            item.category_id || "";
+
+        $("scriptStatus").value =
+            item.status || "online";
+
+        $("scriptVisible").checked =
+            item.is_visible !== false;
+
+        $("scriptCode").value =
+            item.code || "";
+
+        if(item.image){
+
+            $("scriptImagePreview").src =
+                item.image;
+
+            $("scriptImagePreview")
+                .classList.remove("hidden");
+
+            $("scriptImagePreviewPlaceholder")
+                .classList.add("hidden");
+
+        }
+    }
+
+    openModal("scriptModal");
+}
+
+function openDeleteModal(id){
+
+    const item =
+        scripts.find(
+            script => Number(script.id) === Number(id)
+        );
+
+    if(!item){
+        return;
+    }
+
+    deletingScriptId = id;
+
+    $("deleteScriptTitle").textContent =
+        item.title;
+
+    openModal("deleteModal");
+}
+
+async function saveScript(){
+
+    const button =
+        $("saveScriptButton");
+
+    setLoading(button,true,"กำลังบันทึก...");
+
+    try{
+
+        const title =
+            $("scriptTitle").value.trim();
+
+        const description =
+            $("scriptDescription").value.trim();
+
+        const distributor =
+            $("scriptDistributor").value.trim();
+
+        const categoryId =
+            $("scriptCategory").value || null;
+
+        const status =
+            $("scriptStatus").value;
+
+        const isVisible =
+            $("scriptVisible").checked;
+
+        const code =
+            $("scriptCode").value;
+
+        const imageFile =
+            $("scriptImageFile").files[0];
+
+        let imageUrl = null;
+
+        if(editingScriptId){
+
+            const oldItem =
+                scripts.find(
+                    item =>
+                        Number(item.id) ===
+                        Number(editingScriptId)
+                );
+
+            imageUrl =
+                oldItem?.image || null;
+        }
+
+        if(imageFile){
+
+            imageUrl =
+                await uploadImage(
+                    imageFile,
+                    "scripts"
+                );
+        }
+
+        const payload = {
+            title:title,
+            description:description || null,
+            distributor:distributor || null,
+            category_id:categoryId,
+            status:status,
+            is_visible:isVisible,
+            code:code,
+            image:imageUrl
+        };
+
+        if(editingScriptId){
+
+            const {error} =
+                await supabaseClient
+                    .from("scripts")
+                    .update(payload)
+                    .eq("id",editingScriptId);
+
+            if(error){
+                throw error;
+            }
+
+            showToast(
+                "แก้ไข Script สำเร็จ"
+            );
+
+        }else{
+
+            const {error} =
+                await supabaseClient
+                    .from("scripts")
+                    .insert(payload);
+
+            if(error){
+                throw error;
+            }
+
+            showToast(
+                "เพิ่ม Script สำเร็จ"
+            );
+        }
+
+        closeModal("scriptModal");
+
+        await loadScripts();
+
+        updateDashboardStats();
+        renderDashboard();
+        renderScripts();
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "ไม่สามารถบันทึก Script ได้",
+            "error"
+        );
+
+    }finally{
+
+        setLoading(button,false);
+    }
+}
+
+async function deleteScript(){
+
+    if(!deletingScriptId){
+        return;
+    }
+
+    const button =
+        $("confirmDeleteButton");
+
+    setLoading(button,true,"กำลังลบ...");
+
+    try{
+
+        const {error} =
+            await supabaseClient
+                .from("scripts")
+                .delete()
+                .eq("id",deletingScriptId);
+
+        if(error){
+            throw error;
+        }
+
+        showToast(
+            "ลบ Script สำเร็จ"
+        );
+
+        closeModal("deleteModal");
+
+        deletingScriptId = null;
+
+        await loadScripts();
+
+        updateDashboardStats();
+        renderDashboard();
+        renderScripts();
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "ไม่สามารถลบ Script ได้",
+            "error"
+        );
+
+    }finally{
+
+        setLoading(button,false);
+    }
+}
+
+async function addCategory(){
+
+    const input =
+        $("newCategoryName");
+
+    const button =
+        $("addCategoryButton");
+
+    const name =
+        input.value.trim();
+
+    if(!name){
+        return;
+    }
+
+    setLoading(
+        button,
+        true,
+        "กำลังเพิ่ม..."
+    );
+
+    try{
+
+        const {error} =
+            await supabaseClient
+                .from("categories")
+                .insert({
+                    name:name
+                });
+
+        if(error){
+            throw error;
+        }
+
+        input.value = "";
+
+        showToast(
+            "เพิ่มหมวดหมู่สำเร็จ"
+        );
+
+        await loadCategories();
+
+        populateCategorySelect();
+        renderCategories();
+        updateDashboardStats();
+
+    }catch(error){
+
+        console.error(error);
+
+        if(error.code === "23505"){
+
+            showToast(
+                "มีหมวดหมู่นี้อยู่แล้ว",
+                "error"
+            );
+
+        }else{
+
+            showToast(
+                error.message ||
+                "ไม่สามารถเพิ่มหมวดหมู่ได้",
+                "error"
+            );
+        }
+
+    }finally{
+
+        setLoading(button,false);
+    }
+}
+
+async function deleteCategory(id){
+
+    const category =
+        categories.find(
+            item => item.id === id
+        );
+
+    if(!category){
+        return;
+    }
+
+    const confirmed =
+        confirm(
+            `ต้องการลบหมวดหมู่ "${category.name}" หรือไม่?`
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    try{
+
+        const {error} =
+            await supabaseClient
+                .from("categories")
+                .delete()
+                .eq("id",id);
+
+        if(error){
+            throw error;
+        }
+
+        showToast(
+            "ลบหมวดหมู่สำเร็จ"
+        );
+
+        await loadCategories();
+        await loadScripts();
+
+        populateCategorySelect();
+        renderCategories();
+        renderScripts();
+        renderDashboard();
+        updateDashboardStats();
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "ไม่สามารถลบหมวดหมู่ได้",
+            "error"
+        );
+    }
+}
+
+async function saveSettings(){
+
+    const button =
+        $("saveSettingsButton");
+
+    setLoading(
+        button,
+        true,
+        "กำลังบันทึก..."
+    );
+
+    try{
+
+        const logoFile =
+            $("logoFile").files[0];
+
+        const bannerFile =
+            $("bannerFile").files[0];
+
+        let logoUrl =
+            siteSettings?.logo_url || null;
+
+        let bannerUrl =
+            siteSettings?.banner_url || null;
+
+        if(logoFile){
+
+            logoUrl =
+                await uploadImage(
+                    logoFile,
+                    "site"
+                );
+        }
+
+        if(bannerFile){
+
+            bannerUrl =
+                await uploadImage(
+                    bannerFile,
+                    "site"
+                );
+        }
+
+        const payload = {
+            id:true,
+            site_name:
+                $("siteName").value.trim()
+                || "Script Hub",
+
+            hero_title:
+                $("heroTitle").value.trim(),
+
+            hero_description:
+                $("heroDescription").value.trim(),
+
+            logo_url:logoUrl,
+            banner_url:bannerUrl,
+            updated_at:new Date().toISOString()
+        };
+
+        const {error} =
+            await supabaseClient
+                .from("site_settings")
+                .upsert(
+                    payload,
+                    {onConflict:"id"}
+                );
+
+        if(error){
+            throw error;
+        }
+
+        await loadSiteSettings();
+
+        showToast(
+            "บันทึกการตั้งค่าสำเร็จ"
+        );
+
+        renderSettings();
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "ไม่สามารถบันทึกการตั้งค่าได้",
+            "error"
+        );
+
+    }finally{
+
+        setLoading(button,false);
+    }
+}
+
+function setupImagePreview(
+    inputId,
+    imageId,
+    placeholderId
+){
+
+    const input = $(inputId);
+
+    input.addEventListener(
+        "change",
+        ()=>{
+
+            const file =
+                input.files[0];
+
+            if(!file){
+                return;
+            }
+
+            const url =
+                URL.createObjectURL(file);
+
+            $(imageId).src = url;
+
+            $(imageId)
+                .classList.remove("hidden");
+
+            $(placeholderId)
+                .classList.add("hidden");
+        }
+    );
+}
+
+function setupEventListeners(){
+
+    $("googleLoginBtn")
+        .addEventListener(
+            "click",
+            loginWithGoogle
+        );
+
+    $("logoutBtn")
+        .addEventListener(
+            "click",
+            logout
+        );
+
+    $("menuBtn")
+        .addEventListener(
+            "click",
+            toggleSidebar
+        );
+
+    $("sidebarOverlay")
+        .addEventListener(
+            "click",
+            toggleSidebar
+        );
+
+    document.querySelectorAll(
+        "[data-page]"
+    ).forEach(button=>{
+
+        button.addEventListener(
+            "click",
+            ()=>{
+                showPage(
+                    button.dataset.page
+                );
+            }
+        );
+
+    });
+
+    $("addScriptButton")
+        .addEventListener(
+            "click",
+            ()=>openScriptModal()
+        );
+
+    $("addScriptFromDashboard")
+        .addEventListener(
+            "click",
+            ()=>{
+                showPage("scripts");
+                openScriptModal();
+            }
+        );
+
+    $("scriptSearch")
+        .addEventListener(
+            "input",
+            renderScripts
+        );
+
+    $("addCategoryForm")
+        .addEventListener(
+            "submit",
+            event=>{
+                event.preventDefault();
+                addCategory();
+            }
+        );
+
+    $("settingsForm")
+        .addEventListener(
+            "submit",
+            event=>{
+                event.preventDefault();
+                saveSettings();
+            }
+        );
+
+    $("scriptForm")
+        .addEventListener(
+            "submit",
+            event=>{
+                event.preventDefault();
+                saveScript();
+            }
+        );
+
+    $("closeScriptModalButton")
+        .addEventListener(
+            "click",
+            ()=>closeModal("scriptModal")
+        );
+
+    $("cancelScriptButton")
+        .addEventListener(
+            "click",
+            ()=>closeModal("scriptModal")
+        );
+
+    $("cancelDeleteButton")
+        .addEventListener(
+            "click",
+            ()=>closeModal("deleteModal")
+        );
+
+    $("confirmDeleteButton")
+        .addEventListener(
+            "click",
+            deleteScript
+        );
+
+    document.querySelectorAll(
+        ".modal-backdrop"
+    ).forEach(modal=>{
+
+        modal.addEventListener(
+            "click",
+            event=>{
+
+                if(event.target === modal){
+                    closeModal(modal.id);
+                }
+
+            }
+        );
+
+    });
+
+    setupImagePreview(
+        "logoFile",
+        "logoPreview",
+        "logoPreviewPlaceholder"
+    );
+
+    setupImagePreview(
+        "bannerFile",
+        "bannerPreview",
+        "bannerPreviewPlaceholder"
+    );
+
+    setupImagePreview(
+        "scriptImageFile",
+        "scriptImagePreview",
+        "scriptImagePreviewPlaceholder"
+    );
+}
+
+function setupAuthListener(){
+
+    supabaseClient.auth.onAuthStateChange(
+        async (_event,session)=>{
+
+            if(session?.user){
+                await handleUser(session.user);
+            }else{
+                await handleUser(null);
+            }
+
+        }
+    );
+}
+
+async function startAdmin(){
+
+    try{
+
+        const {
+            data:{
+                session
+            }
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+        if(session?.user){
+
+            await handleUser(
+                session.user
+            );
+
+        }else{
+
+            showLoginScreen();
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        showLoginScreen();
+
+        showLoginError(
+            "ไม่สามารถตรวจสอบการเข้าสู่ระบบได้"
+        );
+
+    }
+}
+
+window.addEventListener(
+    "error",
+    event=>{
+        console.error(
+            "Global error:",
+            event.error || event.message
+        );
+    }
+);
+
+window.addEventListener(
+    "unhandledrejection",
+    event=>{
+        console.error(
+            "Unhandled promise:",
+            event.reason
+        );
+    }
+);
+
+document.addEventListener(
+    "DOMContentLoaded",
+    ()=>{
+
+        setupEventListeners();
+        setupAuthListener();
+        startAdmin();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
+
