@@ -88,6 +88,7 @@ textarea{
                 shadow-2xl p-7">
 
         <div class="text-center mb-7">
+
             <div class="w-20 h-20 mx-auto rounded-3xl
                         hero-gradient flex items-center
                         justify-center text-white text-3xl
@@ -102,6 +103,7 @@ textarea{
             <p class="text-slate-500 mt-1">
                 ระบบจัดการสำหรับ Admin
             </p>
+
         </div>
 
         <div id="loginError"
@@ -129,6 +131,7 @@ textarea{
         <p class="text-center text-xs text-slate-400 mt-6">
             เฉพาะบัญชีที่ได้รับอนุญาตเท่านั้น
         </p>
+
     </div>
 </div>
 
@@ -144,6 +147,7 @@ textarea{
     <div class="p-5 h-full relative">
 
         <div class="flex items-center gap-3 mb-8">
+
             <div class="w-12 h-12 rounded-2xl bg-white/15
                         flex items-center justify-center text-xl">
                 <i class="fa-solid fa-code"></i>
@@ -153,10 +157,12 @@ textarea{
                 <div class="font-bold text-lg">
                     Script Hub
                 </div>
+
                 <div class="text-xs text-blue-200">
                     Admin Panel
                 </div>
             </div>
+
         </div>
 
         <nav class="space-y-2">
@@ -165,45 +171,70 @@ textarea{
                     class="nav-item active w-full text-left
                            px-4 py-3 rounded-2xl
                            flex items-center gap-3">
+
                 <i class="fa-solid fa-chart-line w-5"></i>
                 Dashboard
+
             </button>
 
             <button data-page="scripts"
                     class="nav-item w-full text-left
                            px-4 py-3 rounded-2xl
                            flex items-center gap-3">
+
                 <i class="fa-solid fa-code w-5"></i>
                 จัดการ Scripts
+
             </button>
 
             <button data-page="categories"
                     class="nav-item w-full text-left
                            px-4 py-3 rounded-2xl
                            flex items-center gap-3">
+
                 <i class="fa-solid fa-layer-group w-5"></i>
                 จัดการหมวดหมู่
+
             </button>
 
             <button data-page="settings"
                     class="nav-item w-full text-left
                            px-4 py-3 rounded-2xl
                            flex items-center gap-3">
+
                 <i class="fa-solid fa-gear w-5"></i>
                 ตั้งค่าเว็บไซต์
+
+            </button>
+
+            <!-- กลับหน้าหลัก โดยไม่ Logout -->
+
+            <button id="backHomeBtn"
+                    type="button"
+                    class="nav-item w-full text-left
+                           px-4 py-3 rounded-2xl
+                           flex items-center gap-3">
+
+                <i class="fa-solid fa-house w-5"></i>
+                กลับไปหน้าหลัก
+
             </button>
 
         </nav>
 
         <div class="absolute bottom-5 left-5 right-5">
+
             <button id="logoutBtn"
                     type="button"
                     class="w-full px-4 py-3 rounded-2xl
                            bg-white/10 hover:bg-white/20
                            transition flex items-center gap-3">
+
                 <i class="fa-solid fa-right-from-bracket w-5"></i>
                 ออกจากระบบ
+
             </button>
+
         </div>
 
     </div>
@@ -229,10 +260,13 @@ textarea{
                     class="lg:hidden w-10 h-10
                            rounded-xl bg-slate-100
                            text-slate-700">
+
                 <i class="fa-solid fa-bars"></i>
+
             </button>
 
             <div>
+
                 <div class="font-bold text-slate-800">
                     Admin Dashboard
                 </div>
@@ -240,6 +274,7 @@ textarea{
                 <div class="text-xs text-slate-400">
                     Script Hub Management
                 </div>
+
             </div>
 
         </div>
@@ -247,73 +282,127 @@ textarea{
         <span class="px-3 py-2 rounded-xl
                      bg-emerald-50 text-emerald-600
                      text-xs font-medium">
+
             <i class="fa-solid fa-circle text-[7px] mr-2"></i>
             Admin
+
         </span>
 
     </div>
 </header>
 
 <div class="p-4 md:p-6">
-      <section id="page-dashboard">
+
+<section id="page-dashboard">
 
 <div class="mb-6">
+
     <h1 class="text-2xl md:text-3xl font-bold text-slate-800">
         Dashboard
     </h1>
+
     <p class="text-slate-500 mt-1">
         ภาพรวมระบบ Script Hub
     </p>
+
 </div>
 
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
     <div class="card p-5">
-        <p class="text-sm text-slate-500">Scripts ทั้งหมด</p>
+
+        <p class="text-sm text-slate-500">
+            Scripts ทั้งหมด
+        </p>
+
         <div class="flex items-center justify-between mt-2">
+
             <p id="totalScripts"
-               class="text-3xl font-bold text-slate-800">0</p>
+               class="text-3xl font-bold text-slate-800">
+                0
+            </p>
+
             <div class="w-12 h-12 rounded-2xl bg-blue-50
                         text-blue-600 flex items-center justify-center">
+
                 <i class="fa-solid fa-code"></i>
+
             </div>
+
         </div>
+
     </div>
 
     <div class="card p-5">
-        <p class="text-sm text-slate-500">กำลังออนไลน์</p>
+
+        <p class="text-sm text-slate-500">
+            กำลังออนไลน์
+        </p>
+
         <div class="flex items-center justify-between mt-2">
+
             <p id="onlineScripts"
-               class="text-3xl font-bold text-emerald-600">0</p>
+               class="text-3xl font-bold text-emerald-600">
+                0
+            </p>
+
             <div class="w-12 h-12 rounded-2xl bg-emerald-50
                         text-emerald-600 flex items-center justify-center">
+
                 <i class="fa-solid fa-circle-check"></i>
+
             </div>
+
         </div>
+
     </div>
 
     <div class="card p-5">
-        <p class="text-sm text-slate-500">หมวดหมู่</p>
+
+        <p class="text-sm text-slate-500">
+            หมวดหมู่
+        </p>
+
         <div class="flex items-center justify-between mt-2">
+
             <p id="totalCategories"
-               class="text-3xl font-bold text-violet-600">0</p>
+               class="text-3xl font-bold text-violet-600">
+                0
+            </p>
+
             <div class="w-12 h-12 rounded-2xl bg-violet-50
                         text-violet-600 flex items-center justify-center">
+
                 <i class="fa-solid fa-layer-group"></i>
+
             </div>
+
         </div>
+
     </div>
 
     <div class="card p-5">
-        <p class="text-sm text-slate-500">แสดงบนเว็บ</p>
+
+        <p class="text-sm text-slate-500">
+            แสดงบนเว็บ
+        </p>
+
         <div class="flex items-center justify-between mt-2">
+
             <p id="visibleScripts"
-               class="text-3xl font-bold text-indigo-600">0</p>
+               class="text-3xl font-bold text-indigo-600">
+                0
+            </p>
+
             <div class="w-12 h-12 rounded-2xl bg-indigo-50
                         text-indigo-600 flex items-center justify-center">
+
                 <i class="fa-solid fa-eye"></i>
+
             </div>
+
         </div>
+
     </div>
 
 </div>
@@ -325,12 +414,15 @@ textarea{
 <div class="flex items-center justify-between mb-5">
 
 <div>
+
 <h2 class="font-bold text-lg text-slate-800">
     Scripts ล่าสุด
 </h2>
+
 <p class="text-sm text-slate-400">
     รายการ Script ที่เพิ่มล่าสุด
 </p>
+
 </div>
 
 <button id="addScriptFromDashboard"
@@ -338,8 +430,10 @@ textarea{
         class="px-4 py-2.5 rounded-xl
                hero-gradient text-white
                text-sm font-medium shadow-lg">
+
     <i class="fa-solid fa-plus mr-1"></i>
     เพิ่ม Script
+
 </button>
 
 </div>
@@ -359,27 +453,42 @@ textarea{
 <div class="mt-5 space-y-4">
 
 <div class="flex items-center justify-between">
-    <span class="text-sm text-slate-500">Database</span>
+
+    <span class="text-sm text-slate-500">
+        Database
+    </span>
+
     <span class="px-3 py-1 rounded-full
                  bg-emerald-50 text-emerald-600 text-xs">
         Connected
     </span>
+
 </div>
 
 <div class="flex items-center justify-between">
-    <span class="text-sm text-slate-500">Authentication</span>
+
+    <span class="text-sm text-slate-500">
+        Authentication
+    </span>
+
     <span class="px-3 py-1 rounded-full
                  bg-emerald-50 text-emerald-600 text-xs">
         Active
     </span>
+
 </div>
 
 <div class="flex items-center justify-between">
-    <span class="text-sm text-slate-500">Storage</span>
+
+    <span class="text-sm text-slate-500">
+        Storage
+    </span>
+
     <span class="px-3 py-1 rounded-full
                  bg-emerald-50 text-emerald-600 text-xs">
         Ready
     </span>
+
 </div>
 
 </div>
@@ -387,7 +496,6 @@ textarea{
 
 </div>
 </section>
-
 <section id="page-scripts" class="hidden-page">
 
 <div class="mb-6 flex flex-col md:flex-row
@@ -429,6 +537,7 @@ textarea{
               outline-none focus:ring-2
               focus:ring-blue-500">
 </div>
+
 </div>
 
 <div id="scriptsList"
@@ -443,6 +552,7 @@ textarea{
 <h1 class="text-2xl md:text-3xl font-bold text-slate-800">
     จัดการหมวดหมู่
 </h1>
+
 <p class="text-slate-500 mt-1">
     สร้างและลบหมวดหมู่สำหรับ Scripts
 </p>
@@ -506,8 +616,10 @@ textarea{
 
 </div>
 </div>
-      </section>
-      <section id="page-settings" class="hidden-page">
+
+</section>
+
+<section id="page-settings" class="hidden-page">
 
 <div class="mb-6">
 
@@ -654,10 +766,9 @@ textarea{
     บันทึกการตั้งค่า
 
 </button>
+
 </div>
 </form>
-
-<!-- LEGAL SETTINGS -->
 
 <div class="card p-5 md:p-7 mt-6">
 
@@ -682,22 +793,22 @@ textarea{
                hover:bg-blue-50 hover:border-blue-200
                transition text-left">
 
-    <div class="w-12 h-12 rounded-2xl
-                bg-blue-100 text-blue-600
-                flex items-center justify-center
-                text-xl mb-4">
+<div class="w-12 h-12 rounded-2xl
+            bg-blue-100 text-blue-600
+            flex items-center justify-center
+            text-xl mb-4">
 
-        <i class="fa-solid fa-file-contract"></i>
+<i class="fa-solid fa-file-contract"></i>
 
-    </div>
+</div>
 
-    <div class="font-bold text-slate-800">
-        ข้อกำหนดการให้บริการ
-    </div>
+<div class="font-bold text-slate-800">
+    ข้อกำหนดการให้บริการ
+</div>
 
-    <div class="text-sm text-slate-400 mt-1">
-        แก้ไขข้อความ Terms of Service
-    </div>
+<div class="text-sm text-slate-400 mt-1">
+    แก้ไขข้อความ Terms of Service
+</div>
 
 </button>
 
@@ -708,22 +819,22 @@ textarea{
                hover:bg-violet-50 hover:border-violet-200
                transition text-left">
 
-    <div class="w-12 h-12 rounded-2xl
-                bg-violet-100 text-violet-600
-                flex items-center justify-center
-                text-xl mb-4">
+<div class="w-12 h-12 rounded-2xl
+            bg-violet-100 text-violet-600
+            flex items-center justify-center
+            text-xl mb-4">
 
-        <i class="fa-solid fa-shield-halved"></i>
+<i class="fa-solid fa-shield-halved"></i>
 
-    </div>
+</div>
 
-    <div class="font-bold text-slate-800">
-        นโยบายความเป็นส่วนตัว
-    </div>
+<div class="font-bold text-slate-800">
+    นโยบายความเป็นส่วนตัว
+</div>
 
-    <div class="text-sm text-slate-400 mt-1">
-        แก้ไขข้อความ Privacy Policy
-    </div>
+<div class="text-sm text-slate-400 mt-1">
+    แก้ไขข้อความ Privacy Policy
+</div>
 
 </button>
 
@@ -731,9 +842,6 @@ textarea{
 </div>
 
 </section>
-
-<!-- SCRIPT MODAL -->
-
 <div id="scriptModal"
      class="hidden fixed inset-0 z-[100]
             modal-backdrop items-center
@@ -748,6 +856,7 @@ textarea{
             items-center justify-between">
 
 <div>
+
 <h2 id="scriptModalTitle"
     class="text-xl font-bold text-slate-800">
     เพิ่ม Script
@@ -756,6 +865,7 @@ textarea{
 <p class="text-sm text-slate-400 mt-1">
     กรอกข้อมูล Script ให้ครบถ้วน
 </p>
+
 </div>
 
 <button id="closeScriptModalButton"
@@ -763,7 +873,9 @@ textarea{
         class="w-10 h-10 rounded-xl
                bg-slate-100 text-slate-500
                hover:bg-slate-200">
-    <i class="fa-solid fa-xmark"></i>
+
+<i class="fa-solid fa-xmark"></i>
+
 </button>
 
 </div>
@@ -772,6 +884,7 @@ textarea{
       class="p-5 md:p-6 space-y-5">
 
 <div>
+
 <label class="block text-sm font-medium
               text-slate-700 mb-2">
     ชื่อ Script
@@ -786,9 +899,11 @@ textarea{
               bg-slate-50 border border-slate-200
               outline-none focus:ring-2
               focus:ring-blue-500">
+
 </div>
 
 <div>
+
 <label class="block text-sm font-medium
               text-slate-700 mb-2">
     คำอธิบาย
@@ -802,11 +917,13 @@ textarea{
                  bg-slate-50 border border-slate-200
                  outline-none focus:ring-2
                  focus:ring-blue-500"></textarea>
+
 </div>
 
 <div class="grid md:grid-cols-2 gap-4">
 
 <div>
+
 <label class="block text-sm font-medium
               text-slate-700 mb-2">
     ผู้แจก / Distributor
@@ -820,9 +937,11 @@ textarea{
               bg-slate-50 border border-slate-200
               outline-none focus:ring-2
               focus:ring-blue-500">
+
 </div>
 
 <div>
+
 <label class="block text-sm font-medium
               text-slate-700 mb-2">
     หมวดหมู่
@@ -839,9 +958,12 @@ textarea{
 </option>
 
 </select>
+
 </div>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4">
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-4">
 
 <div>
 
@@ -965,8 +1087,8 @@ textarea{
                hero-gradient text-white
                font-medium shadow-lg">
 
-    <i class="fa-solid fa-floppy-disk mr-2"></i>
-    บันทึก Script
+<i class="fa-solid fa-floppy-disk mr-2"></i>
+บันทึก Script
 
 </button>
 
@@ -975,8 +1097,6 @@ textarea{
 </form>
 </div>
 </div>
-
-<!-- DELETE MODAL -->
 
 <div id="deleteModal"
      class="hidden fixed inset-0 z-[110]
@@ -1000,9 +1120,12 @@ textarea{
 </h2>
 
 <p class="text-slate-500 mt-2">
-    คุณกำลังจะลบ
-    <span id="deleteScriptTitle"
-          class="font-medium text-slate-800"></span>
+
+คุณกำลังจะลบ
+
+<span id="deleteScriptTitle"
+      class="font-medium text-slate-800"></span>
+
 </p>
 
 <p class="text-sm text-red-500 mt-3">
@@ -1022,16 +1145,15 @@ textarea{
         type="button"
         class="px-5 py-3 rounded-2xl
                bg-red-600 text-white">
-    <i class="fa-solid fa-trash mr-2"></i>
-    ลบ Script
+
+<i class="fa-solid fa-trash mr-2"></i>
+ลบ Script
+
 </button>
 
 </div>
 </div>
 </div>
-
-<!-- LEGAL MODAL -->
-
 <div id="legalModal"
      class="hidden fixed inset-0 z-[120]
             modal-backdrop items-center
@@ -1046,6 +1168,7 @@ textarea{
             items-center justify-between">
 
 <div>
+
 <h2 id="legalModalTitle"
     class="text-xl font-bold text-slate-800">
     ข้อกำหนดการให้บริการ
@@ -1054,6 +1177,7 @@ textarea{
 <p class="text-sm text-slate-400 mt-1">
     แก้ไขเนื้อหาที่จะแสดงบนเว็บไซต์
 </p>
+
 </div>
 
 <button id="closeLegalModalButton"
@@ -1141,11 +1265,11 @@ textarea{
 </div>
 
 <script>
-      const SUPABASE_URL =
+const SUPABASE_URL =
 "https://ofwlofzqxfdqctmogntu.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld";
+"sb_publishable_JMUKzfqgrXJwYy_zjLzKg_vMDyJTld";
 
 const ADMIN_EMAIL =
 "admin.monntshop@gmail.com";
@@ -1304,11 +1428,12 @@ function visibilityBadge(visible){
             ซ่อน
         </span>
     `;
+      
 }
+      function showToast(message,type="success"){
 
-function showToast(message,type="success"){
-
-    const container = $("toastContainer");
+    const container =
+        $("toastContainer");
 
     const isError =
         type === "error";
@@ -1397,7 +1522,8 @@ function toggleSidebar(){
         .classList
         .toggle("hidden");
 }
-      function showPage(page){
+
+function showPage(page){
 
     currentPage = page;
 
@@ -1584,8 +1710,7 @@ async function handleUser(user){
 
     await initializeAdmin();
 }
-
-async function loadScripts(){
+      async function loadScripts(){
 
     const {data,error} =
         await supabaseClient
@@ -1653,8 +1778,6 @@ async function loadSiteSettings(){
     siteSettings = data;
 }
 
-/* โหลด Terms และ Privacy */
-
 async function loadLegalPages(){
 
     const {data,error} =
@@ -1704,7 +1827,8 @@ async function initializeAdmin(){
         );
     }
 }
-      function updateDashboardStats(){
+
+function updateDashboardStats(){
 
     $("totalScripts").textContent =
         scripts.length;
@@ -1735,9 +1859,12 @@ function renderDashboard(){
         container.innerHTML = `
             <div class="py-10 text-center
                         text-slate-400">
+
                 <i class="fa-solid fa-code
                           text-3xl mb-3"></i>
+
                 <p>ยังไม่มี Script</p>
+
             </div>
         `;
 
@@ -1790,9 +1917,11 @@ function renderDashboard(){
 
                         <div class="text-xs
                                     text-slate-400 mt-1">
+
                             ${escapeHtml(category)}
                             ·
                             ${formatDate(item.created_at)}
+
                         </div>
 
                     </div>
@@ -1801,10 +1930,10 @@ function renderDashboard(){
 
                 </div>
             `;
+
         }).join("");
 }
-
-function renderScripts(){
+      function renderScripts(){
 
     const container =
         $("scriptsList");
@@ -1875,7 +2004,9 @@ function renderScripts(){
                                             justify-center
                                             text-slate-300
                                             text-4xl">
+
                                     <i class="fa-solid fa-code"></i>
+
                                 </div>
                               `
                         }
@@ -1903,10 +2034,12 @@ function renderScripts(){
                         <p class="text-sm
                                   text-slate-500
                                   mt-2">
+
                             ${escapeHtml(
                                 item.description ||
                                 "ไม่มีคำอธิบาย"
                             )}
+
                         </p>
 
                         <div class="mt-4 space-y-2
@@ -1940,8 +2073,10 @@ function renderScripts(){
                                            rounded-xl
                                            bg-blue-50
                                            text-blue-600">
+
                                 <i class="fa-solid fa-pen mr-1"></i>
                                 แก้ไข
+
                             </button>
 
                             <button type="button"
@@ -1950,7 +2085,9 @@ function renderScripts(){
                                            rounded-xl
                                            bg-red-50
                                            text-red-600">
+
                                 <i class="fa-solid fa-trash"></i>
+
                             </button>
 
                         </div>
@@ -1959,6 +2096,7 @@ function renderScripts(){
 
                 </div>
             `;
+
         }).join("");
 
     container.querySelectorAll(
@@ -1975,6 +2113,7 @@ function renderScripts(){
                 );
             }
         );
+
     });
 
     container.querySelectorAll(
@@ -1991,8 +2130,10 @@ function renderScripts(){
                 );
             }
         );
+
     });
 }
+
 function renderCategories(){
 
     const container =
@@ -2007,7 +2148,9 @@ function renderCategories(){
             <div class="sm:col-span-2
                         py-10 text-center
                         text-slate-400">
+
                 ยังไม่มีหมวดหมู่
+
             </div>
         `;
 
@@ -2027,12 +2170,16 @@ function renderCategories(){
                     <div class="font-medium
                                 text-slate-800
                                 truncate">
+
                         ${escapeHtml(category.name)}
+
                     </div>
 
                     <div class="text-xs
                                 text-slate-400 mt-1">
+
                         ${formatDate(category.created_at)}
+
                     </div>
 
                 </div>
@@ -2066,8 +2213,7 @@ function renderCategories(){
 
     });
 }
-
-function populateCategorySelect(){
+      function populateCategorySelect(){
 
     const select =
         $("scriptCategory");
@@ -2090,6 +2236,7 @@ function populateCategorySelect(){
             category.name;
 
         select.appendChild(option);
+
     });
 }
 
@@ -2193,10 +2340,6 @@ async function uploadImage(file,bucket){
 
     return data.publicUrl;
 }
-
-/* =========================
-   LEGAL MANAGEMENT
-========================= */
 
 function getLegalPage(id){
 
@@ -2317,6 +2460,14 @@ function clearLegalContent(){
 
     $("scriptVisible").checked = true;
     $("scriptStatus").value = "online";
+
+    $("scriptImagePreview")
+        .classList
+        .add("hidden");
+
+    $("scriptImagePreviewPlaceholder")
+        .classList
+        .remove("hidden");
 
     populateCategorySelect();
 
@@ -2463,19 +2614,27 @@ async function saveScript(){
         }
 
         const payload = {
+
             title:title,
+
             description:
                 description || null,
+
             distributor:
                 distributor || null,
+
             category_id:
                 categoryId,
+
             status:
                 status,
+
             is_visible:
                 isVisible,
+
             code:
                 code,
+
             image:
                 imageUrl
         };
@@ -2604,8 +2763,7 @@ async function deleteScript(){
         );
     }
 }
-
-async function addCategory(){
+      async function addCategory(){
 
     const input =
         $("newCategoryName");
@@ -2679,7 +2837,8 @@ async function addCategory(){
         );
     }
 }
-      async function deleteCategory(id){
+
+async function deleteCategory(id){
 
     const category =
         categories.find(
@@ -2898,6 +3057,14 @@ function setupEventListeners(){
             logout
         );
 
+    $("backHomeBtn")
+        .addEventListener(
+            "click",
+            ()=>{
+                window.location.href = "../";
+            }
+        );
+
     $("menuBtn")
         .addEventListener(
             "click",
@@ -2922,6 +3089,7 @@ function setupEventListeners(){
                 );
             }
         );
+
     });
 
     $("addScriptButton")
@@ -2995,8 +3163,6 @@ function setupEventListeners(){
             "click",
             deleteScript
         );
-
-    /* Legal */
 
     $("openTermsButton")
         .addEventListener(
@@ -3075,11 +3241,15 @@ function setupAuthListener(){
         async (_event,session)=>{
 
             if(session?.user){
+
                 await handleUser(
                     session.user
                 );
+
             }else{
+
                 await handleUser(null);
+
             }
         }
     );
@@ -3107,6 +3277,7 @@ async function startAdmin(){
         }else{
 
             showLoginScreen();
+
         }
 
     }catch(error){
