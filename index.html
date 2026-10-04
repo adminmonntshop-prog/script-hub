@@ -14,12 +14,8 @@
     Script Hub | ศูนย์รวมสคริปต์
   </title>
 
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-
-  <!-- Google Font -->
   <link
     rel="preconnect"
     href="https://fonts.googleapis.com"
@@ -36,19 +32,14 @@
     rel="stylesheet"
   >
 
-
-  <!-- Font Awesome -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   >
 
-
-  <!-- Supabase -->
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
   ></script>
-
 
   <style>
 
@@ -56,16 +47,13 @@
       font-family: 'Prompt', sans-serif;
     }
 
-
     html {
       scroll-behavior: smooth;
     }
 
-
     body {
       background: #f8fafc;
     }
-
 
     .hero-pattern {
       background-image:
@@ -81,14 +69,12 @@
         );
     }
 
-
     .line-clamp-2 {
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-
 
     .line-clamp-3 {
       display: -webkit-box;
@@ -97,13 +83,11 @@
       overflow: hidden;
     }
 
-
     .script-card {
       transition:
         transform .2s ease,
         box-shadow .2s ease;
     }
-
 
     .script-card:hover {
       transform: translateY(-4px);
@@ -111,13 +95,34 @@
         0 20px 35px rgba(15,23,42,.10);
     }
 
-
     .category-btn {
       transition: all .2s ease;
     }
 
+    .category-btn.active {
+      background: linear-gradient(
+        to right,
+        #2563eb,
+        #4f46e5
+      );
+      color: white;
+      border-color: transparent;
+      box-shadow:
+        0 8px 18px rgba(37,99,235,.18);
+    }
 
-    /* Toast อยู่ด้านบน */
+    .category-btn:not(.active) {
+      background: white;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .category-btn:not(.active):hover {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
     .toast {
       transform:
         translate(-50%, -150%);
@@ -128,14 +133,12 @@
         opacity .3s ease;
     }
 
-
     .toast.show {
       transform:
         translate(-50%, 0);
       opacity: 1;
       pointer-events: none;
     }
-
 
     .legal-link {
       text-decoration: underline;
@@ -144,11 +147,9 @@
       transition: color .2s ease;
     }
 
-
     .legal-link:hover {
       color: #2563eb;
     }
-
 
     .legal-modal {
       opacity: 0;
@@ -156,23 +157,19 @@
       transition: all .2s ease;
     }
 
-
     .legal-modal.show {
       opacity: 1;
       visibility: visible;
     }
-
 
     .legal-content {
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
 
-
     .hide-scrollbar {
       scrollbar-width: none;
     }
-
 
     .hide-scrollbar::-webkit-scrollbar {
       display: none;
@@ -182,13 +179,9 @@
 
 </head>
 
-
 <body
   class="min-h-screen text-slate-800"
 >
-
-
-  <!-- Loading Screen -->
 
   <div
     id="loadingScreen"
@@ -207,13 +200,11 @@
 
       </div>
 
-
       <div
         class="text-lg font-semibold text-slate-700"
       >
         กำลังโหลด Script Hub...
       </div>
-
 
       <div
         class="mt-3 flex justify-center"
@@ -228,76 +219,104 @@
     </div>
 
   </div>
-
-
-  <!-- Header -->
+    <!-- Header -->
 
   <header
     class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"
   >
 
     <div
-      class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3"
+      class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3"
     >
 
-      <a
-        href="./"
-        class="flex min-w-0 items-center gap-3"
+      <!-- Google Login -->
+
+      <div
+        class="flex items-center justify-center"
       >
 
-        <div
-          id="logoBox"
-          class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg"
+        <button
+          id="googleLoginButton"
+          type="button"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto"
         >
 
           <i
-            class="fa-solid fa-code text-lg"
+            class="fa-brands fa-google text-red-500"
           ></i>
 
-        </div>
+          <span id="googleLoginText">
+            ดำเนินการต่อด้วย Google
+          </span>
+
+        </button>
+
+      </div>
 
 
-        <div class="min-w-0">
+      <!-- Main Header Row -->
 
-          <div
-            id="siteNameHeader"
-            class="truncate text-base font-bold text-slate-900 md:text-lg"
-          >
-            Script Hub
-          </div>
-
-
-          <div
-            class="hidden text-xs text-slate-500 sm:block"
-          >
-            ศูนย์รวมสคริปต์
-          </div>
-
-        </div>
-
-      </a>
-
-
-      <a
-        href="./admin/"
-        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
+      <div
+        class="flex items-center justify-between gap-3"
       >
 
-        <i
-          class="fa-solid fa-shield-halved"
-        ></i>
+        <a
+          href="./"
+          class="flex min-w-0 items-center gap-3"
+        >
+
+          <div
+            id="logoBox"
+            class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg"
+          >
+
+            <i
+              class="fa-solid fa-code text-lg"
+            ></i>
+
+          </div>
+
+          <div class="min-w-0">
+
+            <div
+              id="siteNameHeader"
+              class="truncate text-base font-bold text-slate-900 md:text-lg"
+            >
+              Script Hub
+            </div>
+
+            <div
+              class="hidden text-xs text-slate-500 sm:block"
+            >
+              ศูนย์รวมสคริปต์
+            </div>
+
+          </div>
+
+        </a>
 
 
-        <span class="hidden sm:inline">
-          เข้าสู่ระบบ Admin
-        </span>
+        <a
+          id="adminButton"
+          href="./admin/"
+          class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
+        >
 
+          <i
+            class="fa-solid fa-shield-halved"
+          ></i>
 
-        <span class="sm:hidden">
-          Admin
-        </span>
+          <span class="hidden sm:inline">
+            เข้าสู่ระบบ Admin
+          </span>
 
-      </a>
+          <span class="sm:hidden">
+            Admin
+          </span>
+
+        </a>
+
+      </div>
 
     </div>
 
@@ -322,7 +341,6 @@
           class="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-950/10 via-transparent to-slate-950/30"
         ></div>
 
-
         <div
           class="relative px-6 py-10 sm:px-10 sm:py-14 md:px-14 md:py-16"
         >
@@ -341,7 +359,6 @@
 
           </div>
 
-
           <h1
             id="heroTitle"
             class="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl"
@@ -349,16 +366,12 @@
             ค้นหาและคัดลอกสคริปต์พร้อมใช้งาน
           </h1>
 
-
           <p
             id="heroDescription"
             class="mt-4 max-w-2xl text-sm leading-7 text-blue-50 sm:text-base"
           >
             รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย
           </p>
-
-
-          <!-- Search -->
 
           <div
             class="mt-7 max-w-3xl"
@@ -371,7 +384,6 @@
               <i
                 class="fa-solid fa-magnifying-glass text-slate-400"
               ></i>
-
 
               <input
                 id="searchInput"
@@ -390,7 +402,9 @@
       </div>
 
     </section>
-        <!-- Category Filters -->
+
+
+    <!-- Category Filters -->
 
     <section
       class="px-4 pt-6"
@@ -408,9 +422,7 @@
       </div>
 
     </section>
-
-
-    <!-- Scripts -->
+        <!-- Scripts -->
 
     <section
       id="scriptSection"
@@ -433,7 +445,6 @@
               สคริปต์ทั้งหมด
             </h2>
 
-
             <p
               id="resultText"
               class="mt-1 text-sm text-slate-500"
@@ -452,8 +463,6 @@
         ></div>
 
 
-        <!-- Empty State -->
-
         <div
           id="emptyState"
           class="hidden rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center shadow-sm"
@@ -469,13 +478,11 @@
 
           </div>
 
-
           <h3
             class="text-lg font-bold text-slate-800"
           >
             ไม่พบสคริปต์
           </h3>
-
 
           <p
             class="mt-1 text-sm text-slate-500"
@@ -515,7 +522,6 @@
 
       </div>
 
-
       <div
         class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
       >
@@ -528,13 +534,11 @@
           นโยบายความเป็นส่วนตัว
         </button>
 
-
         <span
           class="text-slate-300"
         >
           |
         </span>
-
 
         <button
           type="button"
@@ -545,7 +549,6 @@
         </button>
 
       </div>
-
 
       <div
         class="flex items-center justify-center gap-2"
@@ -564,7 +567,9 @@
     </div>
 
   </footer>
-    <!-- Legal Modal -->
+
+
+  <!-- Legal Modal -->
 
   <div
     id="legalModal"
@@ -596,7 +601,6 @@
 
           </div>
 
-
           <h2
             id="legalModalTitle"
             class="truncate text-lg font-bold text-slate-900 sm:text-xl"
@@ -605,7 +609,6 @@
           </h2>
 
         </div>
-
 
         <button
           type="button"
@@ -622,7 +625,6 @@
 
       </div>
 
-
       <div
         class="overflow-y-auto px-5 py-6 sm:px-7 sm:py-7"
       >
@@ -635,7 +637,6 @@
         </div>
 
       </div>
-
 
       <div
         class="border-t border-slate-200 bg-slate-50 px-5 py-4 text-right sm:px-6"
@@ -654,9 +655,7 @@
     </div>
 
   </div>
-
-
-  <!-- Toast Notification -->
+    <!-- Toast -->
 
   <div
     id="toast"
@@ -678,7 +677,6 @@
 
       </div>
 
-
       <div
         id="toastText"
         class="text-sm font-medium"
@@ -691,17 +689,13 @@
   </div>
 
 
-  <!-- JavaScript -->
-
   <script>
 
     const SUPABASE_URL =
       'https://ofwlofzqxfdqctmogntu.supabase.co';
 
-
     const SUPABASE_PUBLISHABLE_KEY =
       'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
-
 
     const supabaseClient =
       window.supabase.createClient(
@@ -723,6 +717,7 @@
       privacy: null
     };
 
+    let currentUser = null;
 
     let toastTimer = null;
 
@@ -732,131 +727,134 @@
         'loadingScreen'
       );
 
-
     const scriptGrid =
       document.getElementById(
         'scriptGrid'
       );
-
 
     const emptyState =
       document.getElementById(
         'emptyState'
       );
 
-
     const resultText =
       document.getElementById(
         'resultText'
       );
-
 
     const searchInput =
       document.getElementById(
         'searchInput'
       );
 
-
     const categoryFilters =
       document.getElementById(
         'categoryFilters'
       );
-
 
     const siteNameHeader =
       document.getElementById(
         'siteNameHeader'
       );
 
-
     const footerSiteName =
       document.getElementById(
         'footerSiteName'
       );
-
 
     const heroTitle =
       document.getElementById(
         'heroTitle'
       );
 
-
     const heroDescription =
       document.getElementById(
         'heroDescription'
       );
-
 
     const heroBanner =
       document.getElementById(
         'heroBanner'
       );
 
-
     const logoBox =
       document.getElementById(
         'logoBox'
       );
-
 
     const footerYear =
       document.getElementById(
         'footerYear'
       );
 
-
     const legalModal =
       document.getElementById(
         'legalModal'
       );
-
 
     const legalModalTitle =
       document.getElementById(
         'legalModalTitle'
       );
 
-
     const legalModalContent =
       document.getElementById(
         'legalModalContent'
       );
-
 
     const legalModalIcon =
       document.getElementById(
         'legalModalIcon'
       );
 
-
     const toast =
       document.getElementById(
         'toast'
       );
-
 
     const toastText =
       document.getElementById(
         'toastText'
       );
 
-
     const toastIcon =
       document.getElementById(
         'toastIcon'
       );
-        function showToast(message, type = 'success') {
 
-      if (!toast || !toastText || !toastIcon) {
+    const googleLoginButton =
+      document.getElementById(
+        'googleLoginButton'
+      );
+
+    const googleLoginText =
+      document.getElementById(
+        'googleLoginText'
+      );
+
+    const adminButton =
+      document.getElementById(
+        'adminButton'
+      );
+
+
+    function showToast(
+      message,
+      type = 'success'
+    ) {
+
+      if (
+        !toast ||
+        !toastText ||
+        !toastIcon
+      ) {
         return;
       }
 
-
       clearTimeout(toastTimer);
 
-
-      toastText.textContent = message;
-
+      toastText.textContent =
+        message;
 
       if (type === 'error') {
 
@@ -884,9 +882,7 @@
 
       }
 
-
       toast.classList.add('show');
-
 
       toastTimer = setTimeout(() => {
 
@@ -895,15 +891,14 @@
       }, 2500);
 
     }
+        function escapeHtml(value) {
 
-
-
-    function escapeHtml(value) {
-
-      if (value === null || value === undefined) {
+      if (
+        value === null ||
+        value === undefined
+      ) {
         return '';
       }
-
 
       return String(value)
         .replace(/&/g, '&amp;')
@@ -915,21 +910,22 @@
     }
 
 
-
     function formatDate(dateValue) {
 
       if (!dateValue) {
         return '-';
       }
 
+      const date =
+        new Date(dateValue);
 
-      const date = new Date(dateValue);
-
-
-      if (Number.isNaN(date.getTime())) {
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
         return '-';
       }
-
 
       return date.toLocaleDateString(
         'th-TH',
@@ -943,14 +939,16 @@
     }
 
 
-
     function getStatusInfo(status) {
 
       const value =
-        String(status || 'online').toLowerCase();
+        String(
+          status || 'online'
+        ).toLowerCase();
 
-
-      if (value === 'maintenance') {
+      if (
+        value === 'maintenance'
+      ) {
 
         return {
           text: 'กำลังปรับปรุง',
@@ -960,8 +958,9 @@
 
       }
 
-
-      if (value === 'offline') {
+      if (
+        value === 'offline'
+      ) {
 
         return {
           text: 'ออฟไลน์',
@@ -970,7 +969,6 @@
         };
 
       }
-
 
       return {
         text: 'ออนไลน์',
@@ -981,57 +979,55 @@
     }
 
 
-
     function getFilteredScripts() {
 
-      return allScripts.filter(script => {
+      return allScripts.filter(
+        script => {
 
-        const categoryMatch =
-          currentCategory === 'all' ||
-          String(script.category_id || '') ===
-            String(currentCategory);
+          const categoryMatch =
+            currentCategory === 'all' ||
+            String(
+              script.category_id || ''
+            ) ===
+            String(
+              currentCategory
+            );
 
+          if (!categoryMatch) {
+            return false;
+          }
 
-        if (!categoryMatch) {
-          return false;
+          if (!currentSearch) {
+            return true;
+          }
+
+          const categoryName =
+            script.categories?.name ||
+            '';
+
+          const searchableText = [
+
+            script.title,
+
+            script.description,
+
+            script.distributor,
+
+            categoryName
+
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+          return searchableText.includes(
+            currentSearch
+          );
+
         }
-
-
-        if (!currentSearch) {
-          return true;
-        }
-
-
-        const categoryName =
-          script.categories?.name || '';
-
-
-        const searchableText = [
-
-          script.title,
-
-          script.description,
-
-          script.distributor,
-
-          categoryName,
-
-          script.code
-
-        ]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase();
-
-
-        return searchableText.includes(
-          currentSearch
-        );
-
-      });
+      );
 
     }
-
 
 
     async function loadSiteSettings() {
@@ -1039,17 +1035,18 @@
       const {
         data,
         error
-      } = await supabaseClient
+      } =
+        await supabaseClient
 
-        .from('site_settings')
+          .from('site_settings')
 
-        .select(
-          'site_name, logo_url, banner_url, hero_title, hero_description'
-        )
+          .select(
+            'site_name, logo_url, banner_url, hero_title, hero_description'
+          )
 
-        .eq('id', true)
+          .eq('id', true)
 
-        .maybeSingle();
+          .maybeSingle();
 
 
       if (error) {
@@ -1070,7 +1067,8 @@
 
 
       const siteName =
-        data.site_name || 'Script Hub';
+        data.site_name ||
+        'Script Hub';
 
 
       if (siteNameHeader) {
@@ -1113,12 +1111,14 @@
       ) {
 
         logoBox.innerHTML = `
+
           <img
             src="${escapeHtml(data.logo_url)}"
             alt="${escapeHtml(siteName)}"
             class="h-full w-full object-cover"
             onerror="this.remove()"
           >
+
         `;
 
       }
@@ -1130,9 +1130,12 @@
       ) {
 
         const bannerUrl =
-          String(data.banner_url)
-            .replace(/"/g, '%22');
-
+          String(
+            data.banner_url
+          ).replace(
+            /"/g,
+            '%22'
+          );
 
         heroBanner.style.backgroundImage =
           `linear-gradient(
@@ -1148,15 +1151,21 @@
       const {
         data,
         error
-      } = await supabaseClient
+      } =
+        await supabaseClient
 
-        .from('categories')
+          .from('categories')
 
-        .select('id, name')
+          .select(
+            'id, name'
+          )
 
-        .order('name', {
-          ascending: true
-        });
+          .order(
+            'name',
+            {
+              ascending: true
+            }
+          );
 
 
       if (error) {
@@ -1181,39 +1190,45 @@
     }
 
 
-
     async function loadScripts() {
 
       const {
         data,
         error
-      } = await supabaseClient
+      } =
+        await supabaseClient
 
-        .from('scripts')
+          .from('scripts')
 
-        .select(`
-          id,
-          title,
-          description,
-          image,
-          code,
-          status,
-          distributor,
-          created_at,
-          updated_at,
-          is_visible,
-          category_id,
-          categories (
+          .select(`
             id,
-            name
+            title,
+            description,
+            image,
+            code,
+            status,
+            distributor,
+            created_at,
+            updated_at,
+            is_visible,
+            category_id,
+            categories (
+              id,
+              name
+            )
+          `)
+
+          .eq(
+            'is_visible',
+            true
           )
-        `)
 
-        .eq('is_visible', true)
-
-        .order('created_at', {
-          ascending: false
-        });
+          .order(
+            'created_at',
+            {
+              ascending: false
+            }
+          );
 
 
       if (error) {
@@ -1243,24 +1258,27 @@
     }
 
 
-
     async function loadLegalPages() {
 
       const {
         data,
         error
-      } = await supabaseClient
+      } =
+        await supabaseClient
 
-        .from('legal_pages')
+          .from('legal_pages')
 
-        .select(
-          'id, title, content, updated_at'
-        )
+          .select(
+            'id, title, content, updated_at'
+          )
 
-        .in(
-          'id',
-          ['terms', 'privacy']
-        );
+          .in(
+            'id',
+            [
+              'terms',
+              'privacy'
+            ]
+          );
 
 
       if (error) {
@@ -1286,22 +1304,207 @@
       };
 
 
-      (data || []).forEach(page => {
+      (
+        data || []
+      ).forEach(
+        page => {
 
-        if (
-          page.id === 'terms' ||
-          page.id === 'privacy'
-        ) {
+          if (
+            page.id === 'terms' ||
+            page.id === 'privacy'
+          ) {
 
-          legalPages[page.id] =
-            page;
+            legalPages[
+              page.id
+            ] = page;
+
+          }
 
         }
-
-      });
+      );
 
     }
 
+
+    async function loadCurrentUser() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      if (error) {
+
+        console.warn(
+          'getUser:',
+          error
+        );
+
+        currentUser = null;
+
+      } else {
+
+        currentUser =
+          data?.user || null;
+
+      }
+
+
+      updateGoogleButton();
+
+    }
+
+
+    function updateGoogleButton() {
+
+      if (
+        !googleLoginButton ||
+        !googleLoginText
+      ) {
+        return;
+      }
+
+
+      if (currentUser) {
+
+        googleLoginText.textContent =
+          'ดำเนินการต่อแล้ว';
+
+        googleLoginButton.className =
+          'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 shadow-md ring-1 ring-emerald-200 transition hover:bg-emerald-100 sm:w-auto';
+
+      } else {
+
+        googleLoginText.textContent =
+          'ดำเนินการต่อด้วย Google';
+
+        googleLoginButton.className =
+          'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto';
+
+      }
+
+    }
+        async function signInWithGoogle() {
+
+      try {
+
+        if (currentUser) {
+
+          showToast(
+            'คุณดำเนินการต่อด้วย Google แล้ว',
+            'info'
+          );
+
+          return;
+
+        }
+
+
+        if (googleLoginButton) {
+
+          googleLoginButton.disabled =
+            true;
+
+          googleLoginText.textContent =
+            'กำลังเชื่อมต่อ Google...';
+
+        }
+
+
+        const redirectTo =
+          `${window.location.origin}${window.location.pathname}`;
+
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signInWithOAuth(
+            {
+              provider: 'google',
+              options: {
+                redirectTo
+              }
+            }
+          );
+
+
+        if (error) {
+
+          console.error(
+            'Google Login:',
+            error
+          );
+
+          showToast(
+            'ไม่สามารถดำเนินการต่อด้วย Google ได้',
+            'error'
+          );
+
+          if (googleLoginButton) {
+            googleLoginButton.disabled =
+              false;
+          }
+
+          updateGoogleButton();
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          'signInWithGoogle:',
+          error
+        );
+
+        showToast(
+          'เกิดข้อผิดพลาดในการเชื่อมต่อ Google',
+          'error'
+        );
+
+        if (googleLoginButton) {
+          googleLoginButton.disabled =
+            false;
+        }
+
+        updateGoogleButton();
+
+      }
+
+    }
+
+
+    async function requireGoogleForCopy() {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      currentUser =
+        data?.user || null;
+
+
+      updateGoogleButton();
+
+
+      if (!currentUser) {
+
+        showToast(
+          'โปรดดำเนินการต่อด้วย Google ก่อนจึงสามารถคัดลอก Script ได้',
+          'info'
+        );
+
+        return false;
+
+      }
+
+
+      return true;
+
+    }
 
 
     function renderCategories() {
@@ -1319,32 +1522,45 @@
             data-category="all"
             class="category-btn ${currentCategory === 'all'
               ? 'active'
-              : ''}"
+              : ''} inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
           >
             <i class="fa-solid fa-layer-group"></i>
             <span>ทั้งหมด</span>
           </button>
         `,
 
-        ...allCategories.map(category => {
+        ...allCategories.map(
+          category => {
 
-          const isActive =
-            String(currentCategory) ===
-            String(category.id);
+            const isActive =
+              String(
+                currentCategory
+              ) ===
+              String(
+                category.id
+              );
 
 
-          return `
-            <button
-              type="button"
-              data-category="${escapeHtml(category.id)}"
-              class="category-btn ${isActive ? 'active' : ''}"
-            >
-              <i class="fa-solid fa-folder"></i>
-              <span>${escapeHtml(category.name)}</span>
-            </button>
-          `;
+            return `
 
-        })
+              <button
+                type="button"
+                data-category="${escapeHtml(category.id)}"
+                class="category-btn ${isActive ? 'active' : ''} inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
+              >
+
+                <i class="fa-solid fa-folder"></i>
+
+                <span>
+                  ${escapeHtml(category.name)}
+                </span>
+
+              </button>
+
+            `;
+
+          }
+        )
 
       ];
 
@@ -1357,43 +1573,50 @@
         .querySelectorAll(
           '[data-category]'
         )
-        .forEach(button => {
+        .forEach(
+          button => {
 
-          button.addEventListener(
-            'click',
-            () => {
+            button.addEventListener(
+              'click',
+              () => {
 
-              currentCategory =
-                button.dataset.category ||
-                'all';
+                currentCategory =
+                  button.dataset.category ||
+                  'all';
 
 
-              categoryFilters
-                .querySelectorAll(
-                  '[data-category]'
-                )
-                .forEach(item => {
+                categoryFilters
+                  .querySelectorAll(
+                    '[data-category]'
+                  )
+                  .forEach(
+                    item => {
 
-                  item.classList.toggle(
-                    'active',
-                    item.dataset.category ===
-                      currentCategory
+                      item.classList.toggle(
+                        'active',
+                        item.dataset.category ===
+                          currentCategory
+                      );
+
+                    }
                   );
 
-                });
 
+                renderScripts();
 
-              renderScripts();
+              }
+            );
 
-            }
-          );
-
-        });
+          }
+        );
 
     }
         function renderScripts() {
 
-      if (!scriptGrid || !emptyState) {
+      if (
+        !scriptGrid ||
+        !emptyState
+      ) {
         return;
       }
 
@@ -1413,155 +1636,106 @@
       }
 
 
-      if (filteredScripts.length === 0) {
+      if (
+        filteredScripts.length === 0
+      ) {
 
-        scriptGrid.classList.add('hidden');
+        scriptGrid.classList.add(
+          'hidden'
+        );
 
-        emptyState.classList.remove('hidden');
+        emptyState.classList.remove(
+          'hidden'
+        );
 
         return;
 
       }
 
 
-      scriptGrid.classList.remove('hidden');
+      scriptGrid.classList.remove(
+        'hidden'
+      );
 
-      emptyState.classList.add('hidden');
-
-
-      filteredScripts.forEach(script => {
-
-        const status =
-          getStatusInfo(script.status);
+      emptyState.classList.add(
+        'hidden'
+      );
 
 
-        const categoryName =
-          script.categories?.name ||
-          'ไม่มีหมวดหมู่';
+      filteredScripts.forEach(
+        script => {
+
+          const status =
+            getStatusInfo(
+              script.status
+            );
 
 
-        const imageHtml =
-          script.image
-            ? `
-              <img
-                src="${escapeHtml(script.image)}"
-                alt="${escapeHtml(script.title || 'Script')}"
-                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                loading="lazy"
-                onerror="this.parentElement.innerHTML='<div class=&quot;flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500&quot;><i class=&quot;fa-solid fa-code&quot;></i></div>'"
-              >
-            `
-            : `
-              <div
-                class="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500"
-              >
-                <i class="fa-solid fa-code"></i>
-              </div>
-            `;
+          const categoryName =
+            script.categories?.name ||
+            'ไม่มีหมวดหมู่';
 
 
-        const card =
-          document.createElement('article');
+          const imageHtml =
+            script.image
+              ? `
+
+                <img
+                  src="${escapeHtml(script.image)}"
+                  alt="${escapeHtml(script.title || 'Script')}"
+                  class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  loading="lazy"
+                  onerror="this.parentElement.innerHTML='<div class=&quot;flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500&quot;><i class=&quot;fa-solid fa-code&quot;></i></div>'"
+                >
+
+              `
+              : `
+
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500"
+                >
+
+                  <i
+                    class="fa-solid fa-code"
+                  ></i>
+
+                </div>
+
+              `;
 
 
-        card.className =
-          'script-card group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm';
+          const card =
+            document.createElement(
+              'article'
+            );
 
 
-        card.innerHTML = `
+          card.className =
+            'script-card group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm';
 
-          <div
-            class="relative h-48 overflow-hidden bg-slate-100"
-          >
 
-            ${imageHtml}
-
+          card.innerHTML = `
 
             <div
-              class="absolute left-3 top-3"
+              class="relative h-48 overflow-hidden bg-slate-100"
             >
 
-              <span
-                class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${status.className}"
+              ${imageHtml}
+
+              <div
+                class="absolute left-3 top-3"
               >
 
                 <span
-                  class="h-1.5 w-1.5 rounded-full bg-current"
-                ></span>
+                  class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${status.className}"
+                >
 
-                ${escapeHtml(status.text)}
+                  <span
+                    class="h-1.5 w-1.5 rounded-full bg-current"
+                  ></span>
 
-              </span>
+                  ${escapeHtml(status.text)}
 
-            </div>
-
-          </div>
-
-
-          <div
-            class="flex min-h-[260px] flex-col p-5"
-          >
-
-            <div
-              class="mb-3 flex items-center justify-between gap-3"
-            >
-
-              <span
-                class="inline-flex max-w-[70%] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600"
-              >
-
-                <i
-                  class="fa-solid fa-folder"
-                ></i>
-
-                ${escapeHtml(categoryName)}
-
-              </span>
-
-
-              <span
-                class="shrink-0 text-xs text-slate-400"
-              >
-                ${escapeHtml(formatDate(script.created_at))}
-              </span>
-
-            </div>
-
-
-            <h3
-              class="mb-2 line-clamp-2 text-lg font-bold text-slate-900"
-            >
-              ${escapeHtml(script.title || 'ไม่มีชื่อ Script')}
-            </h3>
-
-
-            <p
-              class="mb-4 line-clamp-3 text-sm leading-6 text-slate-500"
-            >
-              ${escapeHtml(
-                script.description ||
-                'ไม่มีรายละเอียดสำหรับ Script นี้'
-              )}
-            </p>
-
-
-            <div
-              class="mb-5 mt-auto"
-            >
-
-              <div
-                class="flex items-center gap-2 text-xs text-slate-400"
-              >
-
-                <i
-                  class="fa-solid fa-user"
-                ></i>
-
-                <span class="truncate">
-                  ${escapeHtml(
-                    script.distributor ||
-                    'ไม่ระบุผู้จัดจำหน่าย'
-                  )}
                 </span>
 
               </div>
@@ -1570,94 +1744,174 @@
 
 
             <div
-              class="grid grid-cols-2 gap-3"
+              class="flex min-h-[260px] flex-col p-5"
             >
 
-              <button
-                type="button"
-                class="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition hover:-translate-y-0.5 hover:shadow-lg"
-                data-view-script="${escapeHtml(script.id)}"
+              <div
+                class="mb-3 flex items-center justify-between gap-3"
               >
 
-                <i
-                  class="fa-solid fa-eye mr-1.5"
-                ></i>
+                <span
+                  class="inline-flex max-w-[70%] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600"
+                >
 
-                ดูรายละเอียด
+                  <i
+                    class="fa-solid fa-folder"
+                  ></i>
 
-              </button>
+                  ${escapeHtml(categoryName)}
+
+                </span>
+
+                <span
+                  class="shrink-0 text-xs text-slate-400"
+                >
+                  ${escapeHtml(
+                    formatDate(
+                      script.created_at
+                    )
+                  )}
+                </span>
+
+              </div>
 
 
-              <button
-                type="button"
-                class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
-                data-copy-script="${escapeHtml(script.id)}"
+              <h3
+                class="mb-2 line-clamp-2 text-lg font-bold text-slate-900"
+              >
+                ${escapeHtml(
+                  script.title ||
+                  'ไม่มีชื่อ Script'
+                )}
+              </h3>
+
+
+              <p
+                class="mb-4 line-clamp-3 text-sm leading-6 text-slate-500"
+              >
+                ${escapeHtml(
+                  script.description ||
+                  'ไม่มีรายละเอียดสำหรับ Script นี้'
+                )}
+              </p>
+
+
+              <div
+                class="mb-5 mt-auto"
               >
 
-                <i
-                  class="fa-regular fa-copy mr-1.5"
-                ></i>
+                <div
+                  class="flex items-center gap-2 text-xs text-slate-400"
+                >
 
-                คัดลอก
+                  <i
+                    class="fa-solid fa-user"
+                  ></i>
 
-              </button>
+                  <span class="truncate">
+                    ${escapeHtml(
+                      script.distributor ||
+                      'ไม่ระบุผู้จัดจำหน่าย'
+                    )}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div
+                class="grid grid-cols-2 gap-3"
+              >
+
+                <button
+                  type="button"
+                  class="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition hover:-translate-y-0.5 hover:shadow-lg"
+                  data-view-script="${escapeHtml(script.id)}"
+                >
+
+                  <i
+                    class="fa-solid fa-eye mr-1.5"
+                  ></i>
+
+                  ดูรายละเอียด
+
+                </button>
+
+
+                <button
+                  type="button"
+                  class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                  data-copy-script="${escapeHtml(script.id)}"
+                >
+
+                  <i
+                    class="fa-regular fa-copy mr-1.5"
+                  ></i>
+
+                  คัดลอก
+
+                </button>
+
+              </div>
 
             </div>
 
-          </div>
-
-        `;
+          `;
 
 
-        const viewButton =
-          card.querySelector(
-            '[data-view-script]'
-          );
+          const viewButton =
+            card.querySelector(
+              '[data-view-script]'
+            );
 
 
-        const copyButton =
-          card.querySelector(
-            '[data-copy-script]'
-          );
+          const copyButton =
+            card.querySelector(
+              '[data-copy-script]'
+            );
 
 
-        if (viewButton) {
+          if (viewButton) {
 
-          viewButton.addEventListener(
-            'click',
-            () => {
+            viewButton.addEventListener(
+              'click',
+              () => {
 
-              viewScript(
-                viewButton.dataset.viewScript
-              );
+                viewScript(
+                  viewButton.dataset.viewScript
+                );
 
-            }
+              }
+            );
+
+          }
+
+
+          if (copyButton) {
+
+            copyButton.addEventListener(
+              'click',
+              () => {
+
+                copyScript(
+                  copyButton.dataset.copyScript
+                );
+
+              }
+            );
+
+          }
+
+
+          scriptGrid.appendChild(
+            card
           );
 
         }
+      );
 
-
-        if (copyButton) {
-
-          copyButton.addEventListener(
-            'click',
-            () => {
-
-              copyScript(
-                copyButton.dataset.copyScript
-              );
-
-            }
-          );
-
-        }
-
-
-        scriptGrid.appendChild(card);
-
-      });
-
-      }
+    }
         function viewScript(scriptId) {
 
       const script =
@@ -1703,8 +1957,16 @@
     }
 
 
-
     async function copyScript(scriptId) {
+
+      const canCopy =
+        await requireGoogleForCopy();
+
+
+      if (!canCopy) {
+        return;
+      }
+
 
       const script =
         allScripts.find(
@@ -1727,7 +1989,9 @@
 
 
       const code =
-        String(script.code || '');
+        String(
+          script.code || ''
+        );
 
 
       if (!code.trim()) {
@@ -1761,7 +2025,8 @@
             );
 
 
-          textarea.value = code;
+          textarea.value =
+            code;
 
           textarea.style.position =
             'fixed';
@@ -1816,16 +2081,13 @@
     }
 
 
-
     function openLegalPage(type) {
 
       if (
         type !== 'terms' &&
         type !== 'privacy'
       ) {
-
         return;
-
       }
 
 
@@ -1892,7 +2154,6 @@
     }
 
 
-
     function closeLegalPage() {
 
       if (legalModal) {
@@ -1911,8 +2172,9 @@
     }
 
 
-
-    function handleLegalBackdrop(event) {
+    function handleLegalBackdrop(
+      event
+    ) {
 
       if (
         event.target === legalModal
@@ -1925,26 +2187,31 @@
     }
 
 
-
     window.openLegalPage =
       openLegalPage;
-
 
     window.closeLegalPage =
       closeLegalPage;
 
-
     window.handleLegalBackdrop =
       handleLegalBackdrop;
-
 
     window.viewScript =
       viewScript;
 
-
     window.copyScript =
       copyScript;
-        if (searchInput) {
+        if (googleLoginButton) {
+
+      googleLoginButton.addEventListener(
+        'click',
+        signInWithGoogle
+      );
+
+    }
+
+
+    if (searchInput) {
 
       searchInput.addEventListener(
         'input',
@@ -1955,14 +2222,12 @@
               .trim()
               .toLowerCase();
 
-
           renderScripts();
 
         }
       );
 
     }
-
 
 
     document.addEventListener(
@@ -1972,7 +2237,9 @@
         if (
           event.key === 'Escape' &&
           legalModal &&
-          legalModal.classList.contains('show')
+          legalModal.classList.contains(
+            'show'
+          )
         ) {
 
           closeLegalPage();
@@ -1982,6 +2249,20 @@
       }
     );
 
+
+    supabaseClient.auth.onAuthStateChange(
+      (
+        event,
+        session
+      ) => {
+
+        currentUser =
+          session?.user || null;
+
+        updateGoogleButton();
+
+      }
+    );
 
 
     async function loadHomepage() {
@@ -1996,7 +2277,9 @@
 
           loadScripts(),
 
-          loadLegalPages()
+          loadLegalPages(),
+
+          loadCurrentUser()
 
         ]);
 
@@ -2030,13 +2313,16 @@
           );
 
 
-          setTimeout(() => {
+          setTimeout(
+            () => {
 
-            loadingScreen.classList.add(
-              'hidden'
-            );
+              loadingScreen.classList.add(
+                'hidden'
+              );
 
-          }, 300);
+            },
+            300
+          );
 
         }
 
@@ -2053,12 +2339,13 @@
     }
 
 
-
     function subscribeRealtime() {
 
       supabaseClient
 
-        .channel('homepage-scripts')
+        .channel(
+          'homepage-scripts'
+        )
 
         .on(
           'postgres_changes',
@@ -2079,10 +2366,11 @@
         .subscribe();
 
 
-
       supabaseClient
 
-        .channel('homepage-categories')
+        .channel(
+          'homepage-categories'
+        )
 
         .on(
           'postgres_changes',
@@ -2105,10 +2393,11 @@
         .subscribe();
 
 
-
       supabaseClient
 
-        .channel('homepage-settings')
+        .channel(
+          'homepage-settings'
+        )
 
         .on(
           'postgres_changes',
@@ -2129,7 +2418,6 @@
     }
 
 
-
     window.addEventListener(
       'online',
       () => {
@@ -2143,7 +2431,6 @@
     );
 
 
-
     window.addEventListener(
       'offline',
       () => {
@@ -2155,7 +2442,9 @@
 
       }
     );
-        function startHomepage() {
+
+
+    function startHomepage() {
 
       if (
         document.readyState ===
@@ -2187,10 +2476,9 @@
     }
 
 
-
     startHomepage();
 
   </script>
 
-  </body>
+</body>
 </html>
