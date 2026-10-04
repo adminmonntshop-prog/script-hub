@@ -3240,6 +3240,10 @@ function setupAuthListener(){
     supabaseClient.auth.onAuthStateChange(
         async (_event,session)=>{
 
+            if(_event === "INITIAL_SESSION"){
+                return;
+            }
+
             if(session?.user){
 
                 await handleUser(
@@ -3248,13 +3252,13 @@ function setupAuthListener(){
 
             }else{
 
-                await handleUser(null);
+                showLoginScreen();
 
             }
         }
     );
 }
-
+      
 async function startAdmin(){
 
     try{
