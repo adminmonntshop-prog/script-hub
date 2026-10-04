@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>รายละเอียด Script | Script Hub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      font-family: 'Prompt', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(99,102,241,.12), transparent 35%),
+        radial-gradient(circle at top right, rgba(59,130,246,.10), transparent 35%),
+        #f8fafc;
+      color: #0f172a;
+    }
+
+    .glass {
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .soft-shadow {
+      box-shadow:
+        0 20px 50px rgba(15,23,42,.08),
+        0 4px 14px rgba(15,23,42,.05);
+    }
+
+    .code-box {
+      background: #0f172a;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: auto;
+      border-radius: 1.25rem;
+      font-family: monospace;
+      line-height: 1.7;
+    }
+
+    .loading-spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn .35s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .copy-success {
+      animation: pop .25s ease;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(.95);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Loading -->
+  <div
+    id="loadingScreen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50"
+  >
+    <div class="text-center">
+      <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg">
+        <i class="fa-solid fa-code loading-spin"></i>
+      </div>
+
+      <p class="text-slate-600 font-medium">
+        กำลังโหลด Script...
+      </p>
+    </div>
+  </div>
+
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 glass border-b border-slate-200/70">
+
+    <div class="max-w-6xl mx-auto px-4 py-3">
+
+      <div class="flex items-center justify-between gap-3">
+
+        <!-- Logo -->
+        <a
+          href="../"
+          class="flex items-center gap-3 min-w-0"
+        >
+
+          <div
+            class="w-11 h-11 shrink-0 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg"
+          >
+            <i class="fa-solid fa-code text-lg"></i>
+          </div>
+
+          <div class="min-w-0">
+            <div class="font-bold text-slate-900 truncate">
+              Script Hub
+            </div>
+
+            <div class="text-xs text-slate-500 truncate">
+              ศูนย์รวมสคริปต์
+            </div>
+          </div>
+
+        </a>
+
+
+        <!-- Back -->
+        <a
+          href="../"
+          class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+          <span class="hidden sm:inline">กลับหน้าหลัก</span>
+        </a>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- Main -->
+  <main class="max-w-5xl mx-auto px-4 py-8">
+
+    <!-- Error -->
+    <div
+      id="errorBox"
+      class="hidden fade-in"
+    >
+      <div class="bg-white rounded-3xl p-8 soft-shadow border border-slate-200 text-center">
+
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-2xl">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <h1 class="text-xl font-bold text-slate-900 mb-2">
+          ไม่พบ Script
+        </h1>
+
+        <p
+          id="errorMessage"
+          class="text-slate-500 mb-6"
+        >
+          ไม่พบข้อมูล Script ที่ต้องการ
+        </p>
+
+        <a
+          href="../"
+          class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-xl transition"
+        >
+          <i class="fa-solid fa-house"></i>
+          กลับหน้าหลัก
+        </a>
+
+      </div>
+    </div>
+
+
+    <!-- Content -->
+    <div
+      id="scriptContent"
+      class="hidden fade-in"
+    >
+
+      <!-- Script Header Card -->
+      <section class="bg-white rounded-3xl soft-shadow border border-slate-200 overflow-hidden mb-6">
+
+        <div class="grid md:grid-cols-[280px_1fr]">
+
+          <!-- Image -->
+          <div class="bg-slate-100 aspect-square md:aspect-auto min-h-[240px]">
+
+            <img
+              id="scriptImage"
+              src=""
+              alt="Script"
+              class="w-full h-full object-cover"
+              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22500%22 viewBox=%220 0 500 500%22%3E%3Crect width=%22500%22 height=%22500%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%22250%22 y=%22250%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2260%22 fill=%22%2364758b%22%3EScript%3C/text%3E%3C/svg%3E'"
+            >
+
+          </div>
+
+
+          <!-- Info -->
+          <div class="p-6 md:p-8">
+
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+
+              <span
+                id="statusBadge"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+              ></span>
+
+              <span
+                id="categoryBadge"
+                class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold"
+              >
+                <i class="fa-solid fa-folder"></i>
+                <span id="categoryText"></span>
+              </span>
+
+            </div>
+
+
+            <h1
+              id="scriptTitle"
+              class="text-2xl md:text-4xl font-bold text-slate-900 leading-tight mb-4"
+            >
+              -
+            </h1>
+
+
+            <p
+              id="scriptDescription"
+              class="text-slate-600 leading-7 mb-6"
+            >
+              -
+            </p>
+
+
+            <div class="grid sm:grid-cols-2 gap-3">
+
+              <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                <div class="text-xs text-slate-400 mb-1">
+                  ผู้จัดจำหน่าย
+                </div>
+
+                <div
+                  id="scriptDistributor"
+                  class="font-semibold text-slate-800"
+                >
+                  -
+                </div>
+              </div>
+
+
+              <div class="rounded-2xl bg-slate-50 border border-slate-100 p-4">
+                <div class="text-xs text-slate-400 mb-1">
+                  วันที่เพิ่ม
+                </div>
+
+                <div
+                  id="scriptDate"
+                  class="font-semibold text-slate-800"
+                >
+                  -
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- Code -->
+      <section class="bg-white rounded-3xl soft-shadow border border-slate-200 p-5 md:p-7">
+
+        <div class="flex items-center justify-between gap-3 mb-4">
+
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">
+              <i class="fa-solid fa-terminal text-blue-600 mr-2"></i>
+              Script Code
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-1">
+              คัดลอกโค้ดไปใช้งานได้ทันที
+            </p>
+          </div>
+
+
+          <button
+            id="copyButton"
+            onclick="copyScript()"
+            class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-xl transition"
+          >
+            <i class="fa-regular fa-copy"></i>
+            <span>คัดลอก</span>
+          </button>
+
+        </div>
+
+
+        <pre
+          id="scriptCode"
+          class="code-box p-5 text-sm md:text-base min-h-[180px]"
+        ></pre>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- Toast -->
+  <div
+    id="toast"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden"
+  >
+    <div
+      id="toastInner"
+      class="px-5 py-3 rounded-2xl bg-slate-900 text-white shadow-2xl flex items-center gap-3"
+    >
+      <i
+        id="toastIcon"
+        class="fa-solid fa-check text-green-400"
+      ></i>
+
+      <span id="toastText">
+        สำเร็จ
+      </span>
+    </div>
+  </div>
+<script>
+  /* =========================================
+     SUPABASE CONFIG
+  ========================================= */
+
+  const SUPABASE_URL = 'https://ofwlofzqxfdqctmogntu.supabase.co';
+
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+  /* =========================================
+     STATE
+  ========================================= */
+
+  let currentScript = null;
+
+
+  /* =========================================
+     DOM
+  ========================================= */
+
+  const loadingScreen = document.getElementById('loadingScreen');
+  const errorBox = document.getElementById('errorBox');
+  const errorMessage = document.getElementById('errorMessage');
+  const scriptContent = document.getElementById('scriptContent');
+
+  const scriptImage = document.getElementById('scriptImage');
+  const scriptTitle = document.getElementById('scriptTitle');
+  const scriptDescription = document.getElementById('scriptDescription');
+  const scriptDistributor = document.getElementById('scriptDistributor');
+  const scriptDate = document.getElementById('scriptDate');
+  const scriptCode = document.getElementById('scriptCode');
+
+  const statusBadge = document.getElementById('statusBadge');
+  const categoryBadge = document.getElementById('categoryBadge');
+  const categoryText = document.getElementById('categoryText');
+
+  const copyButton = document.getElementById('copyButton');
+
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+  const toastIcon = document.getElementById('toastIcon');
+
+
+  /* =========================================
+     INIT
+  ========================================= */
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadScript();
+  });
+
+
+  /* =========================================
+     GET SCRIPT ID
+  ========================================= */
+
+  function getScriptId() {
+
+    const params = new URLSearchParams(window.location.search);
+
+    const id = params.get('id');
+
+    if (!id) {
+      return null;
+    }
+
+    return id;
+  }
+
+
+  /* =========================================
+     LOAD SCRIPT
+  ========================================= */
+
+  async function loadScript() {
+
+    try {
+
+      const scriptId = getScriptId();
+
+      if (!scriptId) {
+        showError('ไม่พบรหัส Script ในลิงก์');
+        return;
+      }
+
+
+      const { data, error } = await supabaseClient
+        .from('scripts')
+        .select(`
+          id,
+          title,
+          description,
+          image,
+          code,
+          status,
+          distributor,
+          created_at,
+          updated_at,
+          is_visible,
+          category_id,
+          categories (
+            id,
+            name
+          )
+        `)
+        .eq('id', scriptId)
+        .maybeSingle();
+
+
+      if (error) {
+        console.error('Load script error:', error);
+        showError('ไม่สามารถโหลดข้อมูล Script ได้');
+        return;
+      }
+
+
+      if (!data) {
+        showError('ไม่พบ Script นี้ในระบบ');
+        return;
+      }
+
+
+      /*
+       * Public users must not see hidden scripts.
+       *
+       * Admin users can still open hidden scripts because
+       * the database RLS policy allows admins to read them.
+       *
+       * Since this page is public, we additionally check
+       * visibility on the client side.
+       */
+
+      if (data.is_visible !== true) {
+        showError('Script นี้ยังไม่เปิดให้แสดงบนเว็บไซต์');
+        return;
+      }
+
+
+      currentScript = data;
+
+      renderScript(data);
+
+    } catch (err) {
+
+      console.error('Unexpected error:', err);
+
+      showError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+
+    }
+  }
+
+
+  /* =========================================
+     RENDER SCRIPT
+  ========================================= */
+
+  function renderScript(data) {
+
+    const title = data.title || 'ไม่มีชื่อ Script';
+
+    const description =
+      data.description ||
+      'ไม่มีคำอธิบายสำหรับ Script นี้';
+
+    const distributor =
+      data.distributor ||
+      'ไม่ระบุ';
+
+    const code =
+      data.code ||
+      '';
+
+
+    /* Title */
+
+    scriptTitle.textContent = title;
+
+
+    /* Description */
+
+    scriptDescription.textContent = description;
+
+
+    /* Distributor */
+
+    scriptDistributor.textContent = distributor;
+
+
+    /* Date */
+
+    scriptDate.textContent = formatThaiDate(data.created_at);
+
+
+    /* Code */
+
+    scriptCode.textContent = code;
+
+
+    /* Image */
+
+    if (data.image) {
+
+      scriptImage.src = data.image;
+
+    } else {
+
+      scriptImage.src = createPlaceholderImage(title);
+
+    }
+
+
+    /* Status */
+
+    renderStatus(data.status);
+
+
+    /* Category */
+
+    if (
+      data.categories &&
+      data.categories.name
+    ) {
+
+      categoryText.textContent =
+        data.categories.name;
+
+      categoryBadge.classList.remove('hidden');
+
+    } else {
+
+      categoryBadge.classList.add('hidden');
+
+    }
+
+
+    /* Page title */
+
+    document.title =
+      `${title} | Script Hub`;
+
+
+    /* Show page */
+
+    loadingScreen.classList.add('hidden');
+
+    errorBox.classList.add('hidden');
+
+    scriptContent.classList.remove('hidden');
+
+  }
+
+
+  /* =========================================
+     STATUS BADGE
+  ========================================= */
+
+  function renderStatus(status) {
+
+    const value = status || 'online';
+
+
+    if (value === 'online') {
+
+      statusBadge.className =
+        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold';
+
+      statusBadge.innerHTML =
+        '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ออนไลน์';
+
+      return;
+    }
+
+
+    if (value === 'maintenance') {
+
+      statusBadge.className =
+        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold';
+
+      statusBadge.innerHTML =
+        '<i class="fa-solid fa-screwdriver-wrench"></i> ปรับปรุง';
+
+      return;
+    }
+
+
+    statusBadge.className =
+      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 text-red-700 text-xs font-semibold';
+
+    statusBadge.innerHTML =
+      '<span class="w-2 h-2 rounded-full bg-red-500"></span> ออฟไลน์';
+  }
+
+
+  /* =========================================
+     FORMAT DATE
+  ========================================= */
+
+  function formatThaiDate(value) {
+
+    if (!value) {
+      return 'ไม่ระบุ';
+    }
+
+
+    const date = new Date(value);
+
+
+    if (Number.isNaN(date.getTime())) {
+      return 'ไม่ระบุ';
+    }
+
+
+    return new Intl.DateTimeFormat(
+      'th-TH',
+      {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }
+    ).format(date);
+
+  }
+
+
+  /* =========================================
+     PLACEHOLDER IMAGE
+  ========================================= */
+
+  function createPlaceholderImage(title) {
+
+    const safeTitle =
+      String(title || 'Script')
+        .substring(0, 20);
+
+
+    const svg = `
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="800"
+        height="800"
+        viewBox="0 0 800 800"
+      >
+        <defs>
+          <linearGradient
+            id="g"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1"
+          >
+            <stop
+              offset="0%"
+              stop-color="#2563eb"
+            />
+
+            <stop
+              offset="100%"
+              stop-color="#4f46e5"
+            />
+          </linearGradient>
+        </defs>
+
+        <rect
+          width="800"
+          height="800"
+          fill="url(#g)"
+        />
+
+        <circle
+          cx="400"
+          cy="320"
+          r="95"
+          fill="rgba(255,255,255,.18)"
+        />
+
+        <text
+          x="400"
+          y="345"
+          text-anchor="middle"
+          font-size="100"
+          fill="white"
+        >
+          &lt;/&gt;
+        </text>
+
+        <text
+          x="400"
+          y="500"
+          text-anchor="middle"
+          font-size="42"
+          font-family="Arial"
+          font-weight="bold"
+          fill="white"
+        >
+          ${escapeSvgText(safeTitle)}
+        </text>
+
+      </svg>
+    `;
+
+
+    return 'data:image/svg+xml;charset=UTF-8,' +
+      encodeURIComponent(svg);
+
+  }
+
+
+  /* =========================================
+     ESCAPE SVG TEXT
+  ========================================= */
+
+  function escapeSvgText(value) {
+
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  }
+
+
+  /* =========================================
+     COPY SCRIPT
+  ========================================= */
+
+  async function copyScript() {
+
+    if (!currentScript) {
+      return;
+    }
+
+
+    const code =
+      currentScript.code || '';
+
+
+    if (!code) {
+
+      showToast(
+        'ไม่มีโค้ดให้คัดลอก',
+        'error'
+      );
+
+      return;
+    }
+
+
+    try {
+
+      await navigator.clipboard.writeText(code);
+
+      showCopySuccess();
+
+      showToast(
+        'คัดลอก Script เรียบร้อยแล้ว',
+        'success'
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Clipboard error:',
+        error
+      );
+
+      fallbackCopy(code);
+
+    }
+
+  }
+
+
+  /* =========================================
+     COPY FALLBACK
+  ========================================= */
+
+  function fallbackCopy(text) {
+
+    try {
+
+      const textarea =
+        document.createElement('textarea');
+
+
+      textarea.value = text;
+
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      textarea.style.top = '-9999px';
+
+
+      document.body.appendChild(textarea);
+
+      textarea.focus();
+      textarea.select();
+
+
+      const successful =
+        document.execCommand('copy');
+
+
+      textarea.remove();
+
+
+      if (successful) {
+
+        showCopySuccess();
+
+        showToast(
+          'คัดลอก Script เรียบร้อยแล้ว',
+          'success'
+        );
+
+      } else {
+
+        showToast(
+          'ไม่สามารถคัดลอกได้',
+          'error'
+        );
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        'Fallback copy error:',
+        error
+      );
+
+      showToast(
+        'ไม่สามารถคัดลอกได้',
+        'error'
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     COPY BUTTON SUCCESS
+  ========================================= */
+
+  function showCopySuccess() {
+
+    if (!copyButton) {
+      return;
+    }
+
+
+    copyButton.classList.add(
+      'copy-success'
+    );
+
+
+    copyButton.innerHTML =
+      '<i class="fa-solid fa-check"></i><span>คัดลอกแล้ว</span>';
+
+
+    setTimeout(() => {
+
+      copyButton.classList.remove(
+        'copy-success'
+      );
+
+      copyButton.innerHTML =
+        '<i class="fa-regular fa-copy"></i><span>คัดลอก</span>';
+
+    }, 1800);
+
+  }
+
+
+  /* =========================================
+     ERROR
+  ========================================= */
+
+  function showError(message) {
+
+    loadingScreen.classList.add('hidden');
+
+    scriptContent.classList.add('hidden');
+
+    errorBox.classList.remove('hidden');
+
+    errorMessage.textContent =
+      message || 'เกิดข้อผิดพลาด';
+
+  }
+
+
+  /* =========================================
+     TOAST
+  ========================================= */
+
+  let toastTimer = null;
+
+
+  function showToast(message, type = 'success') {
+
+    clearTimeout(toastTimer);
+
+
+    toastText.textContent =
+      message;
+
+
+    if (type === 'error') {
+
+      toastIcon.className =
+        'fa-solid fa-circle-exclamation text-red-400';
+
+    } else {
+
+      toastIcon.className =
+        'fa-solid fa-check text-green-400';
+
+    }
+
+
+    toast.classList.remove('hidden');
+
+
+    toastTimer = setTimeout(() => {
+
+      toast.classList.add('hidden');
+
+    }, 2600);
+
+  }
+
+</script>
+<script>
+  /* =========================================
+     EXTRA UTILITIES
+  ========================================= */
+
+  function escapeHtml(value) {
+
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  }
+
+
+  /* =========================================
+     PAGE VISIBILITY CHECK
+  ========================================= */
+
+  function checkPageVisibility() {
+
+    if (!currentScript) {
+      return false;
+    }
+
+    return currentScript.is_visible === true;
+
+  }
+
+
+  /* =========================================
+     KEYBOARD SHORTCUT
+  ========================================= */
+
+  document.addEventListener('keydown', (event) => {
+
+    /*
+     * Ctrl + C is intentionally not overridden.
+     * Users can still select and copy code normally.
+     */
+
+    if (
+      event.key === 'Escape' &&
+      toast &&
+      !toast.classList.contains('hidden')
+    ) {
+
+      toast.classList.add('hidden');
+
+    }
+
+  });
+
+
+  /* =========================================
+     IMAGE ERROR HANDLER
+  ========================================= */
+
+  if (scriptImage) {
+
+    scriptImage.addEventListener(
+      'error',
+      () => {
+
+        if (!currentScript) {
+          return;
+        }
+
+        scriptImage.src =
+          createPlaceholderImage(
+            currentScript.title
+          );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================
+     PREVENT EMPTY CODE DISPLAY
+  ========================================= */
+
+  function normalizeCode(code) {
+
+    if (
+      code === null ||
+      code === undefined
+    ) {
+
+      return '';
+
+    }
+
+    return String(code);
+
+  }
+
+
+  /* =========================================
+     UPDATE CODE DISPLAY
+  ========================================= */
+
+  function refreshCodeDisplay() {
+
+    if (!scriptCode) {
+      return;
+    }
+
+    const code =
+      normalizeCode(
+        currentScript?.code
+      );
+
+    scriptCode.textContent =
+      code || '// ไม่มี Script Code';
+
+  }
+
+
+  /* =========================================
+     DOCUMENT TITLE
+  ========================================= */
+
+  function updateDocumentTitle() {
+
+    if (!currentScript) {
+      document.title =
+        'Script | Script Hub';
+
+      return;
+    }
+
+    const title =
+      currentScript.title ||
+      'Script';
+
+    document.title =
+      `${title} | Script Hub`;
+
+  }
+
+
+  /* =========================================
+     META DESCRIPTION
+  ========================================= */
+
+  function updateMetaDescription() {
+
+    if (!currentScript) {
+      return;
+    }
+
+    const description =
+      currentScript.description ||
+      'รายละเอียด Script จาก Script Hub';
+
+
+    let meta =
+      document.querySelector(
+        'meta[name="description"]'
+      );
+
+
+    if (!meta) {
+
+      meta =
+        document.createElement('meta');
+
+      meta.name =
+        'description';
+
+      document.head.appendChild(meta);
+
+    }
+
+
+    meta.content =
+      description
+        .replace(/\s+/g, ' ')
+        .trim()
+        .substring(0, 160);
+
+  }
+
+
+  /* =========================================
+     OPEN SCRIPT
+  ========================================= */
+
+  function openScript() {
+
+    if (!currentScript) {
+      return;
+    }
+
+    refreshCodeDisplay();
+
+    updateDocumentTitle();
+
+    updateMetaDescription();
+
+  }
+
+
+  /* =========================================
+     MOBILE COPY FEEDBACK
+  ========================================= */
+
+  function prepareMobileCopy() {
+
+    if (!copyButton) {
+      return;
+    }
+
+
+    copyButton.setAttribute(
+      'aria-label',
+      'คัดลอก Script'
+    );
+
+  }
+
+
+  /* =========================================
+     ACCESSIBILITY
+  ========================================= */
+
+  function setupAccessibility() {
+
+    if (scriptImage) {
+
+      scriptImage.setAttribute(
+        'alt',
+        currentScript?.title
+          ? `รูปภาพ ${currentScript.title}`
+          : 'รูปภาพ Script'
+      );
+
+    }
+
+
+    if (scriptCode) {
+
+      scriptCode.setAttribute(
+        'aria-label',
+        'โค้ด Script'
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     FINALIZE PAGE
+  ========================================= */
+
+  function finalizePage() {
+
+    if (!checkPageVisibility()) {
+      return;
+    }
+
+    openScript();
+
+    prepareMobileCopy();
+
+    setupAccessibility();
+
+  }
+
+
+  /* =========================================
+     WATCH LOAD
+  ========================================= */
+
+  const originalLoadScript =
+    loadScript;
+
+
+  loadScript = async function () {
+
+    await originalLoadScript();
+
+    if (
+      currentScript &&
+      currentScript.is_visible === true
+    ) {
+
+      finalizePage();
+
+    }
+
+  };
+
+
+  /* =========================================
+     RETRY FUNCTION
+  ========================================= */
+
+  function retryLoadScript() {
+
+    if (!loadingScreen) {
+      return;
+    }
+
+
+    errorBox.classList.add('hidden');
+
+    scriptContent.classList.add('hidden');
+
+    loadingScreen.classList.remove('hidden');
+
+
+    loadScript();
+
+  }
+
+
+  /* =========================================
+     ONLINE / OFFLINE NOTICE
+  ========================================= */
+
+  window.addEventListener(
+    'offline',
+    () => {
+
+      showToast(
+        'ขณะนี้อุปกรณ์ออฟไลน์',
+        'error'
+      );
+
+    }
+  );
+
+
+  window.addEventListener(
+    'online',
+    () => {
+
+      showToast(
+        'เชื่อมต่ออินเทอร์เน็ตแล้ว',
+        'success'
+      );
+
+    }
+  );
+
+
+  /* =========================================
+     EXPOSE FUNCTIONS
+  ========================================= */
+
+  window.copyScript =
+    copyScript;
+
+  window.retryLoadScript =
+    retryLoadScript;
+
+
+  /* =========================================
+     PAGE READY
+  ========================================= */
+
+  prepareMobileCopy();
+
+</script>
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer class="max-w-5xl mx-auto px-4 pb-8 pt-4">
+
+  <div class="text-center text-sm text-slate-400">
+
+    <p>
+      © <span id="footerYear"></span> Script Hub
+    </p>
+
+    <p class="mt-1">
+      ศูนย์รวมสคริปต์พร้อมใช้งาน
+    </p>
+
+  </div>
+
+</footer>
+
+
+<script>
+  /* =========================================
+     FOOTER YEAR
+  ========================================= */
+
+  const footerYear =
+    document.getElementById('footerYear');
+
+  if (footerYear) {
+
+    footerYear.textContent =
+      new Date().getFullYear();
+
+  }
+
+
+  /* =========================================
+     FINAL ERROR SAFETY
+  ========================================= */
+
+  window.addEventListener(
+    'error',
+    (event) => {
+
+      console.error(
+        'Page error:',
+        event.error || event.message
+      );
+
+    }
+  );
+
+
+  /* =========================================
+     SUPABASE SESSION SAFETY
+  ========================================= */
+
+  /*
+   * This page is public.
+   *
+   * No login is required.
+   * Supabase only uses the public/publishable key.
+   */
+
+</script>
+
+</body>
+</html>
