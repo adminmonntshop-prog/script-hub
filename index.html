@@ -10,9 +10,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>
-    Script Hub | ศูนย์รวมสคริปต์
-  </title>
+  <title>Monnt Hub</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -37,9 +35,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   >
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
 
@@ -124,8 +120,7 @@
     }
 
     .toast {
-      transform:
-        translate(-50%, -150%);
+      transform: translate(-50%, -150%);
       opacity: 0;
       pointer-events: none;
       transition:
@@ -134,10 +129,8 @@
     }
 
     .toast.show {
-      transform:
-        translate(-50%, 0);
+      transform: translate(-50%, 0);
       opacity: 1;
-      pointer-events: none;
     }
 
     .legal-link {
@@ -175,13 +168,42 @@
       display: none;
     }
 
+    .menu-panel {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition:
+        opacity .2s ease,
+        transform .2s ease,
+        visibility .2s ease;
+    }
+
+    .menu-panel.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .menu-backdrop {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease;
+    }
+
+    .menu-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
   </style>
 
 </head>
 
-<body
-  class="min-h-screen text-slate-800"
->
+
+<body class="min-h-screen text-slate-800">
+
+
+  <!-- Loading -->
 
   <div
     id="loadingScreen"
@@ -191,24 +213,19 @@
     <div class="text-center">
 
       <div
-        class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-xl"
+        id="loadingLogo"
+        class="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-xl"
       >
 
-        <i
-          class="fa-solid fa-code text-2xl"
-        ></i>
+        <i class="fa-solid fa-code text-2xl"></i>
 
       </div>
 
-      <div
-        class="text-lg font-semibold text-slate-700"
-      >
-        กำลังโหลด Script Hub...
+      <div class="text-lg font-semibold text-slate-700">
+        กำลังโหลด Monnt Hub...
       </div>
 
-      <div
-        class="mt-3 flex justify-center"
-      >
+      <div class="mt-3 flex justify-center">
 
         <div
           class="h-6 w-6 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"
@@ -219,20 +236,21 @@
     </div>
 
   </div>
-    <!-- Header -->
+
+
+  <!-- Header -->
 
   <header
     class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"
   >
 
-    <div
-      class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3"
-    >
+    <div class="mx-auto max-w-7xl px-4 py-3">
 
       <!-- Google Login -->
 
       <div
-        class="flex items-center justify-center"
+        id="topGoogleLogin"
+        class="mb-3 flex items-center justify-center"
       >
 
         <button
@@ -241,11 +259,9 @@
           class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto"
         >
 
-          <i
-            class="fa-brands fa-google text-red-500"
-          ></i>
+          <i class="fa-brands fa-google text-red-500"></i>
 
-          <span id="googleLoginText">
+          <span>
             ดำเนินการต่อด้วย Google
           </span>
 
@@ -254,11 +270,11 @@
       </div>
 
 
-      <!-- Main Header Row -->
+      <!-- Main Header -->
 
-      <div
-        class="flex items-center justify-between gap-3"
-      >
+      <div class="flex items-center justify-between gap-3">
+
+        <!-- Logo / Name -->
 
         <a
           href="./"
@@ -270,9 +286,7 @@
             class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg"
           >
 
-            <i
-              class="fa-solid fa-code text-lg"
-            ></i>
+            <i class="fa-solid fa-code text-lg"></i>
 
           </div>
 
@@ -282,7 +296,7 @@
               id="siteNameHeader"
               class="truncate text-base font-bold text-slate-900 md:text-lg"
             >
-              Script Hub
+              Monnt Hub
             </div>
 
             <div
@@ -296,25 +310,48 @@
         </a>
 
 
-        <a
-          id="adminButton"
-          href="./admin/"
-          class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
-        >
+        <!-- Right -->
 
-          <i
-            class="fa-solid fa-shield-halved"
-          ></i>
+        <div class="flex items-center gap-2">
 
-          <span class="hidden sm:inline">
-            เข้าสู่ระบบ Admin
-          </span>
+          <!-- Admin -->
 
-          <span class="sm:hidden">
-            Admin
-          </span>
+          <a
+            href="./admin/"
+            id="adminButton"
+            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
+          >
 
-        </a>
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <span class="hidden sm:inline">
+              เข้าสู่ระบบ Admin
+            </span>
+
+            <span class="sm:hidden">
+              Admin
+            </span>
+
+          </a>
+
+
+          <!-- Hamburger -->
+
+          <button
+            id="menuButton"
+            type="button"
+            aria-label="เปิดเมนู"
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+          >
+
+            <i
+              id="menuIcon"
+              class="fa-solid fa-bars text-lg"
+            ></i>
+
+          </button>
+
+        </div>
 
       </div>
 
@@ -323,14 +360,148 @@
   </header>
 
 
+  <!-- Menu Backdrop -->
+
+  <div
+    id="menuBackdrop"
+    class="menu-backdrop fixed inset-0 z-[100] bg-slate-950/30 backdrop-blur-sm"
+  ></div>
+
+
+  <!-- Menu -->
+
+  <div
+    id="menuPanel"
+    class="menu-panel fixed right-4 top-[115px] z-[110] w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+  >
+
+    <div
+      class="border-b border-slate-100 bg-gradient-to-r from-blue-50 to-violet-50 px-5 py-4"
+    >
+
+      <div class="flex items-center gap-3">
+
+        <div
+          id="menuLogo"
+          class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-md"
+        >
+
+          <i class="fa-solid fa-code"></i>
+
+        </div>
+
+        <div>
+
+          <div
+            id="menuSiteName"
+            class="font-bold text-slate-900"
+          >
+            Monnt Hub
+          </div>
+
+          <div class="text-xs text-slate-500">
+            เมนูเว็บไซต์
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="p-3">
+
+      <!-- Get Key -->
+
+      <button
+        id="getKeyMenuButton"
+        type="button"
+        class="flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
+      >
+
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+        >
+
+          <i class="fa-solid fa-key"></i>
+
+        </span>
+
+        <span>
+          Get Key
+        </span>
+
+        <i
+          class="fa-solid fa-chevron-right ml-auto text-xs text-slate-400"
+        ></i>
+
+      </button>
+
+
+      <!-- Google Login in Menu -->
+
+      <button
+        id="menuGoogleLoginButton"
+        type="button"
+        class="flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-red-50 hover:text-red-600"
+      >
+
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-500"
+        >
+
+          <i class="fa-brands fa-google"></i>
+
+        </span>
+
+        <span>
+          ดำเนินการต่อด้วย Google
+        </span>
+
+        <i
+          class="fa-solid fa-chevron-right ml-auto text-xs text-slate-400"
+        ></i>
+
+      </button>
+
+
+      <!-- Logout -->
+
+      <button
+        id="logoutButton"
+        type="button"
+        class="hidden w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50"
+      >
+
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600"
+        >
+
+          <i class="fa-solid fa-right-from-bracket"></i>
+
+        </span>
+
+        <span>
+          ออกจากระบบ
+        </span>
+
+        <i
+          class="fa-solid fa-chevron-right ml-auto text-xs text-red-300"
+        ></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- HERO -->
+
   <main>
 
-
-    <!-- HERO -->
-
-    <section
-      class="px-4 pt-6 md:pt-8"
-    >
+    <section class="px-4 pt-6 md:pt-8">
 
       <div
         id="heroBanner"
@@ -349,15 +520,14 @@
             class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm backdrop-blur-md"
           >
 
-            <i
-              class="fa-solid fa-wand-magic-sparkles"
-            ></i>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
 
-            <span>
-              Script Hub
+            <span id="heroBadge">
+              Monnt Hub
             </span>
 
           </div>
+
 
           <h1
             id="heroTitle"
@@ -366,6 +536,7 @@
             ค้นหาและคัดลอกสคริปต์พร้อมใช้งาน
           </h1>
 
+
           <p
             id="heroDescription"
             class="mt-4 max-w-2xl text-sm leading-7 text-blue-50 sm:text-base"
@@ -373,9 +544,8 @@
             รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย
           </p>
 
-          <div
-            class="mt-7 max-w-3xl"
-          >
+
+          <div class="mt-7 max-w-3xl">
 
             <div
               class="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/95 px-4 py-3 shadow-xl"
@@ -404,15 +574,11 @@
     </section>
 
 
-    <!-- Category Filters -->
+    <!-- Categories -->
 
-    <section
-      class="px-4 pt-6"
-    >
+    <section class="px-4 pt-6">
 
-      <div
-        class="mx-auto max-w-7xl"
-      >
+      <div class="mx-auto max-w-7xl">
 
         <div
           id="categoryFilters"
@@ -422,16 +588,16 @@
       </div>
 
     </section>
-        <!-- Scripts -->
+
+
+    <!-- Scripts -->
 
     <section
       id="scriptSection"
       class="px-4 py-6 md:py-8"
     >
 
-      <div
-        class="mx-auto max-w-7xl"
-      >
+      <div class="mx-auto max-w-7xl">
 
         <div
           class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"
@@ -439,9 +605,7 @@
 
           <div>
 
-            <h2
-              class="text-2xl font-bold text-slate-900"
-            >
+            <h2 class="text-2xl font-bold text-slate-900">
               สคริปต์ทั้งหมด
             </h2>
 
@@ -472,21 +636,15 @@
             class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400"
           >
 
-            <i
-              class="fa-solid fa-box-open text-2xl"
-            ></i>
+            <i class="fa-solid fa-box-open text-2xl"></i>
 
           </div>
 
-          <h3
-            class="text-lg font-bold text-slate-800"
-          >
+          <h3 class="text-lg font-bold text-slate-800">
             ไม่พบสคริปต์
           </h3>
 
-          <p
-            class="mt-1 text-sm text-slate-500"
-          >
+          <p class="mt-1 text-sm text-slate-500">
             ลองเปลี่ยนคำค้นหาหรือหมวดหมู่
           </p>
 
@@ -501,9 +659,7 @@
 
   <!-- Footer -->
 
-  <footer
-    class="border-t border-slate-200 bg-white"
-  >
+  <footer class="border-t border-slate-200 bg-white">
 
     <div
       class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-7 text-center text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left"
@@ -515,12 +671,13 @@
         <span id="footerYear"></span>
 
         <span id="footerSiteName">
-          Script Hub
+          Monnt Hub
         </span>
 
         — All rights reserved.
 
       </div>
+
 
       <div
         class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
@@ -534,9 +691,7 @@
           นโยบายความเป็นส่วนตัว
         </button>
 
-        <span
-          class="text-slate-300"
-        >
+        <span class="text-slate-300">
           |
         </span>
 
@@ -550,16 +705,13 @@
 
       </div>
 
-      <div
-        class="flex items-center justify-center gap-2"
-      >
 
-        <i
-          class="fa-solid fa-code text-blue-600"
-        ></i>
+      <div class="flex items-center justify-center gap-2">
 
-        <span>
-          Script Hub
+        <i class="fa-solid fa-code text-blue-600"></i>
+
+        <span id="footerBrand">
+          Monnt Hub
         </span>
 
       </div>
@@ -586,18 +738,14 @@
         class="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6"
       >
 
-        <div
-          class="flex min-w-0 items-center gap-3"
-        >
+        <div class="flex min-w-0 items-center gap-3">
 
           <div
             id="legalModalIcon"
             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600"
           >
 
-            <i
-              class="fa-solid fa-shield-halved"
-            ></i>
+            <i class="fa-solid fa-shield-halved"></i>
 
           </div>
 
@@ -610,6 +758,7 @@
 
         </div>
 
+
         <button
           type="button"
           onclick="closeLegalPage()"
@@ -617,17 +766,14 @@
           aria-label="ปิด"
         >
 
-          <i
-            class="fa-solid fa-xmark"
-          ></i>
+          <i class="fa-solid fa-xmark"></i>
 
         </button>
 
       </div>
 
-      <div
-        class="overflow-y-auto px-5 py-6 sm:px-7 sm:py-7"
-      >
+
+      <div class="overflow-y-auto px-5 py-6 sm:px-7 sm:py-7">
 
         <div
           id="legalModalContent"
@@ -637,6 +783,7 @@
         </div>
 
       </div>
+
 
       <div
         class="border-t border-slate-200 bg-slate-50 px-5 py-4 text-right sm:px-6"
@@ -655,25 +802,23 @@
     </div>
 
   </div>
-    <!-- Toast -->
+
+
+  <!-- Toast -->
 
   <div
     id="toast"
     class="toast fixed left-1/2 top-4 z-[1000] w-[calc(100%-2rem)] max-w-md rounded-2xl bg-slate-900 px-4 py-3 text-white shadow-2xl"
   >
 
-    <div
-      class="flex items-center gap-3"
-    >
+    <div class="flex items-center gap-3">
 
       <div
         id="toastIcon"
         class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10"
       >
 
-        <i
-          class="fa-solid fa-check"
-        ></i>
+        <i class="fa-solid fa-check"></i>
 
       </div>
 
@@ -691,6 +836,10 @@
 
   <script>
 
+    /* =========================
+       SUPABASE
+    ========================= */
+
     const SUPABASE_URL =
       'https://ofwlofzqxfdqctmogntu.supabase.co';
 
@@ -700,9 +849,21 @@
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            flowType: 'pkce'
+          }
+        }
       );
 
+
+    /* =========================
+       STATE
+    ========================= */
 
     let allScripts = [];
 
@@ -712,130 +873,171 @@
 
     let currentSearch = '';
 
+    let currentUser = null;
+
+    let toastTimer = null;
+
     let legalPages = {
       terms: null,
       privacy: null
     };
 
-    let currentUser = null;
 
-    let toastTimer = null;
-
+    /* =========================
+       ELEMENTS
+    ========================= */
 
     const loadingScreen =
-      document.getElementById(
-        'loadingScreen'
-      );
+      document.getElementById('loadingScreen');
+
+    const loadingLogo =
+      document.getElementById('loadingLogo');
 
     const scriptGrid =
-      document.getElementById(
-        'scriptGrid'
-      );
+      document.getElementById('scriptGrid');
 
     const emptyState =
-      document.getElementById(
-        'emptyState'
-      );
+      document.getElementById('emptyState');
 
     const resultText =
-      document.getElementById(
-        'resultText'
-      );
+      document.getElementById('resultText');
 
     const searchInput =
-      document.getElementById(
-        'searchInput'
-      );
+      document.getElementById('searchInput');
 
     const categoryFilters =
-      document.getElementById(
-        'categoryFilters'
-      );
+      document.getElementById('categoryFilters');
 
     const siteNameHeader =
-      document.getElementById(
-        'siteNameHeader'
-      );
+      document.getElementById('siteNameHeader');
+
+    const menuSiteName =
+      document.getElementById('menuSiteName');
 
     const footerSiteName =
-      document.getElementById(
-        'footerSiteName'
-      );
+      document.getElementById('footerSiteName');
+
+    const footerBrand =
+      document.getElementById('footerBrand');
+
+    const heroBadge =
+      document.getElementById('heroBadge');
 
     const heroTitle =
-      document.getElementById(
-        'heroTitle'
-      );
+      document.getElementById('heroTitle');
 
     const heroDescription =
-      document.getElementById(
-        'heroDescription'
-      );
+      document.getElementById('heroDescription');
 
     const heroBanner =
-      document.getElementById(
-        'heroBanner'
-      );
+      document.getElementById('heroBanner');
 
     const logoBox =
-      document.getElementById(
-        'logoBox'
-      );
+      document.getElementById('logoBox');
+
+    const menuLogo =
+      document.getElementById('menuLogo');
 
     const footerYear =
-      document.getElementById(
-        'footerYear'
-      );
+      document.getElementById('footerYear');
 
-    const legalModal =
-      document.getElementById(
-        'legalModal'
-      );
-
-    const legalModalTitle =
-      document.getElementById(
-        'legalModalTitle'
-      );
-
-    const legalModalContent =
-      document.getElementById(
-        'legalModalContent'
-      );
-
-    const legalModalIcon =
-      document.getElementById(
-        'legalModalIcon'
-      );
-
-    const toast =
-      document.getElementById(
-        'toast'
-      );
-
-    const toastText =
-      document.getElementById(
-        'toastText'
-      );
-
-    const toastIcon =
-      document.getElementById(
-        'toastIcon'
-      );
+    const topGoogleLogin =
+      document.getElementById('topGoogleLogin');
 
     const googleLoginButton =
-      document.getElementById(
-        'googleLoginButton'
+      document.getElementById('googleLoginButton');
+
+    const menuGoogleLoginButton =
+      document.getElementById('menuGoogleLoginButton');
+
+    const logoutButton =
+      document.getElementById('logoutButton');
+
+    const menuButton =
+      document.getElementById('menuButton');
+
+    const menuIcon =
+      document.getElementById('menuIcon');
+
+    const menuPanel =
+      document.getElementById('menuPanel');
+
+    const menuBackdrop =
+      document.getElementById('menuBackdrop');
+
+    const getKeyMenuButton =
+      document.getElementById('getKeyMenuButton');
+
+    const legalModal =
+      document.getElementById('legalModal');
+
+    const legalModalTitle =
+      document.getElementById('legalModalTitle');
+
+    const legalModalContent =
+      document.getElementById('legalModalContent');
+
+    const legalModalIcon =
+      document.getElementById('legalModalIcon');
+
+    const toast =
+      document.getElementById('toast');
+
+    const toastText =
+      document.getElementById('toastText');
+
+    const toastIcon =
+      document.getElementById('toastIcon');
+
+
+    /* =========================
+       HELPERS
+    ========================= */
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return '';
+      }
+
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    }
+
+
+    function formatDate(dateValue) {
+
+      if (!dateValue) {
+        return '-';
+      }
+
+      const date =
+        new Date(dateValue);
+
+      if (
+        Number.isNaN(date.getTime())
+      ) {
+        return '-';
+      }
+
+      return date.toLocaleDateString(
+        'th-TH',
+        {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        }
       );
 
-    const googleLoginText =
-      document.getElementById(
-        'googleLoginText'
-      );
-
-    const adminButton =
-      document.getElementById(
-        'adminButton'
-      );
+    }
 
 
     function showToast(
@@ -843,11 +1045,7 @@
       type = 'success'
     ) {
 
-      if (
-        !toast ||
-        !toastText ||
-        !toastIcon
-      ) {
+      if (!toast) {
         return;
       }
 
@@ -884,151 +1082,294 @@
 
       toast.classList.add('show');
 
-      toastTimer = setTimeout(() => {
-
-        toast.classList.remove('show');
-
-      }, 2500);
-
-    }
-        function escapeHtml(value) {
-
-      if (
-        value === null ||
-        value === undefined
-      ) {
-        return '';
-      }
-
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      toastTimer =
+        setTimeout(
+          () => {
+            toast.classList.remove('show');
+          },
+          2500
+        );
 
     }
 
 
-    function formatDate(dateValue) {
+    /* =========================
+       MENU
+    ========================= */
 
-      if (!dateValue) {
-        return '-';
-      }
+    function openMenu() {
 
-      const date =
-        new Date(dateValue);
+      menuPanel.classList.add('show');
+
+      menuBackdrop.classList.add('show');
+
+      menuIcon.className =
+        'fa-solid fa-xmark text-lg';
+
+    }
+
+
+    function closeMenu() {
+
+      menuPanel.classList.remove('show');
+
+      menuBackdrop.classList.remove('show');
+
+      menuIcon.className =
+        'fa-solid fa-bars text-lg';
+
+    }
+
+
+    function toggleMenu() {
 
       if (
-        Number.isNaN(
-          date.getTime()
-        )
+        menuPanel.classList.contains('show')
       ) {
-        return '-';
+
+        closeMenu();
+
+      } else {
+
+        openMenu();
+
       }
 
-      return date.toLocaleDateString(
-        'th-TH',
-        {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
+    }
+
+
+    menuButton.addEventListener(
+      'click',
+      toggleMenu
+    );
+
+
+    menuBackdrop.addEventListener(
+      'click',
+      closeMenu
+    );
+
+
+    /* =========================
+       AUTH UI
+    ========================= */
+
+    function updateAuthUI() {
+
+      if (currentUser) {
+
+        /*
+          หลัง Login:
+          ปุ่ม Google ด้านบนหายทั้งปุ่ม
+        */
+
+        topGoogleLogin.classList.add(
+          'hidden'
+        );
+
+
+        /*
+          ในเมนู:
+          Google Login หาย
+          Logout แสดง
+        */
+
+        menuGoogleLoginButton.classList.add(
+          'hidden'
+        );
+
+        logoutButton.classList.remove(
+          'hidden'
+        );
+
+      } else {
+
+        /*
+          ยังไม่ Login:
+          Google Login ด้านบนแสดง
+        */
+
+        topGoogleLogin.classList.remove(
+          'hidden'
+        );
+
+
+        /*
+          ในเมนู:
+          Google Login แสดง
+          Logout หาย
+        */
+
+        menuGoogleLoginButton.classList.remove(
+          'hidden'
+        );
+
+        logoutButton.classList.add(
+          'hidden'
+        );
+
+      }
+
+    }
+
+
+    async function loadCurrentUser() {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getSession();
+
+      currentUser =
+        data?.session?.user || null;
+
+      updateAuthUI();
+
+    }
+
+
+    async function signInWithGoogle() {
+
+      try {
+
+        if (currentUser) {
+          return;
         }
-      );
 
-    }
+        const redirectTo =
+          `${window.location.origin}${window.location.pathname}`;
 
+        const {
+          error
+        } =
+          await supabaseClient.auth.signInWithOAuth(
+            {
+              provider: 'google',
+              options: {
+                redirectTo
+              }
+            }
+          );
 
-    function getStatusInfo(status) {
+        if (error) {
 
-      const value =
-        String(
-          status || 'online'
-        ).toLowerCase();
+          console.error(
+            'Google Login:',
+            error
+          );
 
-      if (
-        value === 'maintenance'
-      ) {
-
-        return {
-          text: 'กำลังปรับปรุง',
-          className:
-            'bg-amber-50 text-amber-600 border-amber-200'
-        };
-
-      }
-
-      if (
-        value === 'offline'
-      ) {
-
-        return {
-          text: 'ออฟไลน์',
-          className:
-            'bg-red-50 text-red-600 border-red-200'
-        };
-
-      }
-
-      return {
-        text: 'ออนไลน์',
-        className:
-          'bg-emerald-50 text-emerald-600 border-emerald-200'
-      };
-
-    }
-
-
-    function getFilteredScripts() {
-
-      return allScripts.filter(
-        script => {
-
-          const categoryMatch =
-            currentCategory === 'all' ||
-            String(
-              script.category_id || ''
-            ) ===
-            String(
-              currentCategory
-            );
-
-          if (!categoryMatch) {
-            return false;
-          }
-
-          if (!currentSearch) {
-            return true;
-          }
-
-          const categoryName =
-            script.categories?.name ||
-            '';
-
-          const searchableText = [
-
-            script.title,
-
-            script.description,
-
-            script.distributor,
-
-            categoryName
-
-          ]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase();
-
-          return searchableText.includes(
-            currentSearch
+          showToast(
+            'ไม่สามารถดำเนินการต่อด้วย Google ได้',
+            'error'
           );
 
         }
-      );
+
+      } catch (error) {
+
+        console.error(
+          'signInWithGoogle:',
+          error
+        );
+
+        showToast(
+          'เกิดข้อผิดพลาดในการเชื่อมต่อ Google',
+          'error'
+        );
+
+      }
 
     }
 
+
+    async function logout() {
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signOut();
+
+        if (error) {
+          throw error;
+        }
+
+        currentUser = null;
+
+        updateAuthUI();
+
+        closeMenu();
+
+        showToast(
+          'ออกจากระบบเรียบร้อยแล้ว',
+          'success'
+        );
+
+      } catch (error) {
+
+        console.error(
+          'logout:',
+          error
+        );
+
+        showToast(
+          'ไม่สามารถออกจากระบบได้',
+          'error'
+        );
+
+      }
+
+    }
+
+
+    googleLoginButton.addEventListener(
+      'click',
+      signInWithGoogle
+    );
+
+
+    menuGoogleLoginButton.addEventListener(
+      'click',
+      () => {
+
+        closeMenu();
+
+        signInWithGoogle();
+
+      }
+    );
+
+
+    logoutButton.addEventListener(
+      'click',
+      logout
+    );
+
+
+    /* =========================
+       GET KEY
+    ========================= */
+
+    function goToGetKey() {
+
+      closeMenu();
+
+      window.location.href =
+        './get-key';
+
+    }
+
+
+    getKeyMenuButton.addEventListener(
+      'click',
+      goToGetKey
+    );
+
+
+    /* =========================
+       SITE SETTINGS
+    ========================= */
 
     async function loadSiteSettings() {
 
@@ -1037,15 +1378,11 @@
         error
       } =
         await supabaseClient
-
           .from('site_settings')
-
           .select(
             'site_name, logo_url, banner_url, hero_title, hero_description'
           )
-
           .eq('id', true)
-
           .maybeSingle();
 
 
@@ -1068,98 +1405,106 @@
 
       const siteName =
         data.site_name ||
-        'Script Hub';
+        'Monnt Hub';
 
 
-      if (siteNameHeader) {
-
-        siteNameHeader.textContent =
-          siteName;
-
-      }
+      document.title =
+        `${siteName} | ศูนย์รวมสคริปต์`;
 
 
-      if (footerSiteName) {
-
-        footerSiteName.textContent =
-          siteName;
-
-      }
+      siteNameHeader.textContent =
+        siteName;
 
 
-      if (heroTitle) {
-
-        heroTitle.textContent =
-          data.hero_title ||
-          'รวม Script พร้อมใช้งานในที่เดียว';
-
-      }
+      menuSiteName.textContent =
+        siteName;
 
 
-      if (heroDescription) {
-
-        heroDescription.textContent =
-          data.hero_description ||
-          'ค้นหาและเลือกใช้ Script ที่คุณต้องการได้อย่างรวดเร็ว';
-
-      }
+      footerSiteName.textContent =
+        siteName;
 
 
-      if (
-        data.logo_url &&
-        logoBox
-      ) {
+      footerBrand.textContent =
+        siteName;
 
-        logoBox.innerHTML = `
+
+      heroBadge.textContent =
+        siteName;
+
+
+      heroTitle.textContent =
+        data.hero_title ||
+        'ค้นหาและคัดลอกสคริปต์พร้อมใช้งาน';
+
+
+      heroDescription.textContent =
+        data.hero_description ||
+        'รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย';
+
+
+      /* Logo */
+
+      if (data.logo_url) {
+
+        const logoHtml = `
 
           <img
             src="${escapeHtml(data.logo_url)}"
             alt="${escapeHtml(siteName)}"
             class="h-full w-full object-cover"
-            onerror="this.remove()"
           >
 
         `;
 
+        logoBox.innerHTML =
+          logoHtml;
+
+        menuLogo.innerHTML =
+          logoHtml;
+
+        loadingLogo.innerHTML =
+          logoHtml;
+
       }
 
 
-      if (
-        data.banner_url &&
-        heroBanner
-      ) {
+      /* Banner */
+
+      if (data.banner_url) {
 
         const bannerUrl =
-          String(
-            data.banner_url
-          ).replace(
-            /"/g,
-            '%22'
-          );
+          String(data.banner_url)
+            .replace(
+              /"/g,
+              '%22'
+            );
 
         heroBanner.style.backgroundImage =
           `linear-gradient(
             rgba(15,23,42,.16),
-            rgba(15,23,42,.32)
+            rgba(15,23,42,.38)
           ), url("${bannerUrl}")`;
 
       }
 
     }
-        async function loadCategories() {
+
+
+    /* =========================
+       CATEGORIES
+    ========================= */
+
+    async function loadCategories() {
 
       const {
         data,
         error
       } =
         await supabaseClient
-
           .from('categories')
-
           .select(
             'id, name'
           )
-
           .order(
             'name',
             {
@@ -1190,323 +1535,6 @@
     }
 
 
-    async function loadScripts() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-
-          .from('scripts')
-
-          .select(`
-            id,
-            title,
-            description,
-            image,
-            code,
-            status,
-            distributor,
-            created_at,
-            updated_at,
-            is_visible,
-            category_id,
-            categories (
-              id,
-              name
-            )
-          `)
-
-          .eq(
-            'is_visible',
-            true
-          )
-
-          .order(
-            'created_at',
-            {
-              ascending: false
-            }
-          );
-
-
-      if (error) {
-
-        console.error(
-          'loadScripts:',
-          error
-        );
-
-        allScripts = [];
-
-        showToast(
-          'ไม่สามารถโหลด Script ได้',
-          'error'
-        );
-
-        return;
-
-      }
-
-
-      allScripts =
-        Array.isArray(data)
-          ? data
-          : [];
-
-    }
-
-
-    async function loadLegalPages() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-
-          .from('legal_pages')
-
-          .select(
-            'id, title, content, updated_at'
-          )
-
-          .in(
-            'id',
-            [
-              'terms',
-              'privacy'
-            ]
-          );
-
-
-      if (error) {
-
-        console.error(
-          'loadLegalPages:',
-          error
-        );
-
-        legalPages = {
-          terms: null,
-          privacy: null
-        };
-
-        return;
-
-      }
-
-
-      legalPages = {
-        terms: null,
-        privacy: null
-      };
-
-
-      (
-        data || []
-      ).forEach(
-        page => {
-
-          if (
-            page.id === 'terms' ||
-            page.id === 'privacy'
-          ) {
-
-            legalPages[
-              page.id
-            ] = page;
-
-          }
-
-        }
-      );
-
-    }
-
-
-    async function loadCurrentUser() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth.getUser();
-
-
-      if (error) {
-
-        console.warn(
-          'getUser:',
-          error
-        );
-
-        currentUser = null;
-
-      } else {
-
-        currentUser =
-          data?.user || null;
-
-      }
-
-
-      updateGoogleButton();
-
-    }
-
-
-    function updateGoogleButton() {
-
-      if (
-        !googleLoginButton ||
-        !googleLoginText
-      ) {
-        return;
-      }
-
-
-      if (currentUser) {
-
-        googleLoginText.textContent =
-          'ดำเนินการต่อแล้ว';
-
-        googleLoginButton.className =
-          'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 shadow-md ring-1 ring-emerald-200 transition hover:bg-emerald-100 sm:w-auto';
-
-      } else {
-
-        googleLoginText.textContent =
-          'ดำเนินการต่อด้วย Google';
-
-        googleLoginButton.className =
-          'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto';
-
-      }
-
-    }
-        async function signInWithGoogle() {
-
-      try {
-
-        if (currentUser) {
-
-          showToast(
-            'คุณดำเนินการต่อด้วย Google แล้ว',
-            'info'
-          );
-
-          return;
-
-        }
-
-
-        if (googleLoginButton) {
-
-          googleLoginButton.disabled =
-            true;
-
-          googleLoginText.textContent =
-            'กำลังเชื่อมต่อ Google...';
-
-        }
-
-
-        const redirectTo =
-          `${window.location.origin}${window.location.pathname}`;
-
-
-        const {
-          error
-        } =
-          await supabaseClient.auth.signInWithOAuth(
-            {
-              provider: 'google',
-              options: {
-                redirectTo
-              }
-            }
-          );
-
-
-        if (error) {
-
-          console.error(
-            'Google Login:',
-            error
-          );
-
-          showToast(
-            'ไม่สามารถดำเนินการต่อด้วย Google ได้',
-            'error'
-          );
-
-          if (googleLoginButton) {
-            googleLoginButton.disabled =
-              false;
-          }
-
-          updateGoogleButton();
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          'signInWithGoogle:',
-          error
-        );
-
-        showToast(
-          'เกิดข้อผิดพลาดในการเชื่อมต่อ Google',
-          'error'
-        );
-
-        if (googleLoginButton) {
-          googleLoginButton.disabled =
-            false;
-        }
-
-        updateGoogleButton();
-
-      }
-
-    }
-
-
-    async function requireGoogleForCopy() {
-
-      const {
-        data
-      } =
-        await supabaseClient.auth.getUser();
-
-
-      currentUser =
-        data?.user || null;
-
-
-      updateGoogleButton();
-
-
-      if (!currentUser) {
-
-        showToast(
-          'โปรดดำเนินการต่อด้วย Google ก่อนจึงสามารถคัดลอก Script ได้',
-          'info'
-        );
-
-        return false;
-
-      }
-
-
-      return true;
-
-    }
-
-
     function renderCategories() {
 
       if (!categoryFilters) {
@@ -1520,25 +1548,28 @@
           <button
             type="button"
             data-category="all"
-            class="category-btn ${currentCategory === 'all'
-              ? 'active'
-              : ''} inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
+            class="category-btn ${
+              currentCategory === 'all'
+                ? 'active'
+                : ''
+            } inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
           >
+
             <i class="fa-solid fa-layer-group"></i>
-            <span>ทั้งหมด</span>
+
+            <span>
+              ทั้งหมด
+            </span>
+
           </button>
         `,
 
         ...allCategories.map(
           category => {
 
-            const isActive =
-              String(
-                currentCategory
-              ) ===
-              String(
-                category.id
-              );
+            const active =
+              String(currentCategory) ===
+              String(category.id);
 
 
             return `
@@ -1546,7 +1577,11 @@
               <button
                 type="button"
                 data-category="${escapeHtml(category.id)}"
-                class="category-btn ${isActive ? 'active' : ''} inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
+                class="category-btn ${
+                  active
+                    ? 'active'
+                    : ''
+                } inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
               >
 
                 <i class="fa-solid fa-folder"></i>
@@ -1584,23 +1619,7 @@
                   button.dataset.category ||
                   'all';
 
-
-                categoryFilters
-                  .querySelectorAll(
-                    '[data-category]'
-                  )
-                  .forEach(
-                    item => {
-
-                      item.classList.toggle(
-                        'active',
-                        item.dataset.category ===
-                          currentCategory
-                      );
-
-                    }
-                  );
-
+                renderCategories();
 
                 renderScripts();
 
@@ -1611,33 +1630,192 @@
         );
 
     }
-        function renderScripts() {
 
-      if (
-        !scriptGrid ||
-        !emptyState
-      ) {
+
+    /* =========================
+       SCRIPTS
+    ========================= */
+
+    async function loadScripts() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('scripts')
+          .select(`
+            id,
+            title,
+            description,
+            image,
+            code,
+            status,
+            distributor,
+            created_at,
+            updated_at,
+            is_visible,
+            category_id,
+            categories (
+              id,
+              name
+            )
+          `)
+          .eq(
+            'is_visible',
+            true
+          )
+          .order(
+            'created_at',
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        console.error(
+          'loadScripts:',
+          error
+        );
+
+        allScripts = [];
+
+        showToast(
+          'ไม่สามารถโหลด Script ได้',
+          'error'
+        );
+
         return;
+
       }
 
 
-      const filteredScripts =
+      allScripts =
+        Array.isArray(data)
+          ? data
+          : [];
+
+    }
+
+
+    function getFilteredScripts() {
+
+      return allScripts.filter(
+        script => {
+
+          const categoryMatch =
+            currentCategory === 'all' ||
+            String(
+              script.category_id || ''
+            ) ===
+            String(
+              currentCategory
+            );
+
+
+          if (!categoryMatch) {
+            return false;
+          }
+
+
+          if (!currentSearch) {
+            return true;
+          }
+
+
+          const categoryName =
+            script.categories?.name ||
+            '';
+
+
+          const searchable =
+            [
+
+              script.title,
+
+              script.description,
+
+              script.distributor,
+
+              categoryName
+
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase();
+
+
+          return searchable.includes(
+            currentSearch
+          );
+
+        }
+      );
+
+    }
+
+
+    function getStatusInfo(status) {
+
+      const value =
+        String(
+          status || 'online'
+        ).toLowerCase();
+
+
+      if (
+        value === 'maintenance'
+      ) {
+
+        return {
+          text: 'กำลังปรับปรุง',
+          className:
+            'bg-amber-50 text-amber-600 border-amber-200'
+        };
+
+      }
+
+
+      if (
+        value === 'offline'
+      ) {
+
+        return {
+          text: 'ออฟไลน์',
+          className:
+            'bg-red-50 text-red-600 border-red-200'
+        };
+
+      }
+
+
+      return {
+        text: 'ออนไลน์',
+        className:
+          'bg-emerald-50 text-emerald-600 border-emerald-200'
+      };
+
+    }
+
+
+    function renderScripts() {
+
+      const filtered =
         getFilteredScripts();
 
 
-      scriptGrid.innerHTML = '';
+      scriptGrid.innerHTML =
+        '';
 
 
-      if (resultText) {
-
-        resultText.textContent =
-          `พบ ${filteredScripts.length} Script`;
-
-      }
+      resultText.textContent =
+        `พบ ${filtered.length} Script`;
 
 
       if (
-        filteredScripts.length === 0
+        filtered.length === 0
       ) {
 
         scriptGrid.classList.add(
@@ -1662,7 +1840,7 @@
       );
 
 
-      filteredScripts.forEach(
+      filtered.forEach(
         script => {
 
           const status =
@@ -1676,34 +1854,6 @@
             'ไม่มีหมวดหมู่';
 
 
-          const imageHtml =
-            script.image
-              ? `
-
-                <img
-                  src="${escapeHtml(script.image)}"
-                  alt="${escapeHtml(script.title || 'Script')}"
-                  class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  loading="lazy"
-                  onerror="this.parentElement.innerHTML='<div class=&quot;flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500&quot;><i class=&quot;fa-solid fa-code&quot;></i></div>'"
-                >
-
-              `
-              : `
-
-                <div
-                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500"
-                >
-
-                  <i
-                    class="fa-solid fa-code"
-                  ></i>
-
-                </div>
-
-              `;
-
-
           const card =
             document.createElement(
               'article'
@@ -1714,6 +1864,48 @@
             'script-card group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm';
 
 
+          let imageHtml;
+
+
+          if (script.image) {
+
+            imageHtml = `
+
+              <img
+                src="${escapeHtml(script.image)}"
+                alt="${escapeHtml(script.title || 'Script')}"
+                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+              >
+
+              <div
+                class="hidden h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500"
+              >
+
+                <i class="fa-solid fa-code"></i>
+
+              </div>
+
+            `;
+
+          } else {
+
+            imageHtml = `
+
+              <div
+                class="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500"
+              >
+
+                <i class="fa-solid fa-code"></i>
+
+              </div>
+
+            `;
+
+          }
+
+
           card.innerHTML = `
 
             <div
@@ -1722,9 +1914,7 @@
 
               ${imageHtml}
 
-              <div
-                class="absolute left-3 top-3"
-              >
+              <div class="absolute left-3 top-3">
 
                 <span
                   class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${status.className}"
@@ -1755,13 +1945,12 @@
                   class="inline-flex max-w-[70%] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600"
                 >
 
-                  <i
-                    class="fa-solid fa-folder"
-                  ></i>
+                  <i class="fa-solid fa-folder"></i>
 
                   ${escapeHtml(categoryName)}
 
                 </span>
+
 
                 <span
                   class="shrink-0 text-xs text-slate-400"
@@ -1796,17 +1985,13 @@
               </p>
 
 
-              <div
-                class="mb-5 mt-auto"
-              >
+              <div class="mb-5 mt-auto">
 
                 <div
                   class="flex items-center gap-2 text-xs text-slate-400"
                 >
 
-                  <i
-                    class="fa-solid fa-user"
-                  ></i>
+                  <i class="fa-solid fa-user"></i>
 
                   <span class="truncate">
                     ${escapeHtml(
@@ -1820,9 +2005,7 @@
               </div>
 
 
-              <div
-                class="grid grid-cols-2 gap-3"
-              >
+              <div class="grid grid-cols-2 gap-3">
 
                 <button
                   type="button"
@@ -1830,9 +2013,7 @@
                   data-view-script="${escapeHtml(script.id)}"
                 >
 
-                  <i
-                    class="fa-solid fa-eye mr-1.5"
-                  ></i>
+                  <i class="fa-solid fa-eye mr-1.5"></i>
 
                   ดูรายละเอียด
 
@@ -1845,9 +2026,7 @@
                   data-copy-script="${escapeHtml(script.id)}"
                 >
 
-                  <i
-                    class="fa-regular fa-copy mr-1.5"
-                  ></i>
+                  <i class="fa-regular fa-copy mr-1.5"></i>
 
                   คัดลอก
 
@@ -1872,36 +2051,28 @@
             );
 
 
-          if (viewButton) {
+          viewButton.addEventListener(
+            'click',
+            () => {
 
-            viewButton.addEventListener(
-              'click',
-              () => {
+              viewScript(
+                viewButton.dataset.viewScript
+              );
 
-                viewScript(
-                  viewButton.dataset.viewScript
-                );
-
-              }
-            );
-
-          }
+            }
+          );
 
 
-          if (copyButton) {
+          copyButton.addEventListener(
+            'click',
+            () => {
 
-            copyButton.addEventListener(
-              'click',
-              () => {
+              copyScript(
+                copyButton.dataset.copyScript
+              );
 
-                copyScript(
-                  copyButton.dataset.copyScript
-                );
-
-              }
-            );
-
-          }
+            }
+          );
 
 
           scriptGrid.appendChild(
@@ -1912,7 +2083,13 @@
       );
 
     }
-        function viewScript(scriptId) {
+
+
+    /* =========================
+       VIEW SCRIPT
+    ========================= */
+
+    function viewScript(scriptId) {
 
       const script =
         allScripts.find(
@@ -1953,6 +2130,42 @@
 
       window.location.href =
         `./script/?id=${encodeURIComponent(scriptId)}`;
+
+    }
+
+
+    /* =========================
+       COPY SCRIPT
+    ========================= */
+
+    async function requireGoogleForCopy() {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getSession();
+
+
+      currentUser =
+        data?.session?.user || null;
+
+
+      updateAuthUI();
+
+
+      if (!currentUser) {
+
+        showToast(
+          'โปรดดำเนินการต่อด้วย Google ก่อนจึงสามารถคัดลอก Script ได้',
+          'info'
+        );
+
+        return false;
+
+      }
+
+
+      return true;
 
     }
 
@@ -2024,7 +2237,6 @@
               'textarea'
             );
 
-
           textarea.value =
             code;
 
@@ -2037,21 +2249,17 @@
           textarea.style.top =
             '0';
 
-
           document.body.appendChild(
             textarea
           );
-
 
           textarea.focus();
 
           textarea.select();
 
-
           document.execCommand(
             'copy'
           );
-
 
           textarea.remove();
 
@@ -2070,13 +2278,81 @@
           error
         );
 
-
         showToast(
           'คัดลอกไม่สำเร็จ',
           'error'
         );
 
       }
+
+    }
+
+
+    /* =========================
+       LEGAL
+    ========================= */
+
+    async function loadLegalPages() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('legal_pages')
+          .select(
+            'id, title, content, updated_at'
+          )
+          .in(
+            'id',
+            [
+              'terms',
+              'privacy'
+            ]
+          );
+
+
+      if (error) {
+
+        console.error(
+          'loadLegalPages:',
+          error
+        );
+
+        legalPages = {
+          terms: null,
+          privacy: null
+        };
+
+        return;
+
+      }
+
+
+      legalPages = {
+        terms: null,
+        privacy: null
+      };
+
+
+      (
+        data || []
+      ).forEach(
+        page => {
+
+          if (
+            page.id === 'terms' ||
+            page.id === 'privacy'
+          ) {
+
+            legalPages[
+              page.id
+            ] = page;
+
+          }
+
+        }
+      );
 
     }
 
@@ -2107,63 +2383,42 @@
       }
 
 
-      if (legalModalTitle) {
-
-        legalModalTitle.textContent =
-          page.title ||
-          (
-            type === 'terms'
-              ? 'ข้อกำหนดการให้บริการ'
-              : 'นโยบายความเป็นส่วนตัว'
-          );
-
-      }
-
-
-      if (legalModalContent) {
-
-        legalModalContent.textContent =
-          page.content ||
-          'ยังไม่มีเนื้อหา';
-
-      }
-
-
-      if (legalModalIcon) {
-
-        legalModalIcon.innerHTML =
+      legalModalTitle.textContent =
+        page.title ||
+        (
           type === 'terms'
-            ? '<i class="fa-solid fa-file-contract"></i>'
-            : '<i class="fa-solid fa-shield-halved"></i>';
-
-      }
-
-
-      if (legalModal) {
-
-        legalModal.classList.add(
-          'show'
+            ? 'ข้อกำหนดการให้บริการ'
+            : 'นโยบายความเป็นส่วนตัว'
         );
 
-        document.body.classList.add(
-          'overflow-hidden'
-        );
 
-      }
+      legalModalContent.textContent =
+        page.content ||
+        'ยังไม่มีเนื้อหา';
+
+
+      legalModalIcon.innerHTML =
+        type === 'terms'
+          ? '<i class="fa-solid fa-file-contract"></i>'
+          : '<i class="fa-solid fa-shield-halved"></i>';
+
+
+      legalModal.classList.add(
+        'show'
+      );
+
+      document.body.classList.add(
+        'overflow-hidden'
+      );
 
     }
 
 
     function closeLegalPage() {
 
-      if (legalModal) {
-
-        legalModal.classList.remove(
-          'show'
-        );
-
-      }
-
+      legalModal.classList.remove(
+        'show'
+      );
 
       document.body.classList.remove(
         'overflow-hidden'
@@ -2172,9 +2427,7 @@
     }
 
 
-    function handleLegalBackdrop(
-      event
-    ) {
+    function handleLegalBackdrop(event) {
 
       if (
         event.target === legalModal
@@ -2201,46 +2454,38 @@
 
     window.copyScript =
       copyScript;
-        if (googleLoginButton) {
-
-      googleLoginButton.addEventListener(
-        'click',
-        signInWithGoogle
-      );
-
-    }
 
 
-    if (searchInput) {
+    /* =========================
+       SEARCH
+    ========================= */
 
-      searchInput.addEventListener(
-        'input',
-        event => {
+    searchInput.addEventListener(
+      'input',
+      event => {
 
-          currentSearch =
-            event.target.value
-              .trim()
-              .toLowerCase();
+        currentSearch =
+          event.target.value
+            .trim()
+            .toLowerCase();
 
-          renderScripts();
+        renderScripts();
 
-        }
-      );
+      }
+    );
 
-    }
 
+    /* =========================
+       KEYBOARD
+    ========================= */
 
     document.addEventListener(
       'keydown',
       event => {
 
-        if (
-          event.key === 'Escape' &&
-          legalModal &&
-          legalModal.classList.contains(
-            'show'
-          )
-        ) {
+        if (event.key === 'Escape') {
+
+          closeMenu();
 
           closeLegalPage();
 
@@ -2249,6 +2494,10 @@
       }
     );
 
+
+    /* =========================
+       AUTH STATE
+    ========================= */
 
     supabaseClient.auth.onAuthStateChange(
       (
@@ -2259,85 +2508,15 @@
         currentUser =
           session?.user || null;
 
-        updateGoogleButton();
+        updateAuthUI();
 
       }
     );
 
 
-    async function loadHomepage() {
-
-      try {
-
-        await Promise.all([
-
-          loadSiteSettings(),
-
-          loadCategories(),
-
-          loadScripts(),
-
-          loadLegalPages(),
-
-          loadCurrentUser()
-
-        ]);
-
-
-        renderCategories();
-
-        renderScripts();
-
-
-      } catch (error) {
-
-        console.error(
-          'loadHomepage:',
-          error
-        );
-
-
-        showToast(
-          'เกิดข้อผิดพลาดในการโหลดเว็บไซต์',
-          'error'
-        );
-
-
-      } finally {
-
-        if (loadingScreen) {
-
-          loadingScreen.classList.add(
-            'opacity-0',
-            'pointer-events-none'
-          );
-
-
-          setTimeout(
-            () => {
-
-              loadingScreen.classList.add(
-                'hidden'
-              );
-
-            },
-            300
-          );
-
-        }
-
-
-        if (footerYear) {
-
-          footerYear.textContent =
-            new Date().getFullYear();
-
-        }
-
-      }
-
-    }
-
+    /* =========================
+       REALTIME
+    ========================= */
 
     function subscribeRealtime() {
 
@@ -2418,6 +2597,10 @@
     }
 
 
+    /* =========================
+       ONLINE / OFFLINE
+    ========================= */
+
     window.addEventListener(
       'online',
       () => {
@@ -2444,41 +2627,110 @@
     );
 
 
-    function startHomepage() {
+    /* =========================
+       START
+    ========================= */
 
-      if (
-        document.readyState ===
-        'loading'
-      ) {
+    async function loadHomepage() {
 
-        document.addEventListener(
-          'DOMContentLoaded',
-          () => {
+      try {
 
-            loadHomepage();
+        await Promise.all([
 
-            subscribeRealtime();
+          loadSiteSettings(),
 
-          },
-          {
-            once: true
-          }
+          loadCategories(),
+
+          loadScripts(),
+
+          loadLegalPages(),
+
+          loadCurrentUser()
+
+        ]);
+
+
+        renderCategories();
+
+        renderScripts();
+
+
+      } catch (error) {
+
+        console.error(
+          'loadHomepage:',
+          error
         );
 
-      } else {
+        showToast(
+          'เกิดข้อผิดพลาดในการโหลดเว็บไซต์',
+          'error'
+        );
 
-        loadHomepage();
+      } finally {
 
-        subscribeRealtime();
+        if (footerYear) {
+
+          footerYear.textContent =
+            new Date().getFullYear();
+
+        }
+
+
+        if (loadingScreen) {
+
+          loadingScreen.classList.add(
+            'opacity-0',
+            'pointer-events-none'
+          );
+
+
+          setTimeout(
+            () => {
+
+              loadingScreen.classList.add(
+                'hidden'
+              );
+
+            },
+            300
+          );
+
+        }
 
       }
 
     }
 
 
-    startHomepage();
+    if (
+      document.readyState === 'loading'
+    ) {
+
+      document.addEventListener(
+        'DOMContentLoaded',
+        async () => {
+
+          await loadHomepage();
+
+          subscribeRealtime();
+
+        },
+        {
+          once: true
+        }
+      );
+
+    } else {
+
+      loadHomepage();
+
+      subscribeRealtime();
+
+    }
 
   </script>
 
 </body>
+
 </html>
