@@ -1349,7 +1349,14 @@ const ADMIN_EMAIL =
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth:{
+                persistSession:true,
+                autoRefreshToken:true,
+                detectSessionInUrl:true
+            }
+        }
     );
 
 
@@ -1363,7 +1370,9 @@ let legalPages = {};
 
 let toastTimer = null;
 
-let authCheckRunning = false;
+let adminInitialized = false;
+
+let authProcessing = false;
 
 
 /* =========================
@@ -1401,6 +1410,16 @@ function showToast(message){
 function showLoginError(message){
 
     const box = $('loginError');
+
+    if(!message){
+
+        box.textContent = '';
+
+        box.classList.add('hidden');
+
+        return;
+
+    }
 
     box.textContent = message;
 
@@ -1558,11 +1577,6 @@ async function signInWithGoogle(){
 
     try{
 
-        // ล้าง session เดิมก่อน
-        await supabaseClient
-            .auth
-            .signOut();
-
         const redirectTo =
             `${window.location.origin}/admin/`;
 
@@ -1574,19 +1588,20 @@ async function signInWithGoogle(){
                 .auth
                 .signInWithOAuth({
 
-                    provider: 'google',
+                    provider:'google',
 
-                    options: {
+                    options:{
 
                         redirectTo,
 
-                        queryParams: {
-                            prompt: 'select_account'
+                        queryParams:{
+                            prompt:'select_account'
                         }
 
                     }
 
                 });
+
 
         if(error){
 
@@ -1598,12 +1613,14 @@ async function signInWithGoogle(){
             showLoginScreen();
 
             showLoginError(
+                error.message ||
                 'ไม่สามารถเข้าสู่ระบบด้วย Google ได้'
             );
 
             return;
 
         }
+
 
         if(!data?.url){
 
@@ -1625,22 +1642,11 @@ async function signInWithGoogle(){
         showLoginScreen();
 
         showLoginError(
+            error.message ||
             'ไม่สามารถเข้าสู่ระบบด้วย Google ได้'
         );
 
     }
-
-    }
-                setTimeout(
-                    resolve,
-                    500
-                )
-        );
-
-    }
-
-
-    return null;
 
 }
 
@@ -1652,8 +1658,11 @@ async function signInWithGoogle(){
 async function checkAdminUser(user){
 
     if(!user){
+
         return false;
+
     }
+
 
     const email =
         String(
@@ -1662,12 +1671,18 @@ async function checkAdminUser(user){
         .trim()
         .toLowerCase();
 
+
     if(
         email !==
-        ADMIN_EMAIL.toLowerCase()
+        ADMIN_EMAIL
+            .trim()
+            .toLowerCase()
     ){
+
         return false;
+
     }
+
 
     try{
 
@@ -1676,22 +1691,30 @@ async function checkAdminUser(user){
             error
         } =
             await supabaseClient
-                .rpc(
-                    'check_is_admin'
-                );
+                .from('admin_users')
+                .select(
+                    'user_id,email'
+                )
+                .eq(
+                    'user_id',
+                    user.id
+                )
+                .maybeSingle();
+
 
         if(error){
 
             console.error(
-                'Admin check error:',
+                'Admin table check error:',
                 error
             );
 
-            return false;
+            throw error;
 
         }
 
-        return data === true;
+
+        return !!data;
 
     }catch(error){
 
@@ -1700,11 +1723,11 @@ async function checkAdminUser(user){
             error
         );
 
-        return false;
+        throw error;
 
     }
 
-    }
+}
 
 
 /* =========================
@@ -1713,13 +1736,13 @@ async function checkAdminUser(user){
 
 async function processAuthUser(user){
 
-    if(authCheckRunning){
+    if(authProcessing){
 
         return;
 
     }
 
-    authCheckRunning = true;
+    authProcessing = true;
 
 
     try{
@@ -1768,12 +1791,34 @@ async function processAuthUser(user){
         showAdminApp();
 
 
-        await initializeAdmin();
+        if(!adminInitialized){
 
+            await initializeAdmin();
+
+            setupRealtime();
+
+            adminInitialized = true;
+
+        }
+
+    }catch(error){
+
+        console.error(
+            'Process Auth Error:',
+            error
+        );
+
+        currentUser = null;
+
+        showLoginScreen();
+
+        showLoginError(
+            '❌ ไม่สามารถตรวจสอบสิทธิ์ Admin ได้ กรุณาลองเข้าสู่ระบบใหม่'
+        );
 
     }finally{
 
-        authCheckRunning = false;
+        authProcessing = false;
 
     }
 
@@ -1789,7 +1834,7 @@ function setupAuthListener(){
     supabaseClient
         .auth
         .onAuthStateChange(
-            async (
+            (
                 event,
                 session
             ) => {
@@ -1801,21 +1846,49 @@ function setupAuthListener(){
 
 
                 if(
-                    session?.user
-                ){
-
-                    await processAuthUser(
-                        session.user
-                    );
-
-                }else if(
-                    event !==
-                    'INITIAL_SESSION'
+                    event === 'SIGNED_OUT'
                 ){
 
                     currentUser = null;
 
+                    adminInitialized = false;
+
                     showLoginScreen();
+
+                    return;
+
+                }
+
+
+                if(
+                    event === 'SIGNED_IN' &&
+                    session?.user
+                ){
+
+                    setTimeout(
+                        () => {
+
+                            processAuthUser(
+                                session.user
+                            );
+
+                        },
+                        0
+                    );
+
+                    return;
+
+                }
+
+
+                if(
+                    event === 'TOKEN_REFRESHED' &&
+                    session?.user &&
+                    currentUser
+                ){
+
+                    currentUser =
+                        session.user;
 
                 }
 
@@ -1831,7 +1904,7 @@ function setupAuthListener(){
 
 async function startAdmin(){
 
-    showLoginError('');
+    hideLoginError();
 
     try{
 
@@ -1850,46 +1923,62 @@ async function startAdmin(){
 
         if(error){
 
+            console.error(
+                'Get Session Error:',
+                error
+            );
+
             throw error;
 
         }
 
 
-        if(
-            data?.session?.user
-        ){
+        const session =
+            data?.session;
 
-            await processAuthUser(
-                data.session.user
-            );
+
+        if(!session?.user){
+
+            showLoginScreen();
 
             return;
 
         }
 
 
-        /*
-         * กรณีเพิ่งกลับจาก Google
-         * รอ Auth ให้พร้อมอีกครั้ง
-         */
+        $('loadingText').textContent =
+            'กำลังตรวจสอบบัญชี Google...';
+
+
+        const {
+            data:userData,
+            error:userError
+        } =
+            await supabaseClient
+                .auth
+                .getUser();
+
+
+        if(userError){
+
+            console.error(
+                'Get User Error:',
+                userError
+            );
+
+            throw userError;
+
+        }
+
 
         const user =
-            await waitForUser();
+            userData?.user ||
+            session.user;
 
 
-        if(user){
-
-            await processAuthUser(
-                user
-            );
-
-            return;
-
-        }
-
-
-        showLoginScreen();
-
+        await processAuthUser(
+            user
+        );
 
     }catch(error){
 
@@ -1898,11 +1987,10 @@ async function startAdmin(){
             error
         );
 
-
         showLoginScreen();
 
-
         showLoginError(
+            error.message ||
             'ไม่สามารถตรวจสอบการเข้าสู่ระบบได้ กรุณาลองใหม่อีกครั้ง'
         );
 
@@ -2173,7 +2261,7 @@ function renderCategories(){
 
                         <button
                             type="button"
-                            class="delete-category text-red-500 hover:bg-red-50 w-10 h-10 rounded-xl shrink-0"
+                            class="delete-category text-red-500 hover:bg-red-50 w-10 h-10 rounded-xl"
                             data-id="${category.id}"
                         >
 
@@ -3431,11 +3519,23 @@ function setupEvents(){
             'click',
             async () => {
 
-                await supabaseClient
-                    .auth
-                    .signOut();
+                try{
+
+                    await supabaseClient
+                        .auth
+                        .signOut();
+
+                }catch(error){
+
+                    console.error(
+                        error
+                    );
+
+                }
 
                 currentUser = null;
+
+                adminInitialized = false;
 
                 showLoginScreen();
 
@@ -3877,12 +3977,6 @@ document.addEventListener(
         setupAuthListener();
 
         await startAdmin();
-
-        if(currentUser){
-
-            setupRealtime();
-
-        }
 
     }
 );
