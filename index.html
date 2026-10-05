@@ -14,10 +14,7 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
   <link
     rel="preconnect"
@@ -246,17 +243,18 @@
 
     <div class="mx-auto max-w-7xl px-4 py-3">
 
+
       <!-- Google Login -->
 
       <div
         id="topGoogleLogin"
-        class="mb-3 flex items-center justify-center"
+        class="mb-3 flex items-center justify-start"
       >
 
         <button
           id="googleLoginButton"
           type="button"
-          class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50"
         >
 
           <i class="fa-brands fa-google text-red-500"></i>
@@ -273,6 +271,7 @@
       <!-- Main Header -->
 
       <div class="flex items-center justify-between gap-3">
+
 
         <!-- Logo / Name -->
 
@@ -314,6 +313,7 @@
 
         <div class="flex items-center gap-2">
 
+
           <!-- Admin -->
 
           <a
@@ -335,23 +335,28 @@
           </a>
 
 
-          <!-- Hamburger -->
-
-          <button
-            id="menuButton"
-            type="button"
-            aria-label="เปิดเมนู"
-            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
-          >
-
-            <i
-              id="menuIcon"
-              class="fa-solid fa-bars text-lg"
-            ></i>
-
-          </button>
-
         </div>
+
+      </div>
+
+
+      <!-- Hamburger -->
+
+      <div class="mt-3 flex items-center justify-start">
+
+        <button
+          id="menuButton"
+          type="button"
+          aria-label="เปิดเมนู"
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+        >
+
+          <i
+            id="menuIcon"
+            class="fa-solid fa-bars text-lg"
+          ></i>
+
+        </button>
 
       </div>
 
@@ -372,7 +377,7 @@
 
   <div
     id="menuPanel"
-    class="menu-panel fixed right-4 top-[115px] z-[110] w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+    class="menu-panel fixed right-4 top-[170px] z-[110] w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
   >
 
     <div
@@ -411,6 +416,7 @@
 
 
     <div class="p-3">
+
 
       <!-- Get Key -->
 
@@ -1159,24 +1165,25 @@
       if (currentUser) {
 
         /*
-          หลัง Login:
-          ปุ่ม Google ด้านบนหายทั้งปุ่ม
+          Login แล้ว:
+          Google ด้านบนหายทั้งหมด
         */
 
         topGoogleLogin.classList.add(
           'hidden'
         );
 
-
         /*
-          ในเมนู:
-          Google Login หาย
-          Logout แสดง
+          Google ในเมนูหาย
         */
 
         menuGoogleLoginButton.classList.add(
           'hidden'
         );
+
+        /*
+          Logout แสดง
+        */
 
         logoutButton.classList.remove(
           'hidden'
@@ -1185,24 +1192,25 @@
       } else {
 
         /*
-          ยังไม่ Login:
-          Google Login ด้านบนแสดง
+          ยังไม่ได้ Login:
+          Google ด้านบนแสดง
         */
 
         topGoogleLogin.classList.remove(
           'hidden'
         );
 
-
         /*
-          ในเมนู:
-          Google Login แสดง
-          Logout หาย
+          Google ในเมนูแสดง
         */
 
         menuGoogleLoginButton.classList.remove(
           'hidden'
         );
+
+        /*
+          Logout หาย
+        */
 
         logoutButton.classList.add(
           'hidden'
@@ -1215,13 +1223,26 @@
 
     async function loadCurrentUser() {
 
-      const {
-        data
-      } =
-        await supabaseClient.auth.getSession();
+      try {
 
-      currentUser =
-        data?.session?.user || null;
+        const {
+          data
+        } =
+          await supabaseClient.auth.getSession();
+
+        currentUser =
+          data?.session?.user || null;
+
+      } catch (error) {
+
+        console.warn(
+          'loadCurrentUser:',
+          error
+        );
+
+        currentUser = null;
+
+      }
 
       updateAuthUI();
 
