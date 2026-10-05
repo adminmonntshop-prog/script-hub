@@ -6,7 +6,6 @@
   <title>Monnt Hub Admin</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,6 +68,7 @@
         opacity: 0;
         transform: translateY(15px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -132,6 +132,13 @@
     .mobile-overlay-open {
       display: block !important;
     }
+
+    .admin-logo-loading {
+      width: 82px;
+      height: 82px;
+      border-radius: 28px;
+      object-fit: cover;
+    }
   </style>
 </head>
 
@@ -148,8 +155,19 @@
 
         <div class="text-center">
 
-          <div class="mx-auto mb-5 w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-500 via-blue-600 to-violet-600 flex items-center justify-center shadow-xl">
-            <span class="text-4xl">🛠️</span>
+          <!-- Logo จาก site_settings -->
+          <div
+            id="loginLogoBox"
+            class="mx-auto mb-5 w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-500 via-blue-600 to-violet-600 flex items-center justify-center shadow-xl overflow-hidden"
+          >
+            <span id="loginLogoFallback" class="text-4xl">🛠️</span>
+
+            <img
+              id="loginLogo"
+              src=""
+              alt="Monnt Hub Logo"
+              class="hidden admin-logo-loading"
+            >
           </div>
 
           <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
@@ -162,17 +180,22 @@
 
         </div>
 
+
         <div id="loginLoading" class="mt-8 text-center">
 
           <div class="flex justify-center">
             <div class="login-spinner"></div>
           </div>
 
-          <p id="loadingText" class="mt-4 text-sm font-medium text-slate-600">
+          <p
+            id="loadingText"
+            class="mt-4 text-sm font-medium text-slate-600"
+          >
             กำลังตรวจสอบการเข้าสู่ระบบ...
           </p>
 
         </div>
+
 
         <div id="loginActions" class="hidden mt-8">
 
@@ -193,48 +216,11 @@
 
         </div>
 
-        <!-- Diagnostic -->
-        <div
-          id="loginError"
-          class="hidden mt-6 rounded-2xl border border-red-200 bg-red-50 p-4"
-        >
-          <div class="flex gap-3">
 
-            <div class="text-xl">
-              ⚠️
-            </div>
-
-            <div class="min-w-0">
-
-              <p class="font-semibold text-red-700">
-                เกิดปัญหา
-              </p>
-
-              <p
-                id="loginErrorText"
-                class="mt-1 text-sm leading-6 text-red-600 break-words whitespace-pre-wrap"
-              ></p>
-
-            </div>
-
-          </div>
-        </div>
-
-        <div
-          id="loginDebug"
-          class="hidden mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4"
-        >
-
-          <p class="text-xs font-semibold text-slate-600">
-            🔎 Diagnostic
-          </p>
-
-          <p
-            id="loginDebugText"
-            class="mt-1 text-xs leading-5 text-slate-500 break-words whitespace-pre-wrap"
-          ></p>
-
-        </div>
+        <!--
+          ไม่มี Diagnostic UI แล้ว
+          หากเกิดข้อผิดพลาด ระบบจะแสดงข้อความทั่วไปเท่านั้น
+        -->
 
       </div>
 
@@ -273,13 +259,26 @@
 
           <div class="flex items-center gap-3">
 
-            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10">
-              <span class="text-2xl">🛠️</span>
+            <div
+              id="sidebarLogoBox"
+              class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10 overflow-hidden"
+            >
+              <span id="sidebarLogoFallback" class="text-2xl">🛠️</span>
+
+              <img
+                id="sidebarLogo"
+                src=""
+                alt="Logo"
+                class="hidden w-full h-full object-cover"
+              >
             </div>
 
             <div class="min-w-0">
 
-              <h2 class="font-bold text-lg truncate">
+              <h2
+                id="sidebarSiteName"
+                class="font-bold text-lg truncate"
+              >
                 Monnt Hub
               </h2>
 
@@ -306,6 +305,7 @@
             <span>Dashboard</span>
           </button>
 
+
           <button
             onclick="showSection('scripts'); closeSidebar()"
             class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 transition text-left mt-2"
@@ -314,6 +314,7 @@
             <span>📜</span>
             <span>จัดการ Scripts</span>
           </button>
+
 
           <button
             onclick="showSection('categories'); closeSidebar()"
@@ -324,6 +325,7 @@
             <span>หมวดหมู่</span>
           </button>
 
+
           <button
             onclick="showSection('settings'); closeSidebar()"
             class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 transition text-left mt-2"
@@ -332,6 +334,7 @@
             <span>⚙️</span>
             <span>ตั้งค่าเว็บไซต์</span>
           </button>
+
 
           <button
             onclick="showSection('legal'); closeSidebar()"
@@ -374,6 +377,7 @@
             </p>
 
           </div>
+
 
           <button
             onclick="logout()"
@@ -440,7 +444,6 @@
 
       <!-- Content -->
       <div class="p-4 sm:p-6 lg:p-8">
-
 
         <!-- =========================
              DASHBOARD
@@ -1305,10 +1308,12 @@
     id="toast"
     class="hidden fixed bottom-5 right-5 z-[200] max-w-sm"
   >
+
     <div
       id="toastInner"
       class="toast rounded-2xl shadow-2xl px-5 py-4 text-sm font-medium"
     ></div>
+
   </div>
 
 
@@ -1359,6 +1364,8 @@
 
     let currentLegalType = null;
 
+    let siteSettingsCache = null;
+
 
     /* =========================================
        BASIC HELPERS
@@ -1380,58 +1387,33 @@
 
 
     function setLoadingText(text) {
+
       const el = $('loadingText');
 
       if (el) {
         el.textContent = text;
       }
+
     }
 
 
-    function showLoginError(message, debugMessage = '') {
+    /*
+      ไม่แสดงรายละเอียด Error ทางเทคนิคบนหน้าเว็บ
+      แต่ยังเก็บรายละเอียดไว้ใน Console สำหรับเจ้าของเว็บ
+    */
 
-      const box = $('loginError');
-      const text = $('loginErrorText');
+    function showLoginError(message) {
 
-      if (box && text) {
-
-        text.textContent = message;
-
-        box.classList.remove('hidden');
-
-      }
-
-      if (debugMessage) {
-
-        const debugBox = $('loginDebug');
-        const debugText = $('loginDebugText');
-
-        if (debugBox && debugText) {
-
-          debugText.textContent = debugMessage;
-
-          debugBox.classList.remove('hidden');
-
-        }
-
-      }
+      console.error(
+        '[Monnt Hub] Authentication error:',
+        message
+      );
 
     }
 
 
     function hideLoginError() {
-
-      const box = $('loginError');
-      const debugBox = $('loginDebug');
-
-      if (box) {
-        box.classList.add('hidden');
-      }
-
-      if (debugBox) {
-        debugBox.classList.add('hidden');
-      }
-
+      return;
     }
 
 
@@ -1448,7 +1430,9 @@
         actions.classList.add('hidden');
       }
 
-      setLoadingText(message);
+      setLoadingText(
+        message || 'กำลังตรวจสอบการเข้าสู่ระบบ...'
+      );
 
     }
 
@@ -1465,7 +1449,9 @@
 
       if (message) {
 
-        $('loginActions')?.classList.remove('hidden');
+        $('loginActions')?.classList.remove(
+          'hidden'
+        );
 
       }
 
@@ -1543,14 +1529,16 @@
 
 
     /* =========================================
-       SUPABASE ERROR FORMATTER
+       GENERIC ERROR
     ========================================= */
 
     function formatSupabaseError(error) {
 
       if (!error) {
-        return 'ไม่ทราบข้อผิดพลาด';
+        return 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง';
       }
+
+      logError(error);
 
       const message =
         String(
@@ -1564,49 +1552,30 @@
       const lower =
         message.toLowerCase();
 
-      const status =
-        error.status ||
-        error.statusCode ||
-        '';
-
-
       if (
         lower.includes('invalid api key') ||
-        lower.includes('invalid api_key') ||
-        lower.includes('apikey')
+        lower.includes('invalid api_key')
       ) {
 
-        return (
-          '🔴 Supabase API Key ไม่ถูกต้อง\n\n' +
-          'ตรวจสอบ SUPABASE_KEY ในไฟล์ admin/index.html'
-        );
+        return 'ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่อีกครั้ง';
 
       }
 
+      if (
+        lower.includes('jwt') ||
+        lower.includes('refresh token') ||
+        error.status === 401
+      ) {
 
-      if (status === 401 || lower.includes('401')) {
-
-        return (
-          '🔴 Session หรือ API Key ไม่ได้รับอนุญาต (401)\n\n' +
-          'ระบบได้รับคำตอบจาก Supabase ว่าไม่ได้รับอนุญาต\n\n' +
-          'รายละเอียด: ' +
-          message
-        );
+        return 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่';
 
       }
 
+      if (error.status === 403) {
 
-      if (status === 403 || lower.includes('403')) {
-
-        return (
-          '🔴 ไม่มีสิทธิ์เข้าถึงข้อมูล (403)\n\n' +
-          'ตรวจสอบ RLS และสิทธิ์ Admin ใน Supabase\n\n' +
-          'รายละเอียด: ' +
-          message
-        );
+        return 'ไม่มีสิทธิ์ดำเนินการนี้';
 
       }
-
 
       if (
         lower.includes('failed to fetch') ||
@@ -1614,41 +1583,17 @@
         lower.includes('network error')
       ) {
 
-        return (
-          '🔴 เชื่อมต่อ Supabase ไม่สำเร็จ\n\n' +
-          'ตรวจสอบ Internet หรือ Supabase Project\n\n' +
-          'รายละเอียด: ' +
-          message
-        );
+        return 'ไม่สามารถเชื่อมต่อระบบได้ กรุณาตรวจสอบอินเทอร์เน็ต';
 
       }
 
-
-      if (
-        lower.includes('jwt') ||
-        lower.includes('refresh token')
-      ) {
-
-        return (
-          '🔴 Session Google หมดอายุหรือ Refresh Token มีปัญหา\n\n' +
-          'ลองกดเข้าสู่ระบบ Google ใหม่\n\n' +
-          'รายละเอียด: ' +
-          message
-        );
-
-      }
-
-
-      return (
-        '🔴 ' +
-        message
-      );
+      return 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง';
 
     }
 
 
     /* =========================================
-       CREATE SUPABASE CLIENT SAFELY
+       CREATE SUPABASE CLIENT
     ========================================= */
 
     function createSupabaseClient() {
@@ -1658,7 +1603,7 @@
         if (!window.supabase) {
 
           throw new Error(
-            'Supabase JS ไม่ถูกโหลดจาก CDN'
+            'Supabase JS ไม่ถูกโหลด'
           );
 
         }
@@ -1670,7 +1615,7 @@
         ) {
 
           throw new Error(
-            'ไม่พบฟังก์ชัน supabase.createClient'
+            'ไม่พบ createClient'
           );
 
         }
@@ -1691,7 +1636,7 @@
 
 
         logInfo(
-          'Supabase client created successfully'
+          'Supabase client created'
         );
 
 
@@ -1704,14 +1649,194 @@
           error
         );
 
-        showLoginScreen();
+        return false;
 
-        showLoginError(
-          formatSupabaseError(error),
-          'ขั้นตอน: createSupabaseClient'
+      }
+
+    }
+
+
+    /* =========================================
+       LOAD LOGO FOR LOGIN SCREEN
+    ========================================= */
+
+    async function loadLoginLogo() {
+
+      if (!supabaseClient) {
+        return;
+      }
+
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from('site_settings')
+            .select(
+              'site_name,logo_url'
+            )
+            .eq('id', true)
+            .maybeSingle();
+
+
+        if (error) {
+
+          logError(
+            'loadLoginLogo error',
+            error
+          );
+
+          return;
+
+        }
+
+
+        if (!data) {
+          return;
+        }
+
+
+        siteSettingsCache =
+          data;
+
+
+        applySiteBranding(
+          data
         );
 
-        return false;
+
+      } catch (error) {
+
+        logError(
+          'loadLoginLogo exception',
+          error
+        );
+
+      }
+
+    }
+
+
+    function applySiteBranding(data) {
+
+      const logoUrl =
+        data?.logo_url || '';
+
+
+      const siteName =
+        data?.site_name ||
+        'Monnt Hub';
+
+
+      const loginLogo =
+        $('loginLogo');
+
+      const loginFallback =
+        $('loginLogoFallback');
+
+
+      if (loginLogo) {
+
+        if (logoUrl) {
+
+          loginLogo.src =
+            logoUrl;
+
+          loginLogo.classList.remove(
+            'hidden'
+          );
+
+          if (loginFallback) {
+
+            loginFallback.classList.add(
+              'hidden'
+            );
+
+          }
+
+        } else {
+
+          loginLogo.removeAttribute(
+            'src'
+          );
+
+          loginLogo.classList.add(
+            'hidden'
+          );
+
+          if (loginFallback) {
+
+            loginFallback.classList.remove(
+              'hidden'
+            );
+
+          }
+
+        }
+
+      }
+
+
+      const sidebarLogo =
+        $('sidebarLogo');
+
+      const sidebarFallback =
+        $('sidebarLogoFallback');
+
+
+      if (sidebarLogo) {
+
+        if (logoUrl) {
+
+          sidebarLogo.src =
+            logoUrl;
+
+          sidebarLogo.classList.remove(
+            'hidden'
+          );
+
+          if (sidebarFallback) {
+
+            sidebarFallback.classList.add(
+              'hidden'
+            );
+
+          }
+
+        } else {
+
+          sidebarLogo.removeAttribute(
+            'src'
+          );
+
+          sidebarLogo.classList.add(
+            'hidden'
+          );
+
+          if (sidebarFallback) {
+
+            sidebarFallback.classList.remove(
+              'hidden'
+            );
+
+          }
+
+        }
+
+      }
+
+
+      const sidebarSiteName =
+        $('sidebarSiteName');
+
+
+      if (sidebarSiteName) {
+
+        sidebarSiteName.textContent =
+          siteName;
 
       }
 
@@ -1728,23 +1853,23 @@
 
         return {
           allowed: false,
-          reason:
-            '❌ ไม่พบผู้ใช้ Google ที่เข้าสู่ระบบ'
+          reason: 'ไม่พบผู้ใช้'
         };
 
       }
 
 
       const email =
-        String(user.email || '')
+        String(
+          user.email || ''
+        )
           .trim()
           .toLowerCase();
 
 
       logInfo(
-        'Checking admin account:',
-        email,
-        user.id
+        'Checking admin account',
+        email
       );
 
 
@@ -1752,10 +1877,7 @@
 
         return {
           allowed: false,
-          reason:
-            '❌ บัญชี Google นี้ไม่มีสิทธิ์เข้าถึงระบบ Admin\n\n' +
-            'บัญชีที่เข้าสู่ระบบ: ' +
-            email
+          reason: 'บัญชีไม่ได้รับอนุญาต'
         };
 
       }
@@ -1764,7 +1886,7 @@
       if (!supabaseClient) {
 
         throw new Error(
-          'Supabase client ยังไม่พร้อม'
+          'Supabase client ไม่พร้อม'
         );
 
       }
@@ -1773,17 +1895,17 @@
       const result =
         await supabaseClient
           .from('admin_users')
-          .select('user_id,email')
-          .eq('user_id', user.id)
+          .select(
+            'user_id,email'
+          )
+          .eq(
+            'user_id',
+            user.id
+          )
           .maybeSingle();
 
 
       if (result.error) {
-
-        logError(
-          'admin_users query error',
-          result.error
-        );
 
         throw result.error;
 
@@ -1794,27 +1916,23 @@
 
         return {
           allowed: false,
-          reason:
-            '❌ บัญชี Google นี้ยังไม่มีข้อมูลใน admin_users\n\n' +
-            'Email: ' +
-            email +
-            '\n\n' +
-            'ให้เพิ่มบัญชีนี้ใน public.admin_users ก่อน'
+          reason: 'ไม่พบข้อมูล Admin'
         };
 
       }
 
 
       if (
-        String(result.data.email || '')
+        String(
+          result.data.email || ''
+        )
           .trim()
           .toLowerCase() !== email
       ) {
 
         return {
           allowed: false,
-          reason:
-            '❌ ข้อมูล Email ใน admin_users ไม่ตรงกับบัญชี Google'
+          reason: 'ข้อมูลไม่ตรงกัน'
         };
 
       }
@@ -1832,10 +1950,6 @@
 
       if (authProcessingPromise) {
 
-        logInfo(
-          'Auth processing already running; waiting...'
-        );
-
         return authProcessingPromise;
 
       }
@@ -1847,21 +1961,23 @@
           try {
 
             setLoadingText(
-              'กำลังตรวจสอบบัญชี Google...'
+              'กำลังตรวจสอบบัญชี...'
             );
 
 
             if (!user) {
 
               throw new Error(
-                'ไม่พบข้อมูลบัญชี Google'
+                'ไม่พบบัญชี'
               );
 
             }
 
 
             const result =
-              await checkAdminUser(user);
+              await checkAdminUser(
+                user
+              );
 
 
             if (!result.allowed) {
@@ -1875,12 +1991,7 @@
               );
 
               showLoginError(
-                result.reason,
-                'ขั้นตอน: checkAdminUser\n' +
-                'User ID: ' +
-                (user.id || '-') +
-                '\nEmail: ' +
-                (user.email || '-')
+                result.reason
               );
 
               return false;
@@ -1888,26 +1999,22 @@
             }
 
 
-            currentUser = user;
+            currentUser =
+              user;
 
 
             showAdminApp();
 
 
             $('adminEmail').textContent =
-              user.email || ADMIN_EMAIL;
+              user.email ||
+              ADMIN_EMAIL;
 
 
             await initializeAdmin();
 
 
             setupRealtime();
-
-
-            showToast(
-              'เข้าสู่ระบบ Admin สำเร็จ',
-              'success'
-            );
 
 
             return true;
@@ -1919,6 +2026,7 @@
               error
             );
 
+
             currentUser = null;
 
             showLoginScreen();
@@ -1928,19 +2036,15 @@
             );
 
             showLoginError(
-              formatSupabaseError(error),
-              'ขั้นตอน: processAuthUser\n' +
-              'User ID: ' +
-              (user?.id || '-') +
-              '\nEmail: ' +
-              (user?.email || '-')
+              formatSupabaseError(error)
             );
 
             return false;
 
           } finally {
 
-            authProcessingPromise = null;
+            authProcessingPromise =
+              null;
 
           }
 
@@ -1957,8 +2061,6 @@
     ========================================= */
 
     async function signInWithGoogle() {
-
-      hideLoginError();
 
       const button =
         $('googleLoginBtn');
@@ -2001,24 +2103,24 @@
           '/admin/';
 
 
-        logInfo(
-          'Google OAuth redirect:',
-          redirectTo
-        );
-
-
         const {
-          data,
           error
         } =
           await supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
+
+            provider:
+              'google',
+
             options: {
+
               redirectTo,
+
               queryParams: {
                 prompt: 'select_account'
               }
+
             }
+
           });
 
 
@@ -2028,13 +2130,6 @@
 
         }
 
-
-        logInfo(
-          'OAuth started',
-          data
-        );
-
-
       } catch (error) {
 
         logError(
@@ -2042,18 +2137,16 @@
           error
         );
 
+
         showLoginScreen();
 
         $('loginActions')?.classList.remove(
           'hidden'
         );
 
+
         showLoginError(
-          formatSupabaseError(error),
-          'ขั้นตอน: signInWithGoogle\n' +
-          'Redirect URL: ' +
-          window.location.origin +
-          '/admin/'
+          formatSupabaseError(error)
         );
 
       } finally {
@@ -2086,29 +2179,25 @@
 
 
       supabaseClient.auth.onAuthStateChange(
-        async (event, session) => {
+        async (
+          event,
+          session
+        ) => {
 
           logInfo(
             'Auth event:',
-            event,
-            session?.user?.email || '-'
+            event
           );
 
 
-          if (event === 'SIGNED_IN') {
+          if (
+            event === 'SIGNED_IN'
+          ) {
 
-            if (session?.user) {
-
-              if (!authStartupDone) {
-
-                logInfo(
-                  'SIGNED_IN received before startup finished'
-                );
-
-                return;
-
-              }
-
+            if (
+              session?.user &&
+              authStartupDone
+            ) {
 
               await processAuthUser(
                 session.user
@@ -2121,7 +2210,9 @@
           }
 
 
-          if (event === 'USER_UPDATED') {
+          if (
+            event === 'USER_UPDATED'
+          ) {
 
             if (
               session?.user &&
@@ -2132,7 +2223,8 @@
                 session.user;
 
               $('adminEmail').textContent =
-                session.user.email || '-';
+                session.user.email ||
+                '-';
 
             }
 
@@ -2141,9 +2233,15 @@
           }
 
 
-          if (event === 'SIGNED_OUT') {
+          if (
+            event === 'SIGNED_OUT'
+          ) {
 
-            currentUser = null;
+            currentUser =
+              null;
+
+            adminInitialized =
+              false;
 
             showLoginScreen();
 
@@ -2160,13 +2258,13 @@
           }
 
 
-          if (event === 'TOKEN_REFRESHED') {
+          if (
+            event === 'TOKEN_REFRESHED'
+          ) {
 
             logInfo(
-              'Auth token refreshed'
+              'Token refreshed'
             );
-
-            return;
 
           }
 
@@ -2182,26 +2280,33 @@
 
     async function startAdmin() {
 
-      logInfo(
-        'Starting Monnt Hub Admin...'
-      );
-
-
       showLoginLoading(
         'กำลังตรวจสอบการเข้าสู่ระบบ...'
       );
 
 
-      hideLoginError();
-
-
       try {
 
-        if (!createSupabaseClient()) {
+        if (!supabaseClient) {
 
-          return;
+          if (!createSupabaseClient()) {
+
+            throw new Error(
+              'Supabase client ไม่พร้อม'
+            );
+
+          }
 
         }
+
+
+        /*
+          โหลด Logo ก่อน
+          เพื่อให้หน้า Loading ใช้ Logo
+          เดียวกับหน้า Homepage
+        */
+
+        await loadLoginLogo();
 
 
         setupAuthListener();
@@ -2232,11 +2337,8 @@
 
         if (!session?.user) {
 
-          logInfo(
-            'No active session'
-          );
-
-          authStartupDone = true;
+          authStartupDone =
+            true;
 
           showLoginScreen();
 
@@ -2251,12 +2353,6 @@
           return;
 
         }
-
-
-        logInfo(
-          'Existing session found:',
-          session.user.email
-        );
 
 
         setLoadingText(
@@ -2293,25 +2389,25 @@
 
         } catch (userError) {
 
-          logError(
-            'getUser failed',
-            userError
-          );
-
           throw userError;
 
         }
 
 
-        authStartupDone = true;
+        authStartupDone =
+          true;
 
 
-        await processAuthUser(user);
+        await processAuthUser(
+          user
+        );
 
 
       } catch (error) {
 
-        authStartupDone = true;
+        authStartupDone =
+          true;
+
 
         logError(
           'startAdmin error',
@@ -2326,13 +2422,12 @@
         );
 
 
+        /*
+          ไม่แสดงรายละเอียดทางเทคนิค
+        */
+
         showLoginError(
-          formatSupabaseError(error),
-          'ขั้นตอน: startAdmin\n' +
-          'Origin: ' +
-          window.location.origin +
-          '\nSupabase URL: ' +
-          SUPABASE_URL
+          formatSupabaseError(error)
         );
 
       }
@@ -2365,15 +2460,19 @@
         }
 
 
-        currentUser = null;
+        currentUser =
+          null;
 
-        adminInitialized = false;
+        adminInitialized =
+          false;
+
 
         showLoginScreen();
 
         $('loginActions')?.classList.remove(
           'hidden'
         );
+
 
         setLoadingText(
           'ออกจากระบบแล้ว'
@@ -2385,12 +2484,14 @@
           'success'
         );
 
+
       } catch (error) {
 
         logError(
           'Logout error',
           error
         );
+
 
         showToast(
           formatSupabaseError(error),
@@ -2443,14 +2544,18 @@
 
 
       document
-        .querySelectorAll('.admin-section')
-        .forEach(el => {
+        .querySelectorAll(
+          '.admin-section'
+        )
+        .forEach(
+          el => {
 
-          el.classList.add(
-            'hidden'
-          );
+            el.classList.add(
+              'hidden'
+            );
 
-        });
+          }
+        );
 
 
       const target =
@@ -2492,26 +2597,30 @@
 
 
       document
-        .querySelectorAll('.nav-btn')
-        .forEach(btn => {
+        .querySelectorAll(
+          '.nav-btn'
+        )
+        .forEach(
+          btn => {
 
-          btn.classList.remove(
-            'bg-white/15'
-          );
-
-
-          if (
-            btn.dataset.section ===
-            section
-          ) {
-
-            btn.classList.add(
+            btn.classList.remove(
               'bg-white/15'
             );
 
-          }
 
-        });
+            if (
+              btn.dataset.section ===
+              section
+            ) {
+
+              btn.classList.add(
+                'bg-white/15'
+              );
+
+            }
+
+          }
+        );
 
     }
 
@@ -2532,10 +2641,6 @@
 
       if (adminInitialized) {
 
-        logInfo(
-          'Admin already initialized'
-        );
-
         showSection(
           currentSection
         );
@@ -2554,31 +2659,27 @@
       }
 
 
-      setLoadingText(
-        'กำลังโหลดข้อมูล Admin...'
-      );
-
-
       try {
 
         await Promise.all([
+
           loadSiteSettings(),
+
           loadCategories(),
+
           loadScripts(),
+
           loadLegalPages()
+
         ]);
 
 
-        adminInitialized = true;
+        adminInitialized =
+          true;
 
 
         showSection(
           'dashboard'
-        );
-
-
-        logInfo(
-          'Admin initialized successfully'
         );
 
 
@@ -2590,10 +2691,7 @@
         );
 
 
-        throw new Error(
-          'โหลดข้อมูล Admin ไม่สำเร็จ: ' +
-          formatSupabaseError(error)
-        );
+        throw error;
 
       }
 
@@ -2658,7 +2756,8 @@
 
       const search =
         String(
-          $('scriptSearch')?.value || ''
+          $('scriptSearch')?.value ||
+          ''
         )
           .trim()
           .toLowerCase();
@@ -2671,30 +2770,38 @@
       if (search) {
 
         list =
-          list.filter(script => {
+          list.filter(
+            script => {
 
-            const title =
-              String(
-                script.title || ''
-              ).toLowerCase();
+              const title =
+                String(
+                  script.title ||
+                  ''
+                ).toLowerCase();
 
-            const description =
-              String(
-                script.description || ''
-              ).toLowerCase();
 
-            const distributor =
-              String(
-                script.distributor || ''
-              ).toLowerCase();
+              const description =
+                String(
+                  script.description ||
+                  ''
+                ).toLowerCase();
 
-            return (
-              title.includes(search) ||
-              description.includes(search) ||
-              distributor.includes(search)
-            );
 
-          });
+              const distributor =
+                String(
+                  script.distributor ||
+                  ''
+                ).toLowerCase();
+
+
+              return (
+                title.includes(search) ||
+                description.includes(search) ||
+                distributor.includes(search)
+              );
+
+            }
+          );
 
       }
 
@@ -2719,156 +2826,166 @@
 
 
       grid.innerHTML =
-        list.map(script => {
+        list
+          .map(
+            script => {
 
-          const image =
-            script.image ||
-            '';
-
-
-          const title =
-            escapeHtml(
-              script.title ||
-              'ไม่มีชื่อ'
-            );
+              const image =
+                script.image ||
+                '';
 
 
-          const description =
-            escapeHtml(
-              script.description ||
-              'ไม่มีคำอธิบาย'
-            );
+              const title =
+                escapeHtml(
+                  script.title ||
+                  'ไม่มีชื่อ'
+                );
 
 
-          const distributor =
-            escapeHtml(
-              script.distributor ||
-              '-'
-            );
+              const description =
+                escapeHtml(
+                  script.description ||
+                  'ไม่มีคำอธิบาย'
+                );
 
 
-          const category =
-            escapeHtml(
-              script.categories?.name ||
-              'ไม่ระบุ'
-            );
+              const distributor =
+                escapeHtml(
+                  script.distributor ||
+                  '-'
+                );
 
 
-          const status =
-            script.status ||
-            'online';
+              const category =
+                escapeHtml(
+                  script.categories?.name ||
+                  'ไม่ระบุ'
+                );
 
 
-          const visible =
-            script.is_visible !== false;
+              const status =
+                script.status ||
+                'online';
 
 
-          return `
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-xl transition">
+              const visible =
+                script.is_visible !==
+                false;
 
-              ${
-                image
-                  ? `
-                    <img
-                      src="${escapeAttribute(image)}"
-                      alt=""
-                      class="w-full h-44 object-cover"
-                    >
-                  `
-                  : `
-                    <div class="w-full h-44 bg-gradient-to-br from-indigo-100 via-blue-100 to-violet-100 flex items-center justify-center">
-                      <span class="text-5xl">📜</span>
+
+              return `
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-xl transition">
+
+                  ${
+                    image
+                      ? `
+                        <img
+                          src="${escapeAttribute(image)}"
+                          alt=""
+                          class="w-full h-44 object-cover"
+                        >
+                      `
+                      : `
+                        <div class="w-full h-44 bg-gradient-to-br from-indigo-100 via-blue-100 to-violet-100 flex items-center justify-center">
+                          <span class="text-5xl">📜</span>
+                        </div>
+                      `
+                  }
+
+                  <div class="p-5">
+
+                    <div class="flex items-start justify-between gap-3">
+
+                      <div class="min-w-0">
+
+                        <h3 class="font-bold text-lg text-slate-900 truncate">
+                          ${title}
+                        </h3>
+
+                        <p class="mt-1 text-xs text-slate-400">
+                          ${category}
+                        </p>
+
+                      </div>
+
+
+                      <span class="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
+                        status === 'online'
+                          ? 'bg-green-50 text-green-700'
+                          : status === 'maintenance'
+                            ? 'bg-orange-50 text-orange-700'
+                            : 'bg-red-50 text-red-700'
+                      }">
+
+                        <span class="status-dot ${
+                          status === 'online'
+                            ? 'status-online'
+                            : status === 'maintenance'
+                              ? 'status-maintenance'
+                              : 'status-offline'
+                        }"></span>
+
+                        ${escapeHtml(status)}
+
+                      </span>
+
                     </div>
-                  `
-              }
 
-              <div class="p-5">
 
-                <div class="flex items-start justify-between gap-3">
-
-                  <div class="min-w-0">
-
-                    <h3 class="font-bold text-lg text-slate-900 truncate">
-                      ${title}
-                    </h3>
-
-                    <p class="mt-1 text-xs text-slate-400">
-                      ${category}
+                    <p class="mt-4 text-sm text-slate-500 line-clamp-2">
+                      ${description}
                     </p>
+
+
+                    <div class="mt-4 text-xs text-slate-400">
+                      ผู้สร้าง: ${distributor}
+                    </div>
+
+
+                    <div class="mt-4 flex items-center justify-between">
+
+                      <span class="text-xs font-medium ${
+                        visible
+                          ? 'text-green-600'
+                          : 'text-slate-400'
+                      }">
+                        ${
+                          visible
+                            ? '👁️ แสดงอยู่'
+                            : '🙈 ซ่อนอยู่'
+                        }
+                      </span>
+
+                    </div>
+
+
+                    <div class="mt-4 grid grid-cols-2 gap-2">
+
+                      <button
+                        onclick="editScript('${script.id}')"
+                        class="rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-2.5 text-sm font-semibold transition"
+                      >
+                        ✏️ แก้ไข
+                      </button>
+
+
+                      <button
+                        onclick="deleteScript('${script.id}')"
+                        class="rounded-xl bg-red-50 hover:bg-red-100 text-red-600 py-2.5 text-sm font-semibold transition"
+                      >
+                        🗑️ ลบ
+                      </button>
+
+                    </div>
 
                   </div>
 
-                  <span class="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
-                    status === 'online'
-                      ? 'bg-green-50 text-green-700'
-                      : status === 'maintenance'
-                        ? 'bg-orange-50 text-orange-700'
-                        : 'bg-red-50 text-red-700'
-                  }">
-
-                    <span class="status-dot ${
-                      status === 'online'
-                        ? 'status-online'
-                        : status === 'maintenance'
-                          ? 'status-maintenance'
-                          : 'status-offline'
-                    }"></span>
-
-                    ${escapeHtml(status)}
-
-                  </span>
-
                 </div>
+              `;
 
-
-                <p class="mt-4 text-sm text-slate-500 line-clamp-2">
-                  ${description}
-                </p>
-
-
-                <div class="mt-4 text-xs text-slate-400">
-                  ผู้สร้าง: ${distributor}
-                </div>
-
-
-                <div class="mt-4 flex items-center justify-between">
-
-                  <span class="text-xs font-medium ${
-                    visible
-                      ? 'text-green-600'
-                      : 'text-slate-400'
-                  }">
-                    ${visible ? '👁️ แสดงอยู่' : '🙈 ซ่อนอยู่'}
-                  </span>
-
-                </div>
-
-
-                <div class="mt-4 grid grid-cols-2 gap-2">
-
-                  <button
-                    onclick="editScript('${script.id}')"
-                    class="rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-2.5 text-sm font-semibold transition"
-                  >
-                    ✏️ แก้ไข
-                  </button>
-
-                  <button
-                    onclick="deleteScript('${script.id}')"
-                    class="rounded-xl bg-red-50 hover:bg-red-100 text-red-600 py-2.5 text-sm font-semibold transition"
-                  >
-                    🗑️ ลบ
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-          `;
-
-        })
-        .join('');
+            }
+          )
+          .join('');
 
     }
 
@@ -2889,7 +3006,8 @@
 
 
       $('scriptId').value =
-        script?.id || '';
+        script?.id ||
+        '';
 
 
       $('scriptModalTitle').textContent =
@@ -2899,23 +3017,28 @@
 
 
       $('scriptTitle').value =
-        script?.title || '';
+        script?.title ||
+        '';
 
 
       $('scriptDescription').value =
-        script?.description || '';
+        script?.description ||
+        '';
 
 
       $('scriptCategory').value =
-        script?.category_id || '';
+        script?.category_id ||
+        '';
 
 
       $('scriptDistributor').value =
-        script?.distributor || '';
+        script?.distributor ||
+        '';
 
 
       $('scriptCode').value =
-        script?.code || '';
+        script?.code ||
+        '';
 
 
       $('scriptStatus').value =
@@ -2992,15 +3115,17 @@
           </option>
         ` +
         allCategories
-          .map(category => {
+          .map(
+            category => {
 
-            return `
-              <option value="${escapeAttribute(category.id)}">
-                ${escapeHtml(category.name)}
-              </option>
-            `;
+              return `
+                <option value="${escapeAttribute(category.id)}">
+                  ${escapeHtml(category.name)}
+                </option>
+              `;
 
-          })
+            }
+          )
           .join('');
 
 
@@ -3115,13 +3240,15 @@
           title,
 
           description:
-            description || null,
+            description ||
+            null,
 
           category_id:
             categoryId,
 
           distributor:
-            distributor || null,
+            distributor ||
+            null,
 
           code,
 
@@ -3315,13 +3442,15 @@
     ) {
 
       if (!file) {
-
         return null;
-
       }
 
 
-      if (!file.type.startsWith('image/')) {
+      if (
+        !file.type.startsWith(
+          'image/'
+        )
+      ) {
 
         throw new Error(
           'ไฟล์ต้องเป็นรูปภาพเท่านั้น'
@@ -3361,13 +3490,6 @@
         extension;
 
 
-      logInfo(
-        'Uploading image:',
-        bucket,
-        path
-      );
-
-
       const {
         error
       } =
@@ -3401,7 +3523,9 @@
         supabaseClient
           .storage
           .from(bucket)
-          .getPublicUrl(path);
+          .getPublicUrl(
+            path
+          );
 
 
       return data.publicUrl;
@@ -3477,35 +3601,38 @@
 
       container.innerHTML =
         allCategories
-          .map(category => {
+          .map(
+            category => {
 
-            return `
-              <div class="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 border border-slate-100 p-4">
+              return `
+                <div class="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 border border-slate-100 p-4">
 
-                <div class="flex items-center gap-3 min-w-0">
+                  <div class="flex items-center gap-3 min-w-0">
 
-                  <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                    🗂️
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                      🗂️
+                    </div>
+
+                    <span class="font-medium truncate">
+                      ${escapeHtml(category.name)}
+                    </span>
+
                   </div>
 
-                  <span class="font-medium truncate">
-                    ${escapeHtml(category.name)}
-                  </span>
+
+                  <button
+                    onclick="deleteCategory('${category.id}')"
+                    class="shrink-0 w-9 h-9 rounded-xl bg-red-50 hover:bg-red-100 text-red-600"
+                    title="ลบหมวดหมู่"
+                  >
+                    🗑️
+                  </button>
 
                 </div>
+              `;
 
-                <button
-                  onclick="deleteCategory('${category.id}')"
-                  class="shrink-0 w-9 h-9 rounded-xl bg-red-50 hover:bg-red-100 text-red-600"
-                  title="ลบหมวดหมู่"
-                >
-                  🗑️
-                </button>
-
-              </div>
-            `;
-
-          })
+            }
+          )
           .join('');
 
     }
@@ -3684,14 +3811,12 @@
 
 
       if (!data) {
-
-        logInfo(
-          'No site_settings row found'
-        );
-
         return;
-
       }
+
+
+      siteSettingsCache =
+        data;
 
 
       $('settingSiteName').value =
@@ -3707,6 +3832,11 @@
       $('settingHeroDescription').value =
         data.hero_description ||
         '';
+
+
+      applySiteBranding(
+        data
+      );
 
 
       renderSettingPreview(
@@ -3914,6 +4044,16 @@
         await loadSiteSettings();
 
 
+        /*
+          อัปเดต Logo บนหน้า Loading
+          ทันทีหลังบันทึก
+        */
+
+        applySiteBranding(
+          siteSettingsCache
+        );
+
+
         showToast(
           'บันทึกการตั้งค่าเว็บไซต์สำเร็จ',
           'success'
@@ -3963,21 +4103,18 @@
       legalPages = {};
 
 
-      (data || []).forEach(page => {
+      (data || [])
+        .forEach(
+          page => {
 
-        legalPages[
-          page.type ||
-          page.slug ||
-          page.key
-        ] = page;
+            legalPages[
+              page.type ||
+              page.slug ||
+              page.key
+            ] = page;
 
-      });
-
-
-      logInfo(
-        'Legal pages loaded:',
-        legalPages
-      );
+          }
+        );
 
     }
 
@@ -4011,6 +4148,7 @@
         'hidden'
       );
 
+
       $('legalModal').classList.add(
         'flex'
       );
@@ -4023,6 +4161,7 @@
       $('legalModal').classList.add(
         'hidden'
       );
+
 
       $('legalModal').classList.remove(
         'flex'
@@ -4227,53 +4366,68 @@
 
       container.innerHTML =
         recent
-          .map(script => {
+          .map(
+            script => {
 
-            return `
-              <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50">
+              return `
+                <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50">
 
-                ${
-                  script.image
-                    ? `
-                      <img
-                        src="${escapeAttribute(script.image)}"
-                        class="w-12 h-12 rounded-xl object-cover"
-                        alt=""
-                      >
-                    `
-                    : `
-                      <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
-                        📜
-                      </div>
-                    `
-                }
+                  ${
+                    script.image
+                      ? `
+                        <img
+                          src="${escapeAttribute(script.image)}"
+                          class="w-12 h-12 rounded-xl object-cover"
+                          alt=""
+                        >
+                      `
+                      : `
+                        <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+                          📜
+                        </div>
+                      `
+                  }
 
-                <div class="min-w-0 flex-1">
 
-                  <p class="font-semibold text-sm truncate">
-                    ${escapeHtml(script.title || 'ไม่มีชื่อ')}
-                  </p>
+                  <div class="min-w-0 flex-1">
 
-                  <p class="text-xs text-slate-400 truncate">
-                    ${escapeHtml(script.distributor || '-')}
-                  </p>
+                    <p class="font-semibold text-sm truncate">
+                      ${escapeHtml(
+                        script.title ||
+                        'ไม่มีชื่อ'
+                      )}
+                    </p>
+
+                    <p class="text-xs text-slate-400 truncate">
+                      ${escapeHtml(
+                        script.distributor ||
+                        '-'
+                      )}
+                    </p>
+
+                  </div>
+
+
+                  <span class="text-[11px] ${
+                    script.status ===
+                    'online'
+                      ? 'text-green-600'
+                      : script.status ===
+                        'maintenance'
+                        ? 'text-orange-600'
+                        : 'text-red-600'
+                  }">
+                    ${escapeHtml(
+                      script.status ||
+                      'online'
+                    )}
+                  </span>
 
                 </div>
+              `;
 
-                <span class="text-[11px] ${
-                  script.status === 'online'
-                    ? 'text-green-600'
-                    : script.status === 'maintenance'
-                      ? 'text-orange-600'
-                      : 'text-red-600'
-                }">
-                  ${escapeHtml(script.status || 'online')}
-                </span>
-
-              </div>
-            `;
-
-          })
+            }
+          )
           .join('');
 
     }
@@ -4299,105 +4453,93 @@
         true;
 
 
-      const channel =
-        supabaseClient
-          .channel(
-            'monnt-hub-admin-realtime'
-          )
-          .on(
-            'postgres_changes',
-            {
-              event: '*',
-              schema: 'public',
-              table: 'scripts'
-            },
-            async () => {
+      supabaseClient
+        .channel(
+          'monnt-hub-admin-realtime'
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'scripts'
+          },
+          async () => {
 
-              logInfo(
-                'Realtime: scripts changed'
+            try {
+
+              await loadScripts();
+
+            } catch (error) {
+
+              logError(
+                'Realtime scripts error',
+                error
               );
 
-              try {
-
-                await loadScripts();
-
-              } catch (error) {
-
-                logError(
-                  'Realtime scripts reload error',
-                  error
-                );
-
-              }
-
             }
-          )
-          .on(
-            'postgres_changes',
-            {
-              event: '*',
-              schema: 'public',
-              table: 'categories'
-            },
-            async () => {
 
-              logInfo(
-                'Realtime: categories changed'
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'categories'
+          },
+          async () => {
+
+            try {
+
+              await loadCategories();
+
+            } catch (error) {
+
+              logError(
+                'Realtime categories error',
+                error
               );
 
-              try {
+            }
 
-                await loadCategories();
+          }
+        )
+        .subscribe(
+          status => {
 
-              } catch (error) {
+            const statusEl =
+              $('realtimeStatus');
 
-                logError(
-                  'Realtime categories reload error',
-                  error
-                );
 
-              }
+            if (!statusEl) {
+              return;
+            }
+
+
+            if (
+              status ===
+              'SUBSCRIBED'
+            ) {
+
+              statusEl.textContent =
+                'Connected';
+
+              statusEl.className =
+                'text-xs text-green-600 font-semibold';
+
+            } else {
+
+              statusEl.textContent =
+                status;
+
+              statusEl.className =
+                'text-xs text-slate-500 font-semibold';
 
             }
-          )
-          .subscribe(
-            status => {
 
-              logInfo(
-                'Realtime status:',
-                status
-              );
-
-
-              const statusEl =
-                $('realtimeStatus');
-
-
-              if (!statusEl) {
-                return;
-              }
-
-
-              if (status === 'SUBSCRIBED') {
-
-                statusEl.textContent =
-                  'Connected';
-
-                statusEl.className =
-                  'text-xs text-green-600 font-semibold';
-
-              } else {
-
-                statusEl.textContent =
-                  status;
-
-                statusEl.className =
-                  'text-xs text-slate-500 font-semibold';
-
-              }
-
-            }
-          );
+          }
+        );
 
     }
 
@@ -4489,11 +4631,6 @@
     document.addEventListener(
       'DOMContentLoaded',
       () => {
-
-        logInfo(
-          'DOM ready'
-        );
-
 
         showLoginLoading(
           'กำลังเริ่มระบบ...'
