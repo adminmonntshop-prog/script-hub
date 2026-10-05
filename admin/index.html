@@ -1652,11 +1652,8 @@ async function signInWithGoogle(){
 async function checkAdminUser(user){
 
     if(!user){
-
         return false;
-
     }
-
 
     const email =
         String(
@@ -1665,34 +1662,38 @@ async function checkAdminUser(user){
         .trim()
         .toLowerCase();
 
-
     if(
         email !==
         ADMIN_EMAIL.toLowerCase()
     ){
-
         return false;
-
     }
 
+    try{
 
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from('admin_users')
-            .select(
-                'user_id,email'
-            )
-            .eq(
-                'user_id',
-                user.id
-            )
-            .maybeSingle();
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .rpc(
+                    'check_is_admin'
+                );
 
+        if(error){
 
-    if(error){
+            console.error(
+                'Admin check error:',
+                error
+            );
+
+            return false;
+
+        }
+
+        return data === true;
+
+    }catch(error){
 
         console.error(
             'Admin check error:',
@@ -1703,10 +1704,7 @@ async function checkAdminUser(user){
 
     }
 
-
-    return !!data;
-
-}
+    }
 
 
 /* =========================
