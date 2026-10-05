@@ -1556,32 +1556,71 @@ async function signInWithGoogle(){
     $('loadingText').textContent =
         'กำลังเปิด Google Login...';
 
+    try{
 
-    const redirectTo =
-        `${window.location.origin}/admin/`;
-
-
-    const {
-        error
-    } =
+        // ล้าง session เดิมก่อน
         await supabaseClient
             .auth
-            .signInWithOAuth({
+            .signOut();
 
-                provider:'google',
+        const redirectTo =
+            `${window.location.origin}/admin/`;
 
-                options:{
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signInWithOAuth({
 
-                    redirectTo
+                    provider: 'google',
 
-                }
+                    options: {
 
-            });
+                        redirectTo,
 
+                        queryParams: {
+                            prompt: 'select_account'
+                        }
 
-    if(error){
+                    }
 
-        console.error(error);
+                });
+
+        if(error){
+
+            console.error(
+                'Google Login Error:',
+                error
+            );
+
+            showLoginScreen();
+
+            showLoginError(
+                'ไม่สามารถเข้าสู่ระบบด้วย Google ได้'
+            );
+
+            return;
+
+        }
+
+        if(!data?.url){
+
+            showLoginScreen();
+
+            showLoginError(
+                'ไม่พบหน้าสำหรับเข้าสู่ระบบ Google'
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            'Google Login Error:',
+            error
+        );
 
         showLoginScreen();
 
@@ -1591,50 +1630,7 @@ async function signInWithGoogle(){
 
     }
 
-}
-
-
-/* =========================
-   WAIT FOR USER
-========================= */
-
-async function waitForUser(){
-
-    for(
-        let i = 0;
-        i < 20;
-        i++
-    ){
-
-        try{
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient
-                    .auth
-                    .getUser();
-
-
-            if(
-                !error &&
-                data?.user
-            ){
-
-                return data.user;
-
-            }
-
-        }catch(error){
-
-            console.error(error);
-
-        }
-
-
-        await new Promise(
-            resolve =>
+    }
                 setTimeout(
                     resolve,
                     500
