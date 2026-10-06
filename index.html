@@ -192,6 +192,17 @@
       visibility: visible;
     }
 
+    /*
+      สำคัญ:
+      ปุ่ม Hamburger จะไม่ถูกซ่อนหลัง Login
+    */
+
+    #menuButton {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
   </style>
 
 </head>
@@ -200,7 +211,9 @@
 <body class="min-h-screen text-slate-800">
 
 
-  <!-- Loading -->
+  <!-- =========================
+       LOADING
+  ========================== -->
 
   <div
     id="loadingScreen"
@@ -235,10 +248,12 @@
   </div>
 
 
-  <!-- Header -->
+  <!-- =========================
+       HEADER
+  ========================== -->
 
   <header
-    class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"
+    class="sticky top-0 z-[200] border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"
   >
 
     <div class="mx-auto max-w-7xl px-4 py-3">
@@ -273,7 +288,7 @@
       <div class="flex items-center justify-between gap-3">
 
 
-        <!-- Logo / Name -->
+        <!-- Logo -->
 
         <a
           href="./"
@@ -309,46 +324,42 @@
         </a>
 
 
-        <!-- Right -->
+        <!-- Admin -->
 
-        <div class="flex items-center gap-2">
+        <a
+          href="./admin/"
+          id="adminButton"
+          class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
+        >
 
+          <i class="fa-solid fa-shield-halved"></i>
 
-          <!-- Admin -->
+          <span class="hidden sm:inline">
+            เข้าสู่ระบบ Admin
+          </span>
 
-          <a
-            href="./admin/"
-            id="adminButton"
-            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
-          >
+          <span class="sm:hidden">
+            Admin
+          </span>
 
-            <i class="fa-solid fa-shield-halved"></i>
-
-            <span class="hidden sm:inline">
-              เข้าสู่ระบบ Admin
-            </span>
-
-            <span class="sm:hidden">
-              Admin
-            </span>
-
-          </a>
-
-
-        </div>
+        </a>
 
       </div>
 
 
-      <!-- Hamburger -->
+      <!-- =========================
+           HAMBURGER
+      ========================== -->
 
-      <div class="mt-3 flex items-center justify-start">
+      <div
+        class="relative z-[300] mt-3 flex items-center justify-start"
+      >
 
         <button
           id="menuButton"
           type="button"
           aria-label="เปิดเมนู"
-          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+          class="!flex !visible !opacity-100 h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
         >
 
           <i
@@ -365,20 +376,26 @@
   </header>
 
 
-  <!-- Menu Backdrop -->
+  <!-- =========================
+       MENU BACKDROP
+  ========================== -->
 
   <div
     id="menuBackdrop"
-    class="menu-backdrop fixed inset-0 z-[100] bg-slate-950/30 backdrop-blur-sm"
+    class="menu-backdrop fixed inset-0 z-[500] bg-slate-950/30 backdrop-blur-sm"
   ></div>
 
 
-  <!-- Menu -->
+  <!-- =========================
+       MENU
+  ========================== -->
 
   <div
     id="menuPanel"
-    class="menu-panel fixed right-4 top-[170px] z-[110] w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+    class="menu-panel fixed right-4 top-[170px] z-[510] w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
   >
+
+    <!-- Menu Header -->
 
     <div
       class="border-b border-slate-100 bg-gradient-to-r from-blue-50 to-violet-50 px-5 py-4"
@@ -471,7 +488,7 @@
       </a>
 
 
-      <!-- Google Login in Menu -->
+      <!-- Google Login -->
 
       <button
         id="menuGoogleLoginButton"
@@ -529,9 +546,14 @@
   </div>
 
 
-  <!-- HERO -->
+  <!-- =========================
+       MAIN
+  ========================== -->
 
   <main>
+
+
+    <!-- HERO -->
 
     <section class="px-4 pt-6 md:pt-8">
 
@@ -689,7 +711,9 @@
   </main>
 
 
-  <!-- Footer -->
+  <!-- =========================
+       FOOTER
+  ========================== -->
 
   <footer class="border-t border-slate-200 bg-white">
 
@@ -753,7 +777,9 @@
   </footer>
 
 
-  <!-- Legal Modal -->
+  <!-- =========================
+       LEGAL MODAL
+  ========================== -->
 
   <div
     id="legalModal"
@@ -836,7 +862,9 @@
   </div>
 
 
-  <!-- Toast -->
+  <!-- =========================
+       TOAST
+  ========================== -->
 
   <div
     id="toast"
@@ -870,7 +898,7 @@
 
     /* =========================
        SUPABASE
-    ========================= */
+    ========================== */
 
     const SUPABASE_URL =
       'https://ofwlofzqxfdqctmogntu.supabase.co';
@@ -895,7 +923,7 @@
 
     /* =========================
        STATE
-    ========================= */
+    ========================== */
 
     let allScripts = [];
 
@@ -917,7 +945,7 @@
 
     /* =========================
        ELEMENTS
-    ========================= */
+    ========================== */
 
     const loadingScreen =
       document.getElementById('loadingScreen');
@@ -1024,7 +1052,7 @@
 
     /* =========================
        HELPERS
-    ========================= */
+    ========================== */
 
     function escapeHtml(value) {
 
@@ -1127,13 +1155,41 @@
 
     /* =========================
        MENU
-    ========================= */
+    ========================== */
+
+    function forceMenuButtonVisible() {
+
+      if (!menuButton) {
+        return;
+      }
+
+      menuButton.classList.remove(
+        'hidden'
+      );
+
+      menuButton.style.display =
+        'flex';
+
+      menuButton.style.visibility =
+        'visible';
+
+      menuButton.style.opacity =
+        '1';
+
+    }
+
 
     function openMenu() {
 
-      menuPanel.classList.add('show');
+      forceMenuButtonVisible();
 
-      menuBackdrop.classList.add('show');
+      menuPanel.classList.add(
+        'show'
+      );
+
+      menuBackdrop.classList.add(
+        'show'
+      );
 
       menuIcon.className =
         'fa-solid fa-xmark text-lg';
@@ -1143,20 +1199,30 @@
 
     function closeMenu() {
 
-      menuPanel.classList.remove('show');
+      menuPanel.classList.remove(
+        'show'
+      );
 
-      menuBackdrop.classList.remove('show');
+      menuBackdrop.classList.remove(
+        'show'
+      );
 
       menuIcon.className =
         'fa-solid fa-bars text-lg';
+
+      forceMenuButtonVisible();
 
     }
 
 
     function toggleMenu() {
 
+      forceMenuButtonVisible();
+
       if (
-        menuPanel.classList.contains('show')
+        menuPanel.classList.contains(
+          'show'
+        )
       ) {
 
         closeMenu();
@@ -1184,9 +1250,18 @@
 
     /* =========================
        AUTH UI
-    ========================= */
+    ========================== */
 
     function updateAuthUI() {
+
+      /*
+        สำคัญ:
+        ไม่ว่าจะ Login หรือ Logout
+        Hamburger ต้องแสดงเสมอ
+      */
+
+      forceMenuButtonVisible();
+
 
       if (currentUser) {
 
@@ -1370,7 +1445,7 @@
 
     /* =========================
        GET KEY
-    ========================= */
+    ========================== */
 
     function goToGetKey() {
 
@@ -1390,7 +1465,7 @@
 
     /* =========================
        SITE SETTINGS
-    ========================= */
+    ========================== */
 
     async function loadSiteSettings() {
 
@@ -1463,8 +1538,6 @@
         'รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย';
 
 
-      /* Logo */
-
       if (data.logo_url) {
 
         const logoHtml = `
@@ -1489,8 +1562,6 @@
       }
 
 
-      /* Banner */
-
       if (data.banner_url) {
 
         const bannerUrl =
@@ -1513,7 +1584,7 @@
 
     /* =========================
        CATEGORIES
-    ========================= */
+    ========================== */
 
     async function loadCategories() {
 
@@ -1655,7 +1726,7 @@
 
     /* =========================
        SCRIPTS
-    ========================= */
+    ========================== */
 
     async function loadScripts() {
 
@@ -1753,15 +1824,10 @@
 
           const searchable =
             [
-
               script.title,
-
               script.description,
-
               script.distributor,
-
               categoryName
-
             ]
               .filter(Boolean)
               .join(' ')
@@ -2108,7 +2174,7 @@
 
     /* =========================
        VIEW SCRIPT
-    ========================= */
+    ========================== */
 
     function viewScript(scriptId) {
 
@@ -2157,7 +2223,7 @@
 
     /* =========================
        COPY SCRIPT
-    ========================= */
+    ========================== */
 
     async function requireGoogleForCopy() {
 
@@ -2311,7 +2377,7 @@
 
     /* =========================
        LEGAL
-    ========================= */
+    ========================== */
 
     async function loadLegalPages() {
 
@@ -2479,7 +2545,7 @@
 
     /* =========================
        SEARCH
-    ========================= */
+    ========================== */
 
     searchInput.addEventListener(
       'input',
@@ -2498,7 +2564,7 @@
 
     /* =========================
        KEYBOARD
-    ========================= */
+    ========================== */
 
     document.addEventListener(
       'keydown',
@@ -2518,7 +2584,7 @@
 
     /* =========================
        AUTH STATE
-    ========================= */
+    ========================== */
 
     supabaseClient.auth.onAuthStateChange(
       (
@@ -2529,6 +2595,12 @@
         currentUser =
           session?.user || null;
 
+        /*
+          ย้ำอีกครั้งทุกครั้งที่ Auth เปลี่ยน
+        */
+
+        forceMenuButtonVisible();
+
         updateAuthUI();
 
       }
@@ -2537,7 +2609,7 @@
 
     /* =========================
        REALTIME
-    ========================= */
+    ========================== */
 
     function subscribeRealtime() {
 
@@ -2620,7 +2692,7 @@
 
     /* =========================
        ONLINE / OFFLINE
-    ========================= */
+    ========================== */
 
     window.addEventListener(
       'online',
@@ -2650,7 +2722,7 @@
 
     /* =========================
        START
-    ========================= */
+    ========================== */
 
     async function loadHomepage() {
 
@@ -2674,6 +2746,16 @@
         renderCategories();
 
         renderScripts();
+
+
+        /*
+          หลังโหลดหน้าเสร็จ
+          บังคับให้ Hamburger แสดงอีกครั้ง
+        */
+
+        forceMenuButtonVisible();
+
+        updateAuthUI();
 
 
       } catch (error) {
