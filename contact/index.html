@@ -1,95 +1,173 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ติดต่อ | Monnt Hub</title>
+<head>
+
+  <meta charset="UTF-8">
 
   <meta
-    name="description"
-    content="ติดต่อ Monnt Hub และเพิ่มเพื่อนผ่าน LINE"
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
   >
+
+  <title>ติดต่อ | Monnt Hub</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
   >
 
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
+
+    * {
+      font-family: 'Prompt', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
+      background: #f8fafc;
     }
 
     .soft-shadow {
-      box-shadow: 0 20px 50px rgba(14, 165, 233, 0.12);
+      box-shadow:
+        0 20px 50px rgba(14, 165, 233, 0.12);
     }
+
   </style>
+
 </head>
 
-<body class="min-h-screen bg-sky-50 text-slate-700">
+
+<body class="min-h-screen text-slate-800">
+
 
   <!-- Header -->
-  <header class="border-b border-sky-100 bg-white/90 backdrop-blur">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+
+  <header
+    class="border-b border-sky-100 bg-white/90 backdrop-blur-xl"
+  >
+
+    <div
+      class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4"
+    >
+
+
+      <!-- Logo / Site Name -->
 
       <a
         href="../"
-        class="flex items-center gap-3"
+        class="flex min-w-0 items-center gap-3"
+        aria-label="กลับหน้าแรก"
       >
+
         <div
-          class="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-500 text-white shadow-lg shadow-sky-200"
+          id="logoBox"
+          class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg"
         >
-          <i class="fa-solid fa-cloud"></i>
+
+          <i class="fa-solid fa-code text-lg"></i>
+
         </div>
 
-        <div>
-          <h1 class="text-lg font-extrabold text-sky-600">
+
+        <div class="min-w-0">
+
+          <div
+            id="siteName"
+            class="truncate text-base font-bold text-slate-900 sm:text-lg"
+          >
             Monnt Hub
-          </h1>
+          </div>
 
-          <p class="text-xs text-slate-400">
+          <div
+            class="hidden text-xs text-slate-500 sm:block"
+          >
             ติดต่อเรา
-          </p>
+          </div>
+
         </div>
+
       </a>
 
-      <!-- Back -->
+
+      <!-- Back Home -->
+
       <a
         href="../"
-        class="flex items-center gap-2 rounded-xl bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-600 transition hover:bg-sky-100"
+        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-600 transition hover:bg-sky-100"
       >
+
         <i class="fa-solid fa-house"></i>
-        หน้าแรก
+
+        <span>
+          หน้าแรก
+        </span>
+
       </a>
 
     </div>
+
   </header>
 
 
   <!-- Main -->
+
   <main class="px-5 py-12">
 
     <div class="mx-auto max-w-4xl">
 
+
       <!-- Title -->
+
       <div class="mb-10 text-center">
 
         <div
-          class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-sky-100 text-2xl text-sky-500"
+          class="mx-auto mb-5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl bg-sky-100 text-2xl text-sky-500"
+          id="titleLogo"
         >
+
           <i class="fa-solid fa-comments"></i>
+
         </div>
 
-        <h2 class="text-3xl font-black text-slate-800">
-          ติดต่อ
-        </h2>
 
-        <p class="mt-3 text-sm leading-7 text-slate-500">
-          หากต้องการติดต่อหรือสอบถามข้อมูลเกี่ยวกับ Monnt Hub
+        <h1
+          class="text-3xl font-black text-slate-800"
+        >
+          ติดต่อ
+        </h1>
+
+
+        <p
+          class="mt-3 text-sm leading-7 text-slate-500"
+        >
+          หากต้องการติดต่อหรือสอบถามข้อมูลเกี่ยวกับ
+          <span id="siteNameText">
+            Monnt Hub
+          </span>
           สามารถติดต่อเราได้ผ่านช่องทางด้านล่าง
         </p>
 
@@ -97,29 +175,44 @@
 
 
       <!-- Contact Card -->
+
       <section
         class="soft-shadow overflow-hidden rounded-3xl border border-sky-100 bg-white"
       >
 
-        <!-- Blue top -->
-        <div class="bg-gradient-to-r from-sky-500 to-sky-400 px-7 py-8 text-white">
+
+        <!-- Blue Header -->
+
+        <div
+          class="bg-gradient-to-r from-sky-500 to-blue-600 px-7 py-8 text-white"
+        >
 
           <div class="flex items-center gap-4">
 
             <div
               class="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-2xl backdrop-blur"
             >
+
               <i class="fa-solid fa-headset"></i>
+
             </div>
 
-            <div>
-              <h3 class="text-xl font-extrabold">
-                Monnt Hub
-              </h3>
 
-              <p class="mt-1 text-sm text-sky-50">
+            <div>
+
+              <h2
+                id="cardSiteName"
+                class="text-xl font-extrabold"
+              >
+                Monnt Hub
+              </h2>
+
+              <p
+                class="mt-1 text-sm text-sky-50"
+              >
                 ช่องทางสำหรับติดต่อเรา
               </p>
+
             </div>
 
           </div>
@@ -128,41 +221,62 @@
 
 
         <!-- Content -->
+
         <div class="p-7">
 
-          <div class="rounded-2xl border border-sky-100 bg-sky-50 p-5">
+          <div
+            class="rounded-2xl border border-sky-100 bg-sky-50 p-5"
+          >
+
 
             <div class="flex items-start gap-4">
 
               <div
                 class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-sky-500 shadow-sm"
               >
+
                 <i class="fa-brands fa-line text-xl"></i>
+
               </div>
 
-              <div>
-                <h4 class="font-bold text-slate-800">
-                  ติดต่อผ่าน LINE
-                </h4>
 
-                <p class="mt-1 text-sm leading-6 text-slate-500">
-                  กดปุ่มด้านล่างเพื่อเพิ่มเพื่อนและติดต่อ Monnt Hub
+              <div>
+
+                <h3
+                  class="font-bold text-slate-800"
+                >
+                  ติดต่อผ่าน LINE
+                </h3>
+
+                <p
+                  class="mt-1 text-sm leading-6 text-slate-500"
+                >
+                  กดปุ่มด้านล่างเพื่อเพิ่มเพื่อนและติดต่อ
+                  <span id="lineSiteName">
+                    Monnt Hub
+                  </span>
                 </p>
+
               </div>
 
             </div>
 
 
-            <!-- LINE button -->
+            <!-- LINE Button -->
+
             <div class="mt-6">
 
-              <a href="https://lin.ee/9aiuDOT">
+              <a
+                href="https://lin.ee/9aiuDOT"
+              >
+
                 <img
                   src="https://scdn.line-apps.com/n/line_add_friends/btn/th.png"
                   alt="เพิ่มเพื่อน"
                   height="36"
                   border="0"
                 >
+
               </a>
 
             </div>
@@ -174,11 +288,21 @@
       </section>
 
 
-      <!-- Footer info -->
+      <!-- Footer -->
+
       <div class="mt-8 text-center">
 
-        <p class="text-xs text-slate-400">
-          © Monnt Hub
+        <p
+          class="text-xs text-slate-400"
+        >
+
+          ©
+          <span id="footerYear"></span>
+
+          <span id="footerSiteName">
+            Monnt Hub
+          </span>
+
         </p>
 
       </div>
@@ -187,5 +311,211 @@
 
   </main>
 
+
+  <script>
+
+    /* =========================
+       SUPABASE
+    ========================= */
+
+    const SUPABASE_URL =
+      'https://ofwlofzqxfdqctmogntu.supabase.co';
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            flowType: 'pkce'
+          }
+        }
+      );
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const logoBox =
+      document.getElementById('logoBox');
+
+    const titleLogo =
+      document.getElementById('titleLogo');
+
+    const siteName =
+      document.getElementById('siteName');
+
+    const siteNameText =
+      document.getElementById('siteNameText');
+
+    const cardSiteName =
+      document.getElementById('cardSiteName');
+
+    const lineSiteName =
+      document.getElementById('lineSiteName');
+
+    const footerSiteName =
+      document.getElementById('footerSiteName');
+
+    const footerYear =
+      document.getElementById('footerYear');
+
+
+    /* =========================
+       LOAD SITE SETTINGS
+    ========================= */
+
+    async function loadSiteSettings() {
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from('site_settings')
+            .select(
+              'site_name, logo_url'
+            )
+            .eq(
+              'id',
+              true
+            )
+            .maybeSingle();
+
+
+        if (error) {
+
+          console.error(
+            'loadSiteSettings:',
+            error
+          );
+
+          return;
+
+        }
+
+
+        if (!data) {
+          return;
+        }
+
+
+        /* Site Name */
+
+        const currentSiteName =
+          data.site_name ||
+          'Monnt Hub';
+
+
+        document.title =
+          `${currentSiteName} | ติดต่อ`;
+
+
+        siteName.textContent =
+          currentSiteName;
+
+
+        siteNameText.textContent =
+          currentSiteName;
+
+
+        cardSiteName.textContent =
+          currentSiteName;
+
+
+        lineSiteName.textContent =
+          currentSiteName;
+
+
+        footerSiteName.textContent =
+          currentSiteName;
+
+
+        /* Logo */
+
+        if (data.logo_url) {
+
+          const logoHtml = `
+
+            <img
+              src="${escapeHtml(data.logo_url)}"
+              alt="${escapeHtml(currentSiteName)}"
+              class="h-full w-full object-cover"
+            >
+
+          `;
+
+
+          logoBox.innerHTML =
+            logoHtml;
+
+
+          titleLogo.innerHTML =
+            logoHtml;
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          'Contact site settings:',
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return '';
+      }
+
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* =========================
+       FOOTER YEAR
+    ========================= */
+
+    footerYear.textContent =
+      new Date().getFullYear();
+
+
+    /* =========================
+       START
+    ========================= */
+
+    loadSiteSettings();
+
+  </script>
+
 </body>
+
 </html>
