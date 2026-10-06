@@ -64,18 +64,17 @@
 <body class="min-h-screen text-slate-800">
 
 
-  <!-- Header -->
+  <!-- HEADER -->
 
   <header
-    class="border-b border-sky-100 bg-white/90 backdrop-blur-xl"
+    class="border-b border-sky-100 bg-white/95 backdrop-blur-xl"
   >
 
     <div
-      class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4"
+      class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-5"
     >
 
-
-      <!-- Logo / Site Name -->
+      <!-- LOGO -->
 
       <a
         href="../"
@@ -85,7 +84,7 @@
 
         <div
           id="logoBox"
-          class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg"
+          class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-sky-100 text-sky-500 shadow-sm"
         >
 
           <i class="fa-solid fa-code text-lg"></i>
@@ -103,7 +102,7 @@
           </div>
 
           <div
-            class="hidden text-xs text-slate-500 sm:block"
+            class="text-xs text-slate-500"
           >
             ติดต่อเรา
           </div>
@@ -113,16 +112,16 @@
       </a>
 
 
-      <!-- Back Home -->
+      <!-- HOME -->
 
       <a
         href="../"
-        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-600 transition hover:bg-sky-100"
+        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-sky-50 px-3 py-2.5 text-sm font-semibold text-sky-600 transition hover:bg-sky-100 sm:px-4"
       >
 
         <i class="fa-solid fa-house"></i>
 
-        <span>
+        <span class="hidden sm:inline">
           หน้าแรก
         </span>
 
@@ -133,20 +132,20 @@
   </header>
 
 
-  <!-- Main -->
+  <!-- MAIN -->
 
-  <main class="px-5 py-12">
+  <main class="px-4 py-10 sm:px-5 sm:py-12">
 
     <div class="mx-auto max-w-4xl">
 
 
-      <!-- Title -->
+      <!-- TITLE -->
 
-      <div class="mb-10 text-center">
+      <div class="mb-8 text-center sm:mb-10">
 
         <div
-          class="mx-auto mb-5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl bg-sky-100 text-2xl text-sky-500"
           id="titleLogo"
+          class="mx-auto mb-5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl bg-sky-100 text-2xl text-sky-500 shadow-sm"
         >
 
           <i class="fa-solid fa-comments"></i>
@@ -162,35 +161,42 @@
 
 
         <p
-          class="mt-3 text-sm leading-7 text-slate-500"
+          class="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-500"
         >
+
           หากต้องการติดต่อหรือสอบถามข้อมูลเกี่ยวกับ
-          <span id="siteNameText">
+
+          <span
+            id="siteNameText"
+            class="font-semibold text-sky-600"
+          >
             Monnt Hub
           </span>
+
           สามารถติดต่อเราได้ผ่านช่องทางด้านล่าง
+
         </p>
 
       </div>
 
 
-      <!-- Contact Card -->
+      <!-- CONTACT CARD -->
 
       <section
         class="soft-shadow overflow-hidden rounded-3xl border border-sky-100 bg-white"
       >
 
 
-        <!-- Blue Header -->
+        <!-- BLUE HEADER -->
 
         <div
-          class="bg-gradient-to-r from-sky-500 to-blue-600 px-7 py-8 text-white"
+          class="bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-7 text-white sm:px-7 sm:py-8"
         >
 
           <div class="flex items-center gap-4">
 
             <div
-              class="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-2xl backdrop-blur"
+              class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-2xl backdrop-blur"
             >
 
               <i class="fa-solid fa-headset"></i>
@@ -198,11 +204,11 @@
             </div>
 
 
-            <div>
+            <div class="min-w-0">
 
               <h2
                 id="cardSiteName"
-                class="text-xl font-extrabold"
+                class="truncate text-xl font-extrabold"
               >
                 Monnt Hub
               </h2>
@@ -220,16 +226,18 @@
         </div>
 
 
-        <!-- Content -->
+        <!-- CONTENT -->
 
-        <div class="p-7">
+        <div class="p-5 sm:p-7">
 
           <div
-            class="rounded-2xl border border-sky-100 bg-sky-50 p-5"
+            class="rounded-2xl border border-sky-100 bg-sky-50 p-5 sm:p-6"
           >
 
 
-            <div class="flex items-start gap-4">
+            <div
+              class="flex items-start gap-4"
+            >
 
               <div
                 class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-sky-500 shadow-sm"
@@ -240,7 +248,7 @@
               </div>
 
 
-              <div>
+              <div class="min-w-0">
 
                 <h3
                   class="font-bold text-slate-800"
@@ -251,10 +259,13 @@
                 <p
                   class="mt-1 text-sm leading-6 text-slate-500"
                 >
+
                   กดปุ่มด้านล่างเพื่อเพิ่มเพื่อนและติดต่อ
+
                   <span id="lineSiteName">
                     Monnt Hub
                   </span>
+
                 </p>
 
               </div>
@@ -262,12 +273,14 @@
             </div>
 
 
-            <!-- LINE Button -->
+            <!-- LINE BUTTON -->
 
             <div class="mt-6">
 
               <a
                 href="https://lin.ee/9aiuDOT"
+                target="_blank"
+                rel="noopener noreferrer"
               >
 
                 <img
@@ -288,7 +301,7 @@
       </section>
 
 
-      <!-- Footer -->
+      <!-- FOOTER -->
 
       <div class="mt-8 text-center">
 
@@ -297,6 +310,7 @@
         >
 
           ©
+
           <span id="footerYear"></span>
 
           <span id="footerSiteName">
@@ -370,6 +384,87 @@
 
 
     /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+
+        return '';
+
+      }
+
+      return String(value)
+
+        .replace(/&/g, '&amp;')
+
+        .replace(/</g, '&lt;')
+
+        .replace(/>/g, '&gt;')
+
+        .replace(/"/g, '&quot;')
+
+        .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* =========================
+       SET LOGO
+    ========================= */
+
+    function setLogo(
+      logoUrl,
+      currentSiteName
+    ) {
+
+      if (!logoUrl) {
+
+        return;
+
+      }
+
+
+      const safeLogoUrl =
+        escapeHtml(
+          String(logoUrl)
+        );
+
+
+      const safeSiteName =
+        escapeHtml(
+          currentSiteName
+        );
+
+
+      const logoHtml = `
+
+        <img
+          src="${safeLogoUrl}"
+          alt="${safeSiteName}"
+          class="h-full w-full object-cover"
+          loading="eager"
+          onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=&quot;fa-solid fa-code text-lg&quot;></i>';"
+        >
+
+      `;
+
+
+      logoBox.innerHTML =
+        logoHtml;
+
+
+      titleLogo.innerHTML =
+        logoHtml;
+
+    }
+
+
+    /* =========================
        LOAD SITE SETTINGS
     ========================= */
 
@@ -382,21 +477,25 @@
           error
         } =
           await supabaseClient
+
             .from('site_settings')
+
             .select(
               'site_name, logo_url'
             )
+
             .eq(
               'id',
               true
             )
+
             .maybeSingle();
 
 
         if (error) {
 
           console.error(
-            'loadSiteSettings:',
+            'Contact loadSiteSettings:',
             error
           );
 
@@ -406,11 +505,19 @@
 
 
         if (!data) {
+
+          console.warn(
+            'ไม่พบข้อมูล site_settings'
+          );
+
           return;
+
         }
 
 
-        /* Site Name */
+        /* =====================
+           SITE NAME
+        ===================== */
 
         const currentSiteName =
           data.site_name ||
@@ -441,61 +548,30 @@
           currentSiteName;
 
 
-        /* Logo */
+        /* =====================
+           LOGO
+        ===================== */
 
-        if (data.logo_url) {
+        if (
+          data.logo_url &&
+          String(data.logo_url).trim() !== ''
+        ) {
 
-          const logoHtml = `
-
-            <img
-              src="${escapeHtml(data.logo_url)}"
-              alt="${escapeHtml(currentSiteName)}"
-              class="h-full w-full object-cover"
-            >
-
-          `;
-
-
-          logoBox.innerHTML =
-            logoHtml;
-
-
-          titleLogo.innerHTML =
-            logoHtml;
+          setLogo(
+            data.logo_url,
+            currentSiteName
+          );
 
         }
 
       } catch (error) {
 
         console.error(
-          'Contact site settings:',
+          'Contact site settings error:',
           error
         );
 
       }
-
-    }
-
-
-    /* =========================
-       ESCAPE HTML
-    ========================= */
-
-    function escapeHtml(value) {
-
-      if (
-        value === null ||
-        value === undefined
-      ) {
-        return '';
-      }
-
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
 
     }
 
