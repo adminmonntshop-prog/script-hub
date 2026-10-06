@@ -10,9 +10,17 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>ติดต่อ | Monnt Hub</title>
+  <title>Monnt Hub</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
   <link
     href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap"
@@ -24,215 +32,2724 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   >
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
+
     * {
       font-family: 'Prompt', sans-serif;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      background:
-        radial-gradient(
-          circle at top left,
-          rgba(59,130,246,.12),
-          transparent 35%
-        ),
-        radial-gradient(
-          circle at bottom right,
-          rgba(139,92,246,.12),
-          transparent 35%
-        ),
-        #f8fafc;
+      background: #f8fafc;
     }
 
-    .contact-card {
+    .hero-pattern {
+      background-image:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(255,255,255,.15) 0,
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at 80% 80%,
+          rgba(255,255,255,.12) 0,
+          transparent 35%
+        );
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .script-card {
       transition:
-        transform .25s ease,
-        box-shadow .25s ease;
+        transform .2s ease,
+        box-shadow .2s ease;
     }
 
-    .contact-card:hover {
+    .script-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 24px 50px rgba(15,23,42,.12);
+      box-shadow:
+        0 20px 35px rgba(15,23,42,.10);
     }
+
+    .category-btn {
+      transition: all .2s ease;
+    }
+
+    .category-btn.active {
+      background: linear-gradient(
+        to right,
+        #2563eb,
+        #4f46e5
+      );
+      color: white;
+      border-color: transparent;
+      box-shadow:
+        0 8px 18px rgba(37,99,235,.18);
+    }
+
+    .category-btn:not(.active) {
+      background: white;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .category-btn:not(.active):hover {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .toast {
+      transform: translate(-50%, -150%);
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        transform .3s ease,
+        opacity .3s ease;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    .legal-link {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 1px;
+      transition: color .2s ease;
+    }
+
+    .legal-link:hover {
+      color: #2563eb;
+    }
+
+    .legal-modal {
+      opacity: 0;
+      visibility: hidden;
+      transition: all .2s ease;
+    }
+
+    .legal-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .legal-content {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .hide-scrollbar {
+      scrollbar-width: none;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .menu-panel {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition:
+        opacity .2s ease,
+        transform .2s ease,
+        visibility .2s ease;
+    }
+
+    .menu-panel.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .menu-backdrop {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease;
+    }
+
+    .menu-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
   </style>
 
 </head>
 
+
 <body class="min-h-screen text-slate-800">
+
+
+  <!-- Loading -->
+
+  <div
+    id="loadingScreen"
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
+  >
+
+    <div class="text-center">
+
+      <div
+        id="loadingLogo"
+        class="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-xl"
+      >
+
+        <i class="fa-solid fa-code text-2xl"></i>
+
+      </div>
+
+      <div class="text-lg font-semibold text-slate-700">
+        กำลังโหลด Monnt Hub...
+      </div>
+
+      <div class="mt-3 flex justify-center">
+
+        <div
+          class="h-6 w-6 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"
+        ></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 
   <!-- Header -->
 
   <header
-    class="border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"
+    class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl"
   >
 
-    <div
-      class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4"
-    >
+    <div class="mx-auto max-w-7xl px-4 py-3">
 
-      <a
-        href="../"
-        class="flex items-center gap-3"
+
+      <!-- Google Login -->
+
+      <div
+        id="topGoogleLogin"
+        class="mb-3 flex items-center justify-start"
       >
 
-        <div
-          class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg"
+        <button
+          id="googleLoginButton"
+          type="button"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-md ring-1 ring-slate-200 transition hover:bg-slate-50"
         >
-          <i class="fa-solid fa-code"></i>
-        </div>
 
-        <div>
+          <i class="fa-brands fa-google text-red-500"></i>
 
-          <div class="font-bold text-slate-900">
-            Monnt Hub
+          <span>
+            ดำเนินการต่อด้วย Google
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- Main Header -->
+
+      <div class="flex items-center justify-between gap-3">
+
+
+        <!-- Logo / Name -->
+
+        <a
+          href="./"
+          class="flex min-w-0 items-center gap-3"
+        >
+
+          <div
+            id="logoBox"
+            class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg"
+          >
+
+            <i class="fa-solid fa-code text-lg"></i>
+
           </div>
 
-          <div class="text-xs text-slate-500">
-            ติดต่อเรา
+          <div class="min-w-0">
+
+            <div
+              id="siteNameHeader"
+              class="truncate text-base font-bold text-slate-900 md:text-lg"
+            >
+              Monnt Hub
+            </div>
+
+            <div
+              class="hidden text-xs text-slate-500 sm:block"
+            >
+              ศูนย์รวมสคริปต์
+            </div>
+
           </div>
+
+        </a>
+
+
+        <!-- Right -->
+
+        <div class="flex items-center gap-2">
+
+
+          <!-- Admin -->
+
+          <a
+            href="./admin/"
+            id="adminButton"
+            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
+          >
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <span class="hidden sm:inline">
+              เข้าสู่ระบบ Admin
+            </span>
+
+            <span class="sm:hidden">
+              Admin
+            </span>
+
+          </a>
+
 
         </div>
 
-      </a>
+      </div>
 
 
-      <a
-        href="../"
-        class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
-      >
+      <!-- Hamburger -->
 
-        <i class="fa-solid fa-arrow-left"></i>
+      <div class="mt-3 flex items-center justify-start">
 
-        กลับหน้าแรก
+        <button
+          id="menuButton"
+          type="button"
+          aria-label="เปิดเมนู"
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+        >
 
-      </a>
+          <i
+            id="menuIcon"
+            class="fa-solid fa-bars text-lg"
+          ></i>
+
+        </button>
+
+      </div>
 
     </div>
 
   </header>
 
 
-  <!-- Main -->
+  <!-- Menu Backdrop -->
 
-  <main class="px-4 py-10 sm:py-14">
-
-    <div class="mx-auto max-w-3xl">
-
-      <!-- Hero -->
-
-      <section
-        class="mb-6 overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 p-7 text-white shadow-2xl sm:p-10"
-      >
-
-        <div
-          class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 text-2xl backdrop-blur-md"
-        >
-          <i class="fa-solid fa-headset"></i>
-        </div>
-
-        <h1
-          class="text-3xl font-extrabold sm:text-4xl"
-        >
-          ติดต่อ Monnt Hub
-        </h1>
-
-        <p
-          class="mt-3 max-w-2xl text-sm leading-7 text-blue-50 sm:text-base"
-        >
-          หากมีคำถาม ต้องการติดต่อทีมงาน หรือพบปัญหา
-          สามารถติดต่อเราได้ผ่านช่องทางด้านล่าง
-        </p>
-
-      </section>
+  <div
+    id="menuBackdrop"
+    class="menu-backdrop fixed inset-0 z-[100] bg-slate-950/30 backdrop-blur-sm"
+  ></div>
 
 
-      <!-- Contact Card -->
+  <!-- Menu -->
 
-      <section
-        class="contact-card rounded-[2rem] border border-slate-200 bg-white p-6 shadow-lg sm:p-8"
-      >
+  <div
+    id="menuPanel"
+    class="menu-panel fixed right-4 top-[170px] z-[110] w-[calc(100%-2rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+  >
+
+    <div
+      class="border-b border-slate-100 bg-gradient-to-r from-blue-50 to-violet-50 px-5 py-4"
+    >
+
+      <div class="flex items-center gap-3">
 
         <div
-          class="flex flex-col items-center text-center"
+          id="menuLogo"
+          class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-md"
         >
 
-          <div
-            class="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-green-400 to-emerald-600 text-3xl text-white shadow-xl shadow-green-500/20"
-          >
-            <i class="fa-brands fa-line"></i>
-          </div>
-
-
-          <div
-            class="mb-2 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-xs font-semibold text-green-600"
-          >
-
-            <span
-              class="h-2 w-2 rounded-full bg-green-500"
-            ></span>
-
-            LINE Official
-
-          </div>
-
-
-          <h2
-            class="text-2xl font-bold text-slate-900"
-          >
-            ติดต่อผ่าน LINE
-          </h2>
-
-
-          <p
-            class="mt-2 max-w-md text-sm leading-6 text-slate-500"
-          >
-            กดปุ่มด้านล่างเพื่อเพิ่มเพื่อนและติดต่อเราโดยตรง
-          </p>
-
-
-          <div class="mt-7">
-
-            <a
-              href="https://lin.ee/9aiuDOT"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center rounded-2xl bg-white p-2 shadow-lg ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-xl"
-            >
-
-              <img
-                src="https://scdn.line-apps.com/n/line_add_friends/btn/th.png"
-                alt="เพิ่มเพื่อน"
-                height="36"
-                border="0"
-              >
-
-            </a>
-
-          </div>
+          <i class="fa-solid fa-code"></i>
 
         </div>
 
-      </section>
+        <div>
 
+          <div
+            id="menuSiteName"
+            class="font-bold text-slate-900"
+          >
+            Monnt Hub
+          </div>
 
-      <!-- Bottom -->
+          <div class="text-xs text-slate-500">
+            เมนูเว็บไซต์
+          </div>
 
-      <div class="mt-6 text-center">
-
-        <p class="text-xs text-slate-400">
-          © <span id="year"></span> Monnt Hub — All rights reserved.
-        </p>
+        </div>
 
       </div>
 
     </div>
 
+
+    <div class="p-3">
+
+
+      <!-- Get Key -->
+
+      <button
+        id="getKeyMenuButton"
+        type="button"
+        class="flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
+      >
+
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+        >
+
+          <i class="fa-solid fa-key"></i>
+
+        </span>
+
+        <span>
+          Get Key
+        </span>
+
+        <i
+          class="fa-solid fa-chevron-right ml-auto text-xs text-slate-400"
+        ></i>
+
+      </button>
+
+
+      <!-- Contact -->
+
+      <a
+        href="./contact/"
+        class="flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-violet-50 hover:text-violet-600"
+      >
+
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600"
+        >
+
+          <i class="fa-solid fa-comments"></i>
+
+        </span>
+
+        <span>
+          ติดต่อ
+        </span>
+
+        <i
+          class="fa-solid fa-chevron-right ml-auto text-xs text-slate-400"
+        ></i>
+
+      </a>
+
+
+      <!-- Google Login in Menu -->
+
+      <button
+        id="menuGoogleLoginButton"
+        type="button"
+        class="flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-red-50 hover:text-red-600"
+      >
+
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-500"
+        >
+
+          <i class="fa-brands fa-google"></i>
+
+        </span>
+
+        <span>
+          ดำเนินการต่อด้วย Google
+        </span>
+
+        <i
+          class="fa-solid fa-chevron-right ml-auto text-xs text-slate-400"
+        ></i>
+
+      </button>
+
+
+      <!-- Logout -->
+
+      <button
+        id="logoutButton"
+        type="button"
+        class="hidden w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50"
+      >
+
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600"
+        >
+
+          <i class="fa-solid fa-right-from-bracket"></i>
+
+        </span>
+
+        <span>
+          ออกจากระบบ
+        </span>
+
+        <i
+          class="fa-solid fa-chevron-right ml-auto text-xs text-red-300"
+        ></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- HERO -->
+
+  <main>
+
+    <section class="px-4 pt-6 md:pt-8">
+
+      <div
+        id="heroBanner"
+        class="hero-pattern relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 bg-cover bg-center text-white shadow-2xl"
+      >
+
+        <div
+          class="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-950/10 via-transparent to-slate-950/30"
+        ></div>
+
+        <div
+          class="relative px-6 py-10 sm:px-10 sm:py-14 md:px-14 md:py-16"
+        >
+
+          <div
+            class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm backdrop-blur-md"
+          >
+
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+            <span id="heroBadge">
+              Monnt Hub
+            </span>
+
+          </div>
+
+
+          <h1
+            id="heroTitle"
+            class="max-w-3xl text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl"
+          >
+            ค้นหาและคัดลอกสคริปต์พร้อมใช้งาน
+          </h1>
+
+
+          <p
+            id="heroDescription"
+            class="mt-4 max-w-2xl text-sm leading-7 text-blue-50 sm:text-base"
+          >
+            รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย
+          </p>
+
+
+          <div class="mt-7 max-w-3xl">
+
+            <div
+              class="flex items-center gap-3 rounded-2xl border border-white/20 bg-white/95 px-4 py-3 shadow-xl"
+            >
+
+              <i
+                class="fa-solid fa-magnifying-glass text-slate-400"
+              ></i>
+
+              <input
+                id="searchInput"
+                type="text"
+                class="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 sm:text-base"
+                placeholder="พิมพ์ชื่อสคริปต์ หรือคำอธิบาย..."
+                autocomplete="off"
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Categories -->
+
+    <section class="px-4 pt-6">
+
+      <div class="mx-auto max-w-7xl">
+
+        <div
+          id="categoryFilters"
+          class="hide-scrollbar flex gap-2 overflow-x-auto pb-2"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Scripts -->
+
+    <section
+      id="scriptSection"
+      class="px-4 py-6 md:py-8"
+    >
+
+      <div class="mx-auto max-w-7xl">
+
+        <div
+          class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"
+        >
+
+          <div>
+
+            <h2 class="text-2xl font-bold text-slate-900">
+              สคริปต์ทั้งหมด
+            </h2>
+
+            <p
+              id="resultText"
+              class="mt-1 text-sm text-slate-500"
+            >
+              กำลังโหลด...
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div
+          id="scriptGrid"
+          class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        ></div>
+
+
+        <div
+          id="emptyState"
+          class="hidden rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center shadow-sm"
+        >
+
+          <div
+            class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400"
+          >
+
+            <i class="fa-solid fa-box-open text-2xl"></i>
+
+          </div>
+
+          <h3 class="text-lg font-bold text-slate-800">
+            ไม่พบสคริปต์
+          </h3>
+
+          <p class="mt-1 text-sm text-slate-500">
+            ลองเปลี่ยนคำค้นหาหรือหมวดหมู่
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
   </main>
 
 
+  <!-- Footer -->
+
+  <footer class="border-t border-slate-200 bg-white">
+
+    <div
+      class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-7 text-center text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left"
+    >
+
+      <div>
+
+        ©
+        <span id="footerYear"></span>
+
+        <span id="footerSiteName">
+          Monnt Hub
+        </span>
+
+        — All rights reserved.
+
+      </div>
+
+
+      <div
+        class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
+      >
+
+        <button
+          type="button"
+          onclick="openLegalPage('privacy')"
+          class="legal-link text-slate-500"
+        >
+          นโยบายความเป็นส่วนตัว
+        </button>
+
+        <span class="text-slate-300">
+          |
+        </span>
+
+        <button
+          type="button"
+          onclick="openLegalPage('terms')"
+          class="legal-link text-slate-500"
+        >
+          ข้อกำหนดการให้บริการ
+        </button>
+
+      </div>
+
+
+      <div class="flex items-center justify-center gap-2">
+
+        <i class="fa-solid fa-code text-blue-600"></i>
+
+        <span id="footerBrand">
+          Monnt Hub
+        </span>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- Legal Modal -->
+
+  <div
+    id="legalModal"
+    class="legal-modal fixed inset-0 z-[900] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+    onclick="handleLegalBackdrop(event)"
+  >
+
+    <div
+      class="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl"
+      onclick="event.stopPropagation()"
+    >
+
+      <div
+        class="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6"
+      >
+
+        <div class="flex min-w-0 items-center gap-3">
+
+          <div
+            id="legalModalIcon"
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600"
+          >
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+          </div>
+
+          <h2
+            id="legalModalTitle"
+            class="truncate text-lg font-bold text-slate-900 sm:text-xl"
+          >
+            นโยบายความเป็นส่วนตัว
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          onclick="closeLegalPage()"
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800"
+          aria-label="ปิด"
+        >
+
+          <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+      </div>
+
+
+      <div class="overflow-y-auto px-5 py-6 sm:px-7 sm:py-7">
+
+        <div
+          id="legalModalContent"
+          class="legal-content text-sm leading-8 text-slate-600 sm:text-base"
+        >
+          กำลังโหลด...
+        </div>
+
+      </div>
+
+
+      <div
+        class="border-t border-slate-200 bg-slate-50 px-5 py-4 text-right sm:px-6"
+      >
+
+        <button
+          type="button"
+          onclick="closeLegalPage()"
+          class="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:bg-slate-800"
+        >
+          ปิด
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Toast -->
+
+  <div
+    id="toast"
+    class="toast fixed left-1/2 top-4 z-[1000] w-[calc(100%-2rem)] max-w-md rounded-2xl bg-slate-900 px-4 py-3 text-white shadow-2xl"
+  >
+
+    <div class="flex items-center gap-3">
+
+      <div
+        id="toastIcon"
+        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/10"
+      >
+
+        <i class="fa-solid fa-check"></i>
+
+      </div>
+
+      <div
+        id="toastText"
+        class="text-sm font-medium"
+      >
+        สำเร็จ
+      </div>
+
+    </div>
+
+  </div>
+
+
   <script>
-    document.getElementById('year').textContent =
-      new Date().getFullYear();
+
+    /* =========================
+       SUPABASE
+    ========================= */
+
+    const SUPABASE_URL =
+      'https://ofwlofzqxfdqctmogntu.supabase.co';
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            flowType: 'pkce'
+          }
+        }
+      );
+
+
+    /* =========================
+       STATE
+    ========================= */
+
+    let allScripts = [];
+
+    let allCategories = [];
+
+    let currentCategory = 'all';
+
+    let currentSearch = '';
+
+    let currentUser = null;
+
+    let toastTimer = null;
+
+    let legalPages = {
+      terms: null,
+      privacy: null
+    };
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const loadingScreen =
+      document.getElementById('loadingScreen');
+
+    const loadingLogo =
+      document.getElementById('loadingLogo');
+
+    const scriptGrid =
+      document.getElementById('scriptGrid');
+
+    const emptyState =
+      document.getElementById('emptyState');
+
+    const resultText =
+      document.getElementById('resultText');
+
+    const searchInput =
+      document.getElementById('searchInput');
+
+    const categoryFilters =
+      document.getElementById('categoryFilters');
+
+    const siteNameHeader =
+      document.getElementById('siteNameHeader');
+
+    const menuSiteName =
+      document.getElementById('menuSiteName');
+
+    const footerSiteName =
+      document.getElementById('footerSiteName');
+
+    const footerBrand =
+      document.getElementById('footerBrand');
+
+    const heroBadge =
+      document.getElementById('heroBadge');
+
+    const heroTitle =
+      document.getElementById('heroTitle');
+
+    const heroDescription =
+      document.getElementById('heroDescription');
+
+    const heroBanner =
+      document.getElementById('heroBanner');
+
+    const logoBox =
+      document.getElementById('logoBox');
+
+    const menuLogo =
+      document.getElementById('menuLogo');
+
+    const footerYear =
+      document.getElementById('footerYear');
+
+    const topGoogleLogin =
+      document.getElementById('topGoogleLogin');
+
+    const googleLoginButton =
+      document.getElementById('googleLoginButton');
+
+    const menuGoogleLoginButton =
+      document.getElementById('menuGoogleLoginButton');
+
+    const logoutButton =
+      document.getElementById('logoutButton');
+
+    const menuButton =
+      document.getElementById('menuButton');
+
+    const menuIcon =
+      document.getElementById('menuIcon');
+
+    const menuPanel =
+      document.getElementById('menuPanel');
+
+    const menuBackdrop =
+      document.getElementById('menuBackdrop');
+
+    const getKeyMenuButton =
+      document.getElementById('getKeyMenuButton');
+
+    const legalModal =
+      document.getElementById('legalModal');
+
+    const legalModalTitle =
+      document.getElementById('legalModalTitle');
+
+    const legalModalContent =
+      document.getElementById('legalModalContent');
+
+    const legalModalIcon =
+      document.getElementById('legalModalIcon');
+
+    const toast =
+      document.getElementById('toast');
+
+    const toastText =
+      document.getElementById('toastText');
+
+    const toastIcon =
+      document.getElementById('toastIcon');
+
+
+    /* =========================
+       HELPERS
+    ========================= */
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return '';
+      }
+
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    }
+
+
+    function formatDate(dateValue) {
+
+      if (!dateValue) {
+        return '-';
+      }
+
+      const date =
+        new Date(dateValue);
+
+      if (
+        Number.isNaN(date.getTime())
+      ) {
+        return '-';
+      }
+
+      return date.toLocaleDateString(
+        'th-TH',
+        {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        }
+      );
+
+    }
+
+
+    function showToast(
+      message,
+      type = 'success'
+    ) {
+
+      if (!toast) {
+        return;
+      }
+
+      clearTimeout(toastTimer);
+
+      toastText.textContent =
+        message;
+
+      if (type === 'error') {
+
+        toastIcon.innerHTML =
+          '<i class="fa-solid fa-circle-xmark"></i>';
+
+        toastIcon.className =
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-500/20 text-red-300';
+
+      } else if (type === 'info') {
+
+        toastIcon.innerHTML =
+          '<i class="fa-solid fa-circle-info"></i>';
+
+        toastIcon.className =
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/20 text-blue-300';
+
+      } else {
+
+        toastIcon.innerHTML =
+          '<i class="fa-solid fa-check"></i>';
+
+        toastIcon.className =
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300';
+
+      }
+
+      toast.classList.add('show');
+
+      toastTimer =
+        setTimeout(
+          () => {
+            toast.classList.remove('show');
+          },
+          2500
+        );
+
+    }
+
+
+    /* =========================
+       MENU
+    ========================= */
+
+    function openMenu() {
+
+      menuPanel.classList.add('show');
+
+      menuBackdrop.classList.add('show');
+
+      menuIcon.className =
+        'fa-solid fa-xmark text-lg';
+
+    }
+
+
+    function closeMenu() {
+
+      menuPanel.classList.remove('show');
+
+      menuBackdrop.classList.remove('show');
+
+      menuIcon.className =
+        'fa-solid fa-bars text-lg';
+
+    }
+
+
+    function toggleMenu() {
+
+      if (
+        menuPanel.classList.contains('show')
+      ) {
+
+        closeMenu();
+
+      } else {
+
+        openMenu();
+
+      }
+
+    }
+
+
+    menuButton.addEventListener(
+      'click',
+      toggleMenu
+    );
+
+
+    menuBackdrop.addEventListener(
+      'click',
+      closeMenu
+    );
+
+
+    /* =========================
+       AUTH UI
+    ========================= */
+
+    function updateAuthUI() {
+
+      if (currentUser) {
+
+        topGoogleLogin.classList.add(
+          'hidden'
+        );
+
+        menuGoogleLoginButton.classList.add(
+          'hidden'
+        );
+
+        logoutButton.classList.remove(
+          'hidden'
+        );
+
+      } else {
+
+        topGoogleLogin.classList.remove(
+          'hidden'
+        );
+
+        menuGoogleLoginButton.classList.remove(
+          'hidden'
+        );
+
+        logoutButton.classList.add(
+          'hidden'
+        );
+
+      }
+
+    }
+
+
+    async function loadCurrentUser() {
+
+      try {
+
+        const {
+          data
+        } =
+          await supabaseClient.auth.getSession();
+
+        currentUser =
+          data?.session?.user || null;
+
+      } catch (error) {
+
+        console.warn(
+          'loadCurrentUser:',
+          error
+        );
+
+        currentUser = null;
+
+      }
+
+      updateAuthUI();
+
+    }
+
+
+    async function signInWithGoogle() {
+
+      try {
+
+        if (currentUser) {
+          return;
+        }
+
+        const redirectTo =
+          `${window.location.origin}${window.location.pathname}`;
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signInWithOAuth(
+            {
+              provider: 'google',
+              options: {
+                redirectTo
+              }
+            }
+          );
+
+        if (error) {
+
+          console.error(
+            'Google Login:',
+            error
+          );
+
+          showToast(
+            'ไม่สามารถดำเนินการต่อด้วย Google ได้',
+            'error'
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          'signInWithGoogle:',
+          error
+        );
+
+        showToast(
+          'เกิดข้อผิดพลาดในการเชื่อมต่อ Google',
+          'error'
+        );
+
+      }
+
+    }
+
+
+    async function logout() {
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signOut();
+
+        if (error) {
+          throw error;
+        }
+
+        currentUser = null;
+
+        updateAuthUI();
+
+        closeMenu();
+
+        showToast(
+          'ออกจากระบบเรียบร้อยแล้ว',
+          'success'
+        );
+
+      } catch (error) {
+
+        console.error(
+          'logout:',
+          error
+        );
+
+        showToast(
+          'ไม่สามารถออกจากระบบได้',
+          'error'
+        );
+
+      }
+
+    }
+
+
+    googleLoginButton.addEventListener(
+      'click',
+      signInWithGoogle
+    );
+
+
+    menuGoogleLoginButton.addEventListener(
+      'click',
+      () => {
+
+        closeMenu();
+
+        signInWithGoogle();
+
+      }
+    );
+
+
+    logoutButton.addEventListener(
+      'click',
+      logout
+    );
+
+
+    /* =========================
+       GET KEY
+    ========================= */
+
+    function goToGetKey() {
+
+      closeMenu();
+
+      window.location.href =
+        './get-key';
+
+    }
+
+
+    getKeyMenuButton.addEventListener(
+      'click',
+      goToGetKey
+    );
+
+
+    /* =========================
+       SITE SETTINGS
+    ========================= */
+
+    async function loadSiteSettings() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('site_settings')
+          .select(
+            'site_name, logo_url, banner_url, hero_title, hero_description'
+          )
+          .eq('id', true)
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          'loadSiteSettings:',
+          error
+        );
+
+        return;
+
+      }
+
+
+      if (!data) {
+        return;
+      }
+
+
+      const siteName =
+        data.site_name ||
+        'Monnt Hub';
+
+
+      document.title =
+        `${siteName} | ศูนย์รวมสคริปต์`;
+
+
+      siteNameHeader.textContent =
+        siteName;
+
+
+      menuSiteName.textContent =
+        siteName;
+
+
+      footerSiteName.textContent =
+        siteName;
+
+
+      footerBrand.textContent =
+        siteName;
+
+
+      heroBadge.textContent =
+        siteName;
+
+
+      heroTitle.textContent =
+        data.hero_title ||
+        'ค้นหาและคัดลอกสคริปต์พร้อมใช้งาน';
+
+
+      heroDescription.textContent =
+        data.hero_description ||
+        'รวมสคริปต์คุณภาพ พร้อมใช้งานและค้นหาได้ง่าย';
+
+
+      /* Logo */
+
+      if (data.logo_url) {
+
+        const logoHtml = `
+
+          <img
+            src="${escapeHtml(data.logo_url)}"
+            alt="${escapeHtml(siteName)}"
+            class="h-full w-full object-cover"
+          >
+
+        `;
+
+        logoBox.innerHTML =
+          logoHtml;
+
+        menuLogo.innerHTML =
+          logoHtml;
+
+        loadingLogo.innerHTML =
+          logoHtml;
+
+      }
+
+
+      /* Banner */
+
+      if (data.banner_url) {
+
+        const bannerUrl =
+          String(data.banner_url)
+            .replace(
+              /"/g,
+              '%22'
+            );
+
+        heroBanner.style.backgroundImage =
+          `linear-gradient(
+            rgba(15,23,42,.16),
+            rgba(15,23,42,.38)
+          ), url("${bannerUrl}")`;
+
+      }
+
+    }
+
+
+    /* =========================
+       CATEGORIES
+    ========================= */
+
+    async function loadCategories() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('categories')
+          .select(
+            'id, name'
+          )
+          .order(
+            'name',
+            {
+              ascending: true
+            }
+          );
+
+
+      if (error) {
+
+        console.error(
+          'loadCategories:',
+          error
+        );
+
+        allCategories = [];
+
+        return;
+
+      }
+
+
+      allCategories =
+        Array.isArray(data)
+          ? data
+          : [];
+
+    }
+
+
+    function renderCategories() {
+
+      if (!categoryFilters) {
+        return;
+      }
+
+
+      const buttons = [
+
+        `
+          <button
+            type="button"
+            data-category="all"
+            class="category-btn ${
+              currentCategory === 'all'
+                ? 'active'
+                : ''
+            } inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
+          >
+
+            <i class="fa-solid fa-layer-group"></i>
+
+            <span>
+              ทั้งหมด
+            </span>
+
+          </button>
+        `,
+
+        ...allCategories.map(
+          category => {
+
+            const active =
+              String(currentCategory) ===
+              String(category.id);
+
+
+            return `
+
+              <button
+                type="button"
+                data-category="${escapeHtml(category.id)}"
+                class="category-btn ${
+                  active
+                    ? 'active'
+                    : ''
+                } inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
+              >
+
+                <i class="fa-solid fa-folder"></i>
+
+                <span>
+                  ${escapeHtml(category.name)}
+                </span>
+
+              </button>
+
+            `;
+
+          }
+        )
+
+      ];
+
+
+      categoryFilters.innerHTML =
+        buttons.join('');
+
+
+      categoryFilters
+        .querySelectorAll(
+          '[data-category]'
+        )
+        .forEach(
+          button => {
+
+            button.addEventListener(
+              'click',
+              () => {
+
+                currentCategory =
+                  button.dataset.category ||
+                  'all';
+
+                renderCategories();
+
+                renderScripts();
+
+              }
+            );
+
+          }
+        );
+
+    }
+
+
+    /* =========================
+       SCRIPTS
+    ========================= */
+
+    async function loadScripts() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('scripts')
+          .select(`
+            id,
+            title,
+            description,
+            image,
+            code,
+            status,
+            distributor,
+            created_at,
+            updated_at,
+            is_visible,
+            category_id,
+            categories (
+              id,
+              name
+            )
+          `)
+          .eq(
+            'is_visible',
+            true
+          )
+          .order(
+            'created_at',
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        console.error(
+          'loadScripts:',
+          error
+        );
+
+        allScripts = [];
+
+        showToast(
+          'ไม่สามารถโหลด Script ได้',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      allScripts =
+        Array.isArray(data)
+          ? data
+          : [];
+
+    }
+
+
+    function getFilteredScripts() {
+
+      return allScripts.filter(
+        script => {
+
+          const categoryMatch =
+            currentCategory === 'all' ||
+            String(
+              script.category_id || ''
+            ) ===
+            String(
+              currentCategory
+            );
+
+
+          if (!categoryMatch) {
+            return false;
+          }
+
+
+          if (!currentSearch) {
+            return true;
+          }
+
+
+          const categoryName =
+            script.categories?.name ||
+            '';
+
+
+          const searchable =
+            [
+
+              script.title,
+
+              script.description,
+
+              script.distributor,
+
+              categoryName
+
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase();
+
+
+          return searchable.includes(
+            currentSearch
+          );
+
+        }
+      );
+
+    }
+
+
+    function getStatusInfo(status) {
+
+      const value =
+        String(
+          status || 'online'
+        ).toLowerCase();
+
+
+      if (
+        value === 'maintenance'
+      ) {
+
+        return {
+          text: 'กำลังปรับปรุง',
+          className:
+            'bg-amber-50 text-amber-600 border-amber-200'
+        };
+
+      }
+
+
+      if (
+        value === 'offline'
+      ) {
+
+        return {
+          text: 'ออฟไลน์',
+          className:
+            'bg-red-50 text-red-600 border-red-200'
+        };
+
+      }
+
+
+      return {
+        text: 'ออนไลน์',
+        className:
+          'bg-emerald-50 text-emerald-600 border-emerald-200'
+      };
+
+    }
+
+
+    function renderScripts() {
+
+      const filtered =
+        getFilteredScripts();
+
+
+      scriptGrid.innerHTML =
+        '';
+
+
+      resultText.textContent =
+        `พบ ${filtered.length} Script`;
+
+
+      if (
+        filtered.length === 0
+      ) {
+
+        scriptGrid.classList.add(
+          'hidden'
+        );
+
+        emptyState.classList.remove(
+          'hidden'
+        );
+
+        return;
+
+      }
+
+
+      scriptGrid.classList.remove(
+        'hidden'
+      );
+
+      emptyState.classList.add(
+        'hidden'
+      );
+
+
+      filtered.forEach(
+        script => {
+
+          const status =
+            getStatusInfo(
+              script.status
+            );
+
+
+          const categoryName =
+            script.categories?.name ||
+            'ไม่มีหมวดหมู่';
+
+
+          const card =
+            document.createElement(
+              'article'
+            );
+
+
+          card.className =
+            'script-card group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm';
+
+
+          let imageHtml;
+
+
+          if (script.image) {
+
+            imageHtml = `
+
+              <img
+                src="${escapeHtml(script.image)}"
+                alt="${escapeHtml(script.title || 'Script')}"
+                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                loading="lazy"
+                onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
+              >
+
+              <div
+                class="hidden h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500"
+              >
+
+                <i class="fa-solid fa-code"></i>
+
+              </div>
+
+            `;
+
+          } else {
+
+            imageHtml = `
+
+              <div
+                class="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-violet-100 text-4xl text-blue-500"
+              >
+
+                <i class="fa-solid fa-code"></i>
+
+              </div>
+
+            `;
+
+          }
+
+
+          card.innerHTML = `
+
+            <div
+              class="relative h-48 overflow-hidden bg-slate-100"
+            >
+
+              ${imageHtml}
+
+              <div class="absolute left-3 top-3">
+
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${status.className}"
+                >
+
+                  <span
+                    class="h-1.5 w-1.5 rounded-full bg-current"
+                  ></span>
+
+                  ${escapeHtml(status.text)}
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="flex min-h-[260px] flex-col p-5"
+            >
+
+              <div
+                class="mb-3 flex items-center justify-between gap-3"
+              >
+
+                <span
+                  class="inline-flex max-w-[70%] items-center gap-1.5 truncate rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600"
+                >
+
+                  <i class="fa-solid fa-folder"></i>
+
+                  ${escapeHtml(categoryName)}
+
+                </span>
+
+
+                <span
+                  class="shrink-0 text-xs text-slate-400"
+                >
+                  ${escapeHtml(
+                    formatDate(
+                      script.created_at
+                    )
+                  )}
+                </span>
+
+              </div>
+
+
+              <h3
+                class="mb-2 line-clamp-2 text-lg font-bold text-slate-900"
+              >
+                ${escapeHtml(
+                  script.title ||
+                  'ไม่มีชื่อ Script'
+                )}
+              </h3>
+
+
+              <p
+                class="mb-4 line-clamp-3 text-sm leading-6 text-slate-500"
+              >
+                ${escapeHtml(
+                  script.description ||
+                  'ไม่มีรายละเอียดสำหรับ Script นี้'
+                )}
+              </p>
+
+
+              <div class="mb-5 mt-auto">
+
+                <div
+                  class="flex items-center gap-2 text-xs text-slate-400"
+                >
+
+                  <i class="fa-solid fa-user"></i>
+
+                  <span class="truncate">
+                    ${escapeHtml(
+                      script.distributor ||
+                      'ไม่ระบุผู้จัดจำหน่าย'
+                    )}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="grid grid-cols-2 gap-3">
+
+                <button
+                  type="button"
+                  class="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition hover:-translate-y-0.5 hover:shadow-lg"
+                  data-view-script="${escapeHtml(script.id)}"
+                >
+
+                  <i class="fa-solid fa-eye mr-1.5"></i>
+
+                  ดูรายละเอียด
+
+                </button>
+
+
+                <button
+                  type="button"
+                  class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                  data-copy-script="${escapeHtml(script.id)}"
+                >
+
+                  <i class="fa-regular fa-copy mr-1.5"></i>
+
+                  คัดลอก
+
+                </button>
+
+              </div>
+
+            </div>
+
+          `;
+
+
+          const viewButton =
+            card.querySelector(
+              '[data-view-script]'
+            );
+
+
+          const copyButton =
+            card.querySelector(
+              '[data-copy-script]'
+            );
+
+
+          viewButton.addEventListener(
+            'click',
+            () => {
+
+              viewScript(
+                viewButton.dataset.viewScript
+              );
+
+            }
+          );
+
+
+          copyButton.addEventListener(
+            'click',
+            () => {
+
+              copyScript(
+                copyButton.dataset.copyScript
+              );
+
+            }
+          );
+
+
+          scriptGrid.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================
+       VIEW SCRIPT
+    ========================= */
+
+    function viewScript(scriptId) {
+
+      const script =
+        allScripts.find(
+          item =>
+            String(item.id) ===
+            String(scriptId)
+        );
+
+
+      if (!script) {
+
+        showToast(
+          'ไม่พบ Script นี้',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        sessionStorage.setItem(
+          'selectedScript',
+          JSON.stringify(script)
+        );
+
+      } catch (error) {
+
+        console.warn(
+          'sessionStorage:',
+          error
+        );
+
+      }
+
+
+      window.location.href =
+        `./script/?id=${encodeURIComponent(scriptId)}`;
+
+    }
+
+
+    /* =========================
+       COPY SCRIPT
+    ========================= */
+
+    async function requireGoogleForCopy() {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getSession();
+
+
+      currentUser =
+        data?.session?.user || null;
+
+
+      updateAuthUI();
+
+
+      if (!currentUser) {
+
+        showToast(
+          'โปรดดำเนินการต่อด้วย Google ก่อนจึงสามารถคัดลอก Script ได้',
+          'info'
+        );
+
+        return false;
+
+      }
+
+
+      return true;
+
+    }
+
+
+    async function copyScript(scriptId) {
+
+      const canCopy =
+        await requireGoogleForCopy();
+
+
+      if (!canCopy) {
+        return;
+      }
+
+
+      const script =
+        allScripts.find(
+          item =>
+            String(item.id) ===
+            String(scriptId)
+        );
+
+
+      if (!script) {
+
+        showToast(
+          'ไม่พบ Script นี้',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      const code =
+        String(
+          script.code || ''
+        );
+
+
+      if (!code.trim()) {
+
+        showToast(
+          'Script นี้ยังไม่มี Code',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        if (
+          navigator.clipboard &&
+          window.isSecureContext
+        ) {
+
+          await navigator.clipboard.writeText(
+            code
+          );
+
+        } else {
+
+          const textarea =
+            document.createElement(
+              'textarea'
+            );
+
+          textarea.value =
+            code;
+
+          textarea.style.position =
+            'fixed';
+
+          textarea.style.left =
+            '-9999px';
+
+          textarea.style.top =
+            '0';
+
+          document.body.appendChild(
+            textarea
+          );
+
+          textarea.focus();
+
+          textarea.select();
+
+          document.execCommand(
+            'copy'
+          );
+
+          textarea.remove();
+
+        }
+
+
+        showToast(
+          'คัดลอก Script เรียบร้อยแล้ว',
+          'success'
+        );
+
+      } catch (error) {
+
+        console.error(
+          'copyScript:',
+          error
+        );
+
+        showToast(
+          'คัดลอกไม่สำเร็จ',
+          'error'
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       LEGAL
+    ========================= */
+
+    async function loadLegalPages() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from('legal_pages')
+          .select(
+            'id, title, content, updated_at'
+          )
+          .in(
+            'id',
+            [
+              'terms',
+              'privacy'
+            ]
+          );
+
+
+      if (error) {
+
+        console.error(
+          'loadLegalPages:',
+          error
+        );
+
+        legalPages = {
+          terms: null,
+          privacy: null
+        };
+
+        return;
+
+      }
+
+
+      legalPages = {
+        terms: null,
+        privacy: null
+      };
+
+
+      (
+        data || []
+      ).forEach(
+        page => {
+
+          if (
+            page.id === 'terms' ||
+            page.id === 'privacy'
+          ) {
+
+            legalPages[
+              page.id
+            ] = page;
+
+          }
+
+        }
+      );
+
+    }
+
+
+    function openLegalPage(type) {
+
+      if (
+        type !== 'terms' &&
+        type !== 'privacy'
+      ) {
+        return;
+      }
+
+
+      const page =
+        legalPages[type];
+
+
+      if (!page) {
+
+        showToast(
+          'ไม่พบข้อมูลหน้านี้',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      legalModalTitle.textContent =
+        page.title ||
+        (
+          type === 'terms'
+            ? 'ข้อกำหนดการให้บริการ'
+            : 'นโยบายความเป็นส่วนตัว'
+        );
+
+
+      legalModalContent.textContent =
+        page.content ||
+        'ยังไม่มีเนื้อหา';
+
+
+      legalModalIcon.innerHTML =
+        type === 'terms'
+          ? '<i class="fa-solid fa-file-contract"></i>'
+          : '<i class="fa-solid fa-shield-halved"></i>';
+
+
+      legalModal.classList.add(
+        'show'
+      );
+
+      document.body.classList.add(
+        'overflow-hidden'
+      );
+
+    }
+
+
+    function closeLegalPage() {
+
+      legalModal.classList.remove(
+        'show'
+      );
+
+      document.body.classList.remove(
+        'overflow-hidden'
+      );
+
+    }
+
+
+    function handleLegalBackdrop(event) {
+
+      if (
+        event.target === legalModal
+      ) {
+
+        closeLegalPage();
+
+      }
+
+    }
+
+
+    window.openLegalPage =
+      openLegalPage;
+
+    window.closeLegalPage =
+      closeLegalPage;
+
+    window.handleLegalBackdrop =
+      handleLegalBackdrop;
+
+    window.viewScript =
+      viewScript;
+
+    window.copyScript =
+      copyScript;
+
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    searchInput.addEventListener(
+      'input',
+      event => {
+
+        currentSearch =
+          event.target.value
+            .trim()
+            .toLowerCase();
+
+        renderScripts();
+
+      }
+    );
+
+
+    /* =========================
+       KEYBOARD
+    ========================= */
+
+    document.addEventListener(
+      'keydown',
+      event => {
+
+        if (event.key === 'Escape') {
+
+          closeMenu();
+
+          closeLegalPage();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       AUTH STATE
+    ========================= */
+
+    supabaseClient.auth.onAuthStateChange(
+      (
+        event,
+        session
+      ) => {
+
+        currentUser =
+          session?.user || null;
+
+        updateAuthUI();
+
+      }
+    );
+
+
+    /* =========================
+       REALTIME
+    ========================= */
+
+    function subscribeRealtime() {
+
+      supabaseClient
+
+        .channel(
+          'homepage-scripts'
+        )
+
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'scripts'
+          },
+          async () => {
+
+            await loadScripts();
+
+            renderScripts();
+
+          }
+        )
+
+        .subscribe();
+
+
+      supabaseClient
+
+        .channel(
+          'homepage-categories'
+        )
+
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'categories'
+          },
+          async () => {
+
+            await loadCategories();
+
+            renderCategories();
+
+            renderScripts();
+
+          }
+        )
+
+        .subscribe();
+
+
+      supabaseClient
+
+        .channel(
+          'homepage-settings'
+        )
+
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'site_settings'
+          },
+          async () => {
+
+            await loadSiteSettings();
+
+          }
+        )
+
+        .subscribe();
+
+    }
+
+
+    /* =========================
+       ONLINE / OFFLINE
+    ========================= */
+
+    window.addEventListener(
+      'online',
+      () => {
+
+        showToast(
+          'เชื่อมต่ออินเทอร์เน็ตแล้ว',
+          'success'
+        );
+
+      }
+    );
+
+
+    window.addEventListener(
+      'offline',
+      () => {
+
+        showToast(
+          'ไม่มีการเชื่อมต่ออินเทอร์เน็ต',
+          'error'
+        );
+
+      }
+    );
+
+
+    /* =========================
+       START
+    ========================= */
+
+    async function loadHomepage() {
+
+      try {
+
+        await Promise.all([
+
+          loadSiteSettings(),
+
+          loadCategories(),
+
+          loadScripts(),
+
+          loadLegalPages(),
+
+          loadCurrentUser()
+
+        ]);
+
+
+        renderCategories();
+
+        renderScripts();
+
+
+      } catch (error) {
+
+        console.error(
+          'loadHomepage:',
+          error
+        );
+
+        showToast(
+          'เกิดข้อผิดพลาดในการโหลดเว็บไซต์',
+          'error'
+        );
+
+      } finally {
+
+        if (footerYear) {
+
+          footerYear.textContent =
+            new Date().getFullYear();
+
+        }
+
+
+        if (loadingScreen) {
+
+          loadingScreen.classList.add(
+            'opacity-0',
+            'pointer-events-none'
+          );
+
+
+          setTimeout(
+            () => {
+
+              loadingScreen.classList.add(
+                'hidden'
+              );
+
+            },
+            300
+          );
+
+        }
+
+      }
+
+    }
+
+
+    if (
+      document.readyState === 'loading'
+    ) {
+
+      document.addEventListener(
+        'DOMContentLoaded',
+        async () => {
+
+          await loadHomepage();
+
+          subscribeRealtime();
+
+        },
+        {
+          once: true
+        }
+      );
+
+    } else {
+
+      loadHomepage();
+
+      subscribeRealtime();
+
+    }
+
   </script>
 
 </body>
