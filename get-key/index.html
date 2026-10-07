@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Monnt Hub — รับคีย์</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Google reCAPTCHA v2 -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f4f8ff;
+      color: #172033;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: min(500px, 100%);
+      background: #fff;
+      border: 1px solid #e2e9f3;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 18px 55px rgba(30, 65, 110, .08);
+    }
+
+    .logo {
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 16px;
+      border-radius: 20px;
+      background: #eaf3ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 31px;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 25px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #738097;
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 8px 0 22px;
+    }
+
+    .account {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 11px;
+      background: #f7faff;
+      border: 1px solid #e4ebf5;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .account.show {
+      display: flex;
+    }
+
+    .account img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+    }
+
+    .account-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .account-name {
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .account-email {
+      color: #7a8799;
+      font-size: 11px;
+      word-break: break-all;
+      margin-top: 2px;
+    }
+
+    .login-btn,
+    .receive-btn,
+    .logout-btn,
+    .copy-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 11px;
+      padding: 12px 15px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .login-btn {
+      background: #fff;
+      border: 1px solid #d8e1ed;
+      color: #26364d;
+    }
+
+    .login-btn:hover {
+      background: #f7f9fc;
+    }
+
+    .logout-btn {
+      width: auto;
+      padding: 8px 11px;
+      background: #eef2f7;
+      color: #44526a;
+      font-size: 11px;
+    }
+
+    .step {
+      border: 1px solid #e3eaf3;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 13px;
+      background: #fff;
+    }
+
+    .step-title {
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 7px;
+    }
+
+    .step-text {
+      color: #718096;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .locked {
+      background: #fafbfc;
+    }
+
+    .lock-box {
+      padding: 12px;
+      border-radius: 10px;
+      background: #f1f4f8;
+      color: #68768a;
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 10px;
+    }
+
+    .captcha-wrap {
+      margin-top: 13px;
+      min-height: 78px;
+    }
+
+    .receive-btn {
+      background: #1769d1;
+      color: #fff;
+      margin-top: 12px;
+    }
+
+    .receive-btn:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .key-box {
+      display: none;
+      margin-top: 15px;
+      border: 1px solid #b9dcff;
+      background: #f2f8ff;
+      border-radius: 14px;
+      padding: 15px;
+    }
+
+    .key-box.show {
+      display: block;
+    }
+
+    .key-label {
+      color: #5d7190;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 7px;
+    }
+
+    .key-value {
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 900;
+      color: #1264c4;
+      background: #fff;
+      border: 1px solid #dbe8f7;
+      border-radius: 9px;
+      padding: 12px;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .copy-btn {
+      background: #1769d1;
+      color: #fff;
+      margin-top: 9px;
+    }
+
+    .expiry {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #63738a;
+    }
+
+    .status-box {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 11px;
+      font-size: 12px;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+
+    .status-box.show {
+      display: block;
+    }
+
+    .status-active {
+      background: #eaf8f0;
+      color: #167442;
+    }
+
+    .status-suspended {
+      background: #fff4df;
+      color: #a76100;
+    }
+
+    .status-expired,
+    .status-deleted {
+      background: #fff0f0;
+      color: #b42323;
+    }
+
+    .message {
+      display: none;
+      margin-top: 12px;
+      padding: 11px 13px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: #fff0f0;
+      color: #b42323;
+    }
+
+    .message.success {
+      background: #eaf8f0;
+      color: #187844;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .loading {
+      opacity: .65;
+      pointer-events: none;
+    }
+
+    .footer {
+      text-align: center;
+      color: #98a3b3;
+      font-size: 10px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 21px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <main class="card">
+
+    <div class="logo">
+      🔑
+    </div>
+
+    <h1>Monnt Hub Key System</h1>
+
+    <p class="subtitle">
+      เข้าสู่ระบบด้วย Google ก่อนเพื่อรับคีย์
+    </p>
+
+
+    <!-- ACCOUNT -->
+
+    <div id="accountBox" class="account">
+
+      <img id="avatar" src="" alt="">
+
+      <div class="account-info">
+
+        <div
+          id="accountName"
+          class="account-name"
+        ></div>
+
+        <div
+          id="accountEmail"
+          class="account-email"
+        ></div>
+
+      </div>
+
+      <button
+        id="logoutBtn"
+        class="logout-btn"
+      >
+        ออก
+      </button>
+
+    </div>
+
+
+    <!-- LOGIN -->
+
+    <div id="loginSection">
+
+      <button
+        id="googleLoginBtn"
+        class="login-btn"
+      >
+        🔵 เข้าสู่ระบบด้วย Google
+      </button>
+
+      <div
+        id="loginMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+
+    <!-- KEY AREA -->
+
+    <div
+      id="keyArea"
+      class="hidden"
+    >
+
+      <!-- EXISTING KEY -->
+
+      <div
+        id="existingKeySection"
+        class="key-box"
+      >
+
+        <div class="key-label">
+          🔑 คีย์ของคุณ
+        </div>
+
+        <div
+          id="existingKeyValue"
+          class="key-value"
+        ></div>
+
+        <button
+          id="existingCopyBtn"
+          class="copy-btn"
+        >
+          📋 คัดลอกคีย์
+        </button>
+
+        <div
+          id="existingExpiry"
+          class="expiry"
+        ></div>
+
+      </div>
+
+
+      <!-- NEW KEY FLOW -->
+
+      <div
+        id="newKeyFlow"
+      >
+
+        <!-- STEP 1 -->
+
+        <div class="step locked">
+
+          <div class="step-title">
+            🔒 ต้องทำภารกิจก่อน
+          </div>
+
+          <div class="step-text">
+            กรุณายืนยัน Google reCAPTCHA
+            ก่อนจึงจะสามารถรับคีย์ใหม่ได้
+          </div>
+
+          <div
+            id="captchaContainer"
+            class="captcha-wrap"
+          ></div>
+
+        </div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="step">
+
+          <div class="step-title">
+            🎫 รับคีย์
+          </div>
+
+          <div class="step-text">
+            เมื่อยืนยัน reCAPTCHA สำเร็จ
+            ปุ่มรับคีย์จะสามารถใช้งานได้
+          </div>
+
+          <button
+            id="receiveBtn"
+            class="receive-btn"
+            disabled
+          >
+            🔑 รับคีย์
+          </button>
+
+        </div>
+
+
+        <!-- NEW KEY -->
+
+        <div
+          id="newKeyBox"
+          class="key-box"
+        >
+
+          <div class="key-label">
+            🎉 คีย์ของคุณ
+          </div>
+
+          <div
+            id="newKeyValue"
+            class="key-value"
+          ></div>
+
+          <button
+            id="newCopyBtn"
+            class="copy-btn"
+          >
+            📋 คัดลอกคีย์
+          </button>
+
+          <div
+            id="newExpiry"
+            class="expiry"
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- STATUS -->
+
+      <div
+        id="statusBox"
+        class="status-box"
+      ></div>
+
+
+      <div
+        id="generalMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+
+    <div class="footer">
+      Monnt Hub Key System
+    </div>
+
+  </main>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   🔑 KEY DATABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+  "https://ulsujpqrdesndmuksqkr.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_mMHZfdWQC_8jaIQi40QLww_cJJI6scB";
+
+
+/*
+  ⚠️ ใส่ Google reCAPTCHA v2 Site Key
+*/
+const RECAPTCHA_SITE_KEY =
+  "YOUR_RECAPTCHA_SITE_KEY";
+
+
+const { createClient } =
+  supabase;
+
+
+const keySupabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const FUNCTION_NAME =
+  "key-system";
+
+
+let currentKey =
+  null;
+
+
+let captchaWidgetId =
+  null;
+
+
+let statusTimer =
+  null;
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const accountBox =
+  document.getElementById(
+    "accountBox"
+  );
+
+const accountName =
+  document.getElementById(
+    "accountName"
+  );
+
+const accountEmail =
+  document.getElementById(
+    "accountEmail"
+  );
+
+const avatar =
+  document.getElementById(
+    "avatar"
+  );
+
+const loginSection =
+  document.getElementById(
+    "loginSection"
+  );
+
+const keyArea =
+  document.getElementById(
+    "keyArea"
+  );
+
+const existingKeySection =
+  document.getElementById(
+    "existingKeySection"
+  );
+
+const existingKeyValue =
+  document.getElementById(
+    "existingKeyValue"
+  );
+
+const existingExpiry =
+  document.getElementById(
+    "existingExpiry"
+  );
+
+const newKeyFlow =
+  document.getElementById(
+    "newKeyFlow"
+  );
+
+const newKeyBox =
+  document.getElementById(
+    "newKeyBox"
+  );
+
+const newKeyValue =
+  document.getElementById(
+    "newKeyValue"
+  );
+
+const newExpiry =
+  document.getElementById(
+    "newExpiry"
+  );
+
+const receiveBtn =
+  document.getElementById(
+    "receiveBtn"
+  );
+
+const statusBox =
+  document.getElementById(
+    "statusBox"
+  );
+
+const generalMessage =
+  document.getElementById(
+    "generalMessage"
+  );
+
+const captchaContainer =
+  document.getElementById(
+    "captchaContainer"
+  );
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function showMessage(
+  element,
+  text,
+  type = "error"
+) {
+
+  element.textContent =
+    text;
+
+  element.className =
+    "message show " +
+    type;
+
+}
+
+
+function clearMessage(
+  element
+) {
+
+  element.textContent =
+    "";
+
+  element.className =
+    "message";
+
+}
+
+
+/* =========================================================
+   GOOGLE LOGIN
+   ========================================================= */
+
+document
+  .getElementById(
+    "googleLoginBtn"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      try {
+
+        const button =
+          document.getElementById(
+            "googleLoginBtn"
+          );
+
+        button.classList.add(
+          "loading"
+        );
+
+
+        const redirectTo =
+          window.location.href;
+
+
+        const {
+          error
+        } =
+          await keySupabase
+            .auth
+            .signInWithOAuth({
+              provider:
+                "google",
+
+              options: {
+                redirectTo
+              }
+            });
+
+
+        if (error) {
+          throw error;
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          document.getElementById(
+            "loginMessage"
+          ),
+          "เข้าสู่ระบบไม่สำเร็จ: " +
+          error.message
+        );
+
+        document
+          .getElementById(
+            "googleLoginBtn"
+          )
+          .classList.remove(
+            "loading"
+          );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      stopStatusPolling();
+
+      await keySupabase
+        .auth
+        .signOut();
+
+      location.reload();
+
+    }
+  );
+
+
+/* =========================================================
+   SESSION
+   ========================================================= */
+
+async function checkSession() {
+
+  const {
+    data,
+    error
+  } =
+    await keySupabase
+      .auth
+      .getSession();
+
+
+  if (error) {
+
+    console.error(error);
+
+    return;
+
+  }
+
+
+  if (
+    data.session
+  ) {
+
+    await showLoggedIn(
+      data.session.user
+    );
+
+  } else {
+
+    showLoggedOut();
+
+  }
+
+}
+
+
+/* =========================================================
+   SHOW LOGIN
+   ========================================================= */
+
+function showLoggedOut() {
+
+  accountBox.classList.remove(
+    "show"
+  );
+
+  loginSection.classList.remove(
+    "hidden"
+  );
+
+  keyArea.classList.add(
+    "hidden"
+  );
+
+}
+
+
+/* =========================================================
+   SHOW LOGGED IN
+   ========================================================= */
+
+async function showLoggedIn(
+  user
+) {
+
+  accountBox.classList.add(
+    "show"
+  );
+
+  loginSection.classList.add(
+    "hidden"
+  );
+
+  keyArea.classList.remove(
+    "hidden"
+  );
+
+
+  accountName.textContent =
+    user.user_metadata?.full_name ||
+    user.user_metadata?.name ||
+    "Google User";
+
+
+  accountEmail.textContent =
+    user.email || "";
+
+
+  const picture =
+    user.user_metadata?.avatar_url ||
+    user.user_metadata?.picture ||
+    "";
+
+
+  if (picture) {
+
+    avatar.src =
+      picture;
+
+  }
+
+
+  await checkExistingKey();
+
+}
+
+
+/* =========================================================
+   EDGE FUNCTION
+   ========================================================= */
+
+async function callKeyFunction(
+  action,
+  extra = {}
+) {
+
+  const {
+    data,
+    error
+  } =
+    await keySupabase
+      .auth
+      .getSession();
+
+
+  if (error) {
+    throw error;
+  }
+
+
+  const session =
+    data.session;
+
+
+  if (!session) {
+
+    throw new Error(
+      "กรุณาเข้าสู่ระบบก่อน"
+    );
+
+  }
+
+
+  const response =
+    await fetch(
+      `${SUPABASE_URL}/functions/v1/${FUNCTION_NAME}`,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+
+          "Authorization":
+            `Bearer ${session.access_token}`,
+
+          "apikey":
+            SUPABASE_PUBLISHABLE_KEY
+        },
+
+        body: JSON.stringify({
+          action,
+          ...extra
+        })
+      }
+    );
+
+
+  let result = null;
+
+
+  try {
+
+    result =
+      await response.json();
+
+  } catch {
+
+    result = null;
+
+  }
+
+
+  if (!response.ok) {
+
+    throw new Error(
+      result?.error ||
+      "ระบบ Key เกิดข้อผิดพลาด"
+    );
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =========================================================
+   CHECK EXISTING KEY
+   ========================================================= */
+
+async function checkExistingKey() {
+
+  try {
+
+    clearMessage(
+      generalMessage
+    );
+
+
+    const result =
+      await callKeyFunction(
+        "get_my_key"
+      );
+
+
+    const key =
+      result?.key ||
+      result;
+
+
+    if (
+      !key ||
+      !key.key_code
+    ) {
+
+      /*
+        ไม่มี Key
+        ให้เข้าสู่ flow reCAPTCHA
+      */
+
+      currentKey =
+        null;
+
+      showNewKeyFlow();
+
+      return;
+
+    }
+
+
+    const expired =
+      key.expires_at &&
+      new Date(
+        key.expires_at
+      ) <= new Date();
+
+
+    if (expired) {
+
+      /*
+        Key หมดอายุ
+        ให้ระบบสร้างใหม่ได้
+      */
+
+      currentKey =
+        null;
+
+      showNewKeyFlow();
+
+      return;
+
+    }
+
+
+    /*
+      มี Key ที่ยังไม่หมดอายุ
+      แสดง Key เดิมทันที
+    */
+
+    currentKey =
+      key;
+
+    showExistingKey(
+      key
+    );
+
+    startStatusPolling();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showMessage(
+      generalMessage,
+      error.message ||
+      "ตรวจสอบคีย์ไม่สำเร็จ"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   EXISTING KEY
+   ========================================================= */
+
+function showExistingKey(
+  key
+) {
+
+  existingKeySection.classList.add(
+    "show"
+  );
+
+  newKeyFlow.classList.add(
+    "hidden"
+  );
+
+  newKeyBox.classList.remove(
+    "show"
+  );
+
+
+  existingKeyValue.textContent =
+    key.key_code;
+
+
+  existingExpiry.textContent =
+    "หมดอายุ: " +
+    formatDate(
+      key.expires_at
+    );
+
+
+  updateStatusBox(
+    key
+  );
+
+}
+
+
+/* =========================================================
+   NEW KEY FLOW
+   ========================================================= */
+
+function showNewKeyFlow() {
+
+  existingKeySection.classList.remove(
+    "show"
+  );
+
+  newKeyFlow.classList.remove(
+    "hidden"
+  );
+
+  newKeyBox.classList.remove(
+    "show"
+  );
+
+
+  receiveBtn.disabled =
+    true;
+
+
+  renderCaptcha();
+
+}
+
+
+/* =========================================================
+   RECAPTCHA
+   ========================================================= */
+
+function renderCaptcha() {
+
+  captchaContainer.innerHTML =
+    "";
+
+
+  if (
+    RECAPTCHA_SITE_KEY ===
+    "YOUR_RECAPTCHA_SITE_KEY"
+  ) {
+
+    captchaContainer.innerHTML = `
+      <div class="message show error">
+        ยังไม่ได้ตั้งค่า Google reCAPTCHA Site Key
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  if (
+    typeof grecaptcha ===
+    "undefined"
+  ) {
+
+    setTimeout(
+      renderCaptcha,
+      1000
+    );
+
+    return;
+
+  }
+
+
+  captchaWidgetId =
+    grecaptcha.render(
+      captchaContainer,
+      {
+        sitekey:
+          RECAPTCHA_SITE_KEY,
+
+        callback:
+          onCaptchaSuccess,
+
+        "expired-callback":
+          onCaptchaExpired
+      }
+    );
+
+}
+
+
+function onCaptchaSuccess(
+  token
+) {
+
+  if (!token)
+    return;
+
+
+  receiveBtn.disabled =
+    false;
+
+
+  showMessage(
+    generalMessage,
+    "ยืนยัน reCAPTCHA สำเร็จแล้ว สามารถรับคีย์ได้",
+    "success"
+  );
+
+}
+
+
+function onCaptchaExpired() {
+
+  receiveBtn.disabled =
+    true;
+
+  clearMessage(
+    generalMessage
+  );
+
+}
+
+
+/* =========================================================
+   RECEIVE KEY
+   ========================================================= */
+
+receiveBtn.addEventListener(
+  "click",
+  async () => {
+
+    try {
+
+      clearMessage(
+        generalMessage
+      );
+
+
+      if (
+        captchaWidgetId ===
+        null
+      ) {
+
+        throw new Error(
+          "กรุณาทำ reCAPTCHA ก่อน"
+        );
+
+      }
+
+
+      const captchaToken =
+        grecaptcha.getResponse(
+          captchaWidgetId
+        );
+
+
+      if (!captchaToken) {
+
+        throw new Error(
+          "กรุณายืนยัน reCAPTCHA ก่อน"
+        );
+
+      }
+
+
+      receiveBtn.classList.add(
+        "loading"
+      );
+
+      receiveBtn.disabled =
+        true;
+
+
+      /*
+        สำคัญมาก:
+        เราไม่ได้สร้าง Key ในหน้าเว็บ
+
+        ส่งคำขอไปยัง Edge Function
+        แล้ว Edge Function จะ:
+        1. ตรวจ Google Login
+        2. ตรวจ reCAPTCHA
+        3. สร้าง Key
+        4. INSERT ลง public.keys
+        5. ตั้ง expires_at 8 ชั่วโมง
+      */
+
+      const result =
+        await callKeyFunction(
+          "issue_key",
+          {
+            recaptcha_token:
+              captchaToken
+          }
+        );
+
+
+      const key =
+        result?.key ||
+        result;
+
+
+      if (
+        !key ||
+        !key.key_code
+      ) {
+
+        throw new Error(
+          "ระบบไม่ได้ส่ง Key กลับมา"
+        );
+
+      }
+
+
+      currentKey =
+        key;
+
+
+      newKeyBox.classList.add(
+        "show"
+      );
+
+
+      newKeyValue.textContent =
+        key.key_code;
+
+
+      newExpiry.textContent =
+        "หมดอายุ: " +
+        formatDate(
+          key.expires_at
+        );
+
+
+      newKeyFlow
+        .querySelector(
+          ".step.locked"
+        )
+        .classList.add(
+          "hidden"
+        );
+
+
+      receiveBtn.classList.add(
+        "hidden"
+      );
+
+
+      updateStatusBox(
+        key
+      );
+
+
+      if (
+        captchaWidgetId !==
+        null
+      ) {
+
+        try {
+
+          grecaptcha.reset(
+            captchaWidgetId
+          );
+
+        } catch {}
+
+      }
+
+
+      startStatusPolling();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      receiveBtn.disabled =
+        false;
+
+
+      showMessage(
+        generalMessage,
+        error.message ||
+        "รับคีย์ไม่สำเร็จ"
+      );
+
+
+      if (
+        captchaWidgetId !==
+        null
+      ) {
+
+        try {
+
+          grecaptcha.reset(
+            captchaWidgetId
+          );
+
+        } catch {}
+
+      }
+
+    } finally {
+
+      receiveBtn.classList.remove(
+        "loading"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   COPY EXISTING
+   ========================================================= */
+
+document
+  .getElementById(
+    "existingCopyBtn"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      await copyKey(
+        existingKeyValue.textContent,
+        document.getElementById(
+          "existingCopyBtn"
+        )
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   COPY NEW
+   ========================================================= */
+
+document
+  .getElementById(
+    "newCopyBtn"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      await copyKey(
+        newKeyValue.textContent,
+        document.getElementById(
+          "newCopyBtn"
+        )
+      );
+
+    }
+  );
+
+
+async function copyKey(
+  key,
+  button
+) {
+
+  try {
+
+    await navigator.clipboard.writeText(
+      key
+    );
+
+
+    const oldText =
+      button.textContent;
+
+
+    button.textContent =
+      "✅ คัดลอกแล้ว";
+
+
+    setTimeout(
+      () => {
+        button.textContent =
+          oldText;
+      },
+      1500
+    );
+
+
+  } catch {
+
+    showMessage(
+      generalMessage,
+      "ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาคัดลอกคีย์ด้วยตัวเอง"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   STATUS POLLING
+   ========================================================= */
+
+function startStatusPolling() {
+
+  stopStatusPolling();
+
+
+  statusTimer =
+    setInterval(
+      checkCurrentKeyStatus,
+      10000
+    );
+
+}
+
+
+function stopStatusPolling() {
+
+  if (
+    statusTimer
+  ) {
+
+    clearInterval(
+      statusTimer
+    );
+
+    statusTimer =
+      null;
+
+  }
+
+}
+
+
+/* =========================================================
+   CHECK STATUS
+   ========================================================= */
+
+async function checkCurrentKeyStatus() {
+
+  if (
+    !currentKey?.key_code
+  ) {
+    return;
+  }
+
+
+  try {
+
+    const result =
+      await callKeyFunction(
+        "check_status"
+      );
+
+
+    const key =
+      result?.key ||
+      result;
+
+
+    if (
+      !key
+    ) {
+      return;
+    }
+
+
+    currentKey =
+      key;
+
+
+    updateStatusBox(
+      key
+    );
+
+
+    if (
+      key.status ===
+      "expired"
+    ) {
+
+      showExpiredState();
+
+      stopStatusPolling();
+
+      return;
+
+    }
+
+
+    if (
+      key.status ===
+      "deleted"
+    ) {
+
+      showDeletedState();
+
+      stopStatusPolling();
+
+      return;
+
+    }
+
+
+    if (
+      key.status ===
+      "suspended"
+    ) {
+
+      /*
+        ยัง Poll ต่อ
+        เพราะ Admin อาจเปิดใช้งานกลับ
+      */
+
+      return;
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "Status check error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   STATUS UI
+   ========================================================= */
+
+function updateStatusBox(
+  key
+) {
+
+  if (!key)
+    return;
+
+
+  const status =
+    key.status;
+
+
+  statusBox.className =
+    "status-box show";
+
+
+  if (
+    status ===
+    "active"
+  ) {
+
+    statusBox.classList.add(
+      "status-active"
+    );
+
+    statusBox.textContent =
+      "🟢 Key ของคุณกำลังใช้งานได้";
+
+    return;
+
+  }
+
+
+  if (
+    status ===
+    "suspended"
+  ) {
+
+    statusBox.classList.add(
+      "status-suspended"
+    );
+
+    const reason =
+      key.suspension_reason;
+
+
+    if (
+      reason ===
+      "development"
+    ) {
+
+      statusBox.textContent =
+        "🟡 ระบบอยู่ในโหมดพัฒนา Key ถูกระงับชั่วคราว";
+
+    } else {
+
+      statusBox.textContent =
+        "🟡 คีย์ของคุณถูกระงับชั่วคราว";
+
+    }
+
+    return;
+
+  }
+
+
+  if (
+    status ===
+    "expired"
+  ) {
+
+    showExpiredState();
+
+    return;
+
+  }
+
+
+  if (
+    status ===
+    "deleted"
+  ) {
+
+    showDeletedState();
+
+    return;
+
+  }
+
+
+  statusBox.classList.add(
+    "status-expired"
+  );
+
+  statusBox.textContent =
+    "ไม่สามารถใช้งานคีย์นี้ได้";
+
+}
+
+
+/* =========================================================
+   EXPIRED
+   ========================================================= */
+
+function showExpiredState() {
+
+  statusBox.className =
+    "status-box show status-expired";
+
+
+  statusBox.textContent =
+    "คีย์ของคุณหมดอายุแล้วไม่สามารถใช้งานต่อได้";
+
+
+  /*
+    หลังหมดอายุ
+    สามารถเริ่ม flow รับ Key ใหม่ได้
+  */
+
+  currentKey =
+    null;
+
+
+  existingKeySection.classList.remove(
+    "show"
+  );
+
+
+  newKeyFlow.classList.remove(
+    "hidden"
+  );
+
+
+  newKeyBox.classList.remove(
+    "show"
+  );
+
+
+  receiveBtn.classList.remove(
+    "hidden"
+  );
+
+
+  receiveBtn.disabled =
+    true;
+
+
+  renderCaptcha();
+
+}
+
+
+/* =========================================================
+   DELETED
+   ========================================================= */
+
+function showDeletedState() {
+
+  statusBox.className =
+    "status-box show status-deleted";
+
+
+  statusBox.textContent =
+    "คีย์นี้ถูกลบแล้วและไม่สามารถใช้งานได้";
+
+
+  stopStatusPolling();
+
+}
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+function formatDate(
+  value
+) {
+
+  if (!value)
+    return "-";
+
+
+  const date =
+    new Date(value);
+
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return "-";
+  }
+
+
+  return date.toLocaleString(
+    "th-TH",
+    {
+      dateStyle:
+        "medium",
+
+      timeStyle:
+        "short"
+    }
+  );
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
+
+keySupabase.auth.onAuthStateChange(
+  async (
+    event,
+    session
+  ) => {
+
+    if (
+      event ===
+      "SIGNED_OUT"
+    ) {
+
+      stopStatusPolling();
+
+      showLoggedOut();
+
+      return;
+
+    }
+
+
+    if (
+      session &&
+      (
+        event ===
+        "SIGNED_IN" ||
+
+        event ===
+        "INITIAL_SESSION" ||
+
+        event ===
+        "TOKEN_REFRESHED"
+      )
+    ) {
+
+      await showLoggedIn(
+        session.user
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+checkSession();
+
+</script>
+
+</body>
+</html>
