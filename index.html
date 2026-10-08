@@ -1443,24 +1443,31 @@
     );
 
 
-    /* =========================
-       GET KEY
-    ========================== */
+/* =========================
+GET KEY
+========================= */
 
-    function goToGetKey() {
+function goToGetKey() {
 
-      closeMenu();
+const confirmed = window.confirm(
+'คุณแน่ใจหรือไม่?\n\nนี่กำลังไปยังบริการอื่นของเรา'
+);
 
-      window.location.href =
-        './get-key';
+if (!confirmed) {
+return;
+}
 
-    }
+closeMenu();
 
+window.location.href =
+'https://adminmonntshop-prog.github.io/Monnt-Hub-Key/';
 
-    getKeyMenuButton.addEventListener(
-      'click',
-      goToGetKey
-    );
+}
+
+getKeyMenuButton.addEventListener(
+'click',
+goToGetKey
+);
 
 
     /* =========================
