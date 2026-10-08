@@ -861,6 +861,53 @@
 
   </div>
 
+  <!-- =========================
+     CUSTOM GET KEY MODAL
+========================= --><div
+  id="getKeyModal"
+  class="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-950/40 p-4 opacity-0 invisible transition-all duration-300 backdrop-blur-sm"
+>
+  <div
+    id="getKeyModalBox"
+    class="w-full max-w-sm scale-95 rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl transition-all duration-300"
+  >
+    <div class="mb-5 flex justify-center">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg shadow-blue-500/25">
+        <i class="fa-solid fa-arrow-up-right-from-square text-2xl"></i>
+      </div>
+    </div><div class="text-center">
+  <h2 class="text-xl font-bold text-slate-900">
+    ออกจาก Monnt Hub?
+  </h2>
+
+  <p class="mt-3 text-sm leading-7 text-slate-500">
+    คุณกำลังจะไปยังบริการอื่นของเรา
+    <br>
+    ต้องการดำเนินการต่อหรือไม่?
+  </p>
+
+  <div class="mt-6 flex gap-3">
+    <button
+      id="cancelGetKeyButton"
+      type="button"
+      class="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+    >
+      ยกเลิก
+    </button>
+
+    <button
+      id="confirmGetKeyButton"
+      type="button"
+      class="flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:-translate-y-0.5 hover:shadow-xl"
+    >
+      <i class="fa-solid fa-arrow-right mr-1"></i>
+      ไปต่อ
+    </button>
+  </div>
+</div>
+
+  </div>
+</div>
 
   <!-- =========================
        TOAST
@@ -1444,31 +1491,89 @@
 
 
 /* =========================
-GET KEY
+GET KEY CUSTOM MODAL
 ========================= */
 
-function goToGetKey() {
+const getKeyModal =
+document.getElementById('getKeyModal');
 
-const confirmed = window.confirm(
-'คุณแน่ใจหรือไม่?\n\nนี่กำลังไปยังบริการอื่นของเรา'
-);
+const getKeyModalBox =
+document.getElementById('getKeyModalBox');
 
-if (!confirmed) {
-return;
-}
+const cancelGetKeyButton =
+document.getElementById('cancelGetKeyButton');
 
+const confirmGetKeyButton =
+document.getElementById('confirmGetKeyButton');
+
+function openGetKeyModal() {
 closeMenu();
 
-window.location.href =
-'https://adminmonntshop-prog.github.io/Monnt-Hub-Key/';
+getKeyModal.classList.remove(
+'opacity-0',
+'invisible'
+);
 
+getKeyModal.classList.add(
+'opacity-100',
+'visible'
+);
+
+getKeyModalBox.classList.remove(
+'scale-95'
+);
+
+getKeyModalBox.classList.add(
+'scale-100'
+);
+}
+
+function closeGetKeyModal() {
+getKeyModal.classList.add(
+'opacity-0',
+'invisible'
+);
+
+getKeyModal.classList.remove(
+'opacity-100',
+'visible'
+);
+
+getKeyModalBox.classList.add(
+'scale-95'
+);
+
+getKeyModalBox.classList.remove(
+'scale-100'
+);
 }
 
 getKeyMenuButton.addEventListener(
 'click',
-goToGetKey
+openGetKeyModal
 );
 
+cancelGetKeyButton.addEventListener(
+'click',
+closeGetKeyModal
+);
+
+getKeyModal.addEventListener(
+'click',
+event => {
+if (event.target === getKeyModal) {
+closeGetKeyModal();
+}
+}
+);
+
+confirmGetKeyButton.addEventListener(
+'click',
+() => {
+window.location.href =
+'https://adminmonntshop-prog.github.io/Monnt-Hub-Key/';
+}
+);
 
     /* =========================
        SITE SETTINGS
