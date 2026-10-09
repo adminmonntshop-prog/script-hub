@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Script ของฉัน - Monnt Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #080b12;
+      color: #f3f4f6;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding-bottom: 110px;
+    }
+    .script-card {
+      position: relative;
+      border: 1px solid #252c3b;
+      background: #111622;
+      border-radius: 14px;
+      padding: 18px 54px 18px 18px;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+    .script-card.selected {
+      border-color: #60a5fa;
+      background: #142033;
+    }
+    .select-circle {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 23px;
+      height: 23px;
+      accent-color: #60a5fa;
+      cursor: pointer;
+    }
+    .action-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: rgba(8,11,18,.96);
+      border-top: 1px solid #293143;
+      padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+      backdrop-filter: blur(12px);
+    }
+    .btn {
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    .btn:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+    input, textarea, select {
+      color: #f3f4f6;
+      background: #0b101b;
+      border: 1px solid #343d50;
+      border-radius: 9px;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .field { margin-top: 12px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      color: #aeb8ca;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header class="p-5 border-b border-slate-800 flex items-center justify-between gap-3">
+    <div>
+      <a href="../" class="text-blue-400 text-sm">← กลับหน้าร้าน</a>
+      <h1 class="text-2xl font-bold mt-2">Script ของฉัน</h1>
+    </div>
+    <button id="logoutBtn" class="btn border border-slate-700">ออกจากระบบ</button>
+  </header>
+
+  <main class="max-w-3xl mx-auto p-4">
+    <div id="authPanel" class="hidden rounded-xl border border-slate-700 p-5">
+      <p class="mb-4">เข้าสู่ระบบ Google เพื่อจัดการ Script ของคุณ</p>
+      <button id="loginBtn" class="btn bg-blue-600">เข้าสู่ระบบ Google</button>
+    </div>
+
+    <section id="appPanel" class="hidden">
+      <div class="flex gap-2 mb-5">
+        <button id="ownedTab" class="btn bg-blue-600">Script ของฉัน</button>
+        <button id="trashTab" class="btn border border-slate-700">ถังขยะ</button>
+      </div>
+
+      <div id="notice" class="text-sm text-slate-400 mb-4" role="status"></div>
+      <div id="scriptList" class="space-y-3"></div>
+
+      <div id="editor" class="hidden mt-6 rounded-xl border border-slate-700 p-4">
+        <h2 id="editorTitle" class="text-lg font-bold">เพิ่ม Script</h2>
+        <form id="scriptForm">
+          <input id="scriptId" type="hidden">
+
+          <div class="field">
+            <label for="title">ชื่อ Script *</label>
+            <input id="title" maxlength="120" required>
+          </div>
+          <div class="field">
+            <label for="description">รายละเอียด</label>
+            <textarea id="description" rows="3"></textarea>
+          </div>
+          <div class="field">
+            <label for="image">URL รูปภาพ</label>
+            <input id="image" type="url" placeholder="https://...">
+          </div>
+          <div class="field">
+            <label for="code">โค้ด Script *</label>
+            <textarea id="code" rows="8" required></textarea>
+          </div>
+          <div class="field">
+            <label for="category">หมวดหมู่</label>
+            <select id="category">
+              <option value="">ไม่มีหมวดหมู่</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="distributor">ผู้จัดทำ / เครดิต</label>
+            <input id="distributor" maxlength="120">
+          </div>
+          <div class="field">
+            <label for="status">สถานะ</label>
+            <select id="status">
+              <option value="online">ออนไลน์</option>
+              <option value="maintenance">ปรับปรุง</option>
+              <option value="offline">ออฟไลน์</option>
+            </select>
+          </div>
+          <div class="field flex items-center gap-3">
+            <input id="isVisible" type="checkbox" checked style="width:18px">
+            <label for="isVisible" style="margin:0">แสดงในหน้าร้าน</label>
+          </div>
+          <div class="flex gap-2 mt-5">
+            <button class="btn bg-blue-600" type="submit">บันทึก Script</button>
+            <button class="btn border border-slate-700" id="cancelEdit" type="button">ยกเลิก</button>
+          </div>
+        </form>
+      </div>
+
+      <button id="addBtn" class="btn bg-blue-600 w-full mt-5">
+        + เพิ่ม Script
+      </button>
+    </section>
+  </main>
+
+  <div id="actionBar" class="action-bar hidden">
+    <div class="max-w-3xl mx-auto flex gap-3">
+      <button id="restoreBtn" class="btn bg-blue-600 flex-1" disabled>
+        กู้ Script
+      </button>
+      <button id="deleteBtn" class="btn bg-red-600 flex-1" disabled>
+        ลบถาวร
+      </button>
+    </div>
+  </div>
+
+<script>
+const SUPABASE_URL = 'https://ofwlofzqxfdqctmogntu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentTab = 'owned';
+let scripts = [];
+let selectedIds = new Set();
+let categories = [];
+
+const $ = id => document.getElementById(id);
+
+function message(text) {
+  $('notice').textContent = text || '';
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;',
+    '"':'&quot;', "'":'&#39;'
+  })[ch]);
+}
+
+function updateActionBar() {
+  const inTrash = currentTab === 'trash';
+  $('actionBar').classList.toggle('hidden', !inTrash);
+  $('restoreBtn').disabled = selectedIds.size === 0;
+  $('deleteBtn').disabled = selectedIds.size === 0;
+}
+
+function openEditor(script = null) {
+  $('scriptForm').reset();
+  $('scriptId').value = script?.id ?? '';
+  $('editorTitle').textContent = script ? 'แก้ไข Script' : 'เพิ่ม Script';
+  $('title').value = script?.title ?? '';
+  $('description').value = script?.description ?? '';
+  $('image').value = script?.image ?? '';
+  $('code').value = script?.code ?? '';
+  $('category').value = script?.category_id ?? '';
+  $('distributor').value = script?.distributor ?? '';
+  $('status').value = script?.status ?? 'online';
+  $('isVisible').checked = script?.is_visible !== false;
+  $('editor').classList.remove('hidden');
+  $('editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeEditor() {
+  $('editor').classList.add('hidden');
+}
+
+async function loadCategories() {
+  const { data, error } = await db
+    .from('categories')
+    .select('id,name')
+    .order('name');
+
+  if (error) throw error;
+  categories = data || [];
+
+  $('category').innerHTML =
+    '<option value="">ไม่มีหมวดหมู่</option>' +
+    categories.map(c =>
+      `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`
+    ).join('');
+}
+
+async function loadScripts() {
+  message('กำลังโหลด...');
+  selectedIds.clear();
+
+  let query = db.from('scripts')
+    .select('id,title,description,image,code,status,category_id,distributor,is_visible,created_at,updated_at,suspended_at,deleted_at,categories(name)')
+    .eq('owner_id', currentUser.id)
+    .order('updated_at', { ascending: false });
+
+  query = currentTab === 'trash'
+    ? query.not('deleted_at', 'is', null)
+    : query.is('deleted_at', null);
+
+  const { data, error } = await query;
+
+  if (error) {
+    message('โหลดไม่สำเร็จ: ' + error.message);
+    return;
+  }
+
+  scripts = data || [];
+  renderScripts();
+  updateActionBar();
+  message(scripts.length ? `พบ ${scripts.length} รายการ` : 'ยังไม่มี Script ในหมวดนี้');
+}
+
+function renderScripts() {
+  const list = $('scriptList');
+
+  if (!scripts.length) {
+    list.innerHTML = '<div class="text-center text-slate-500 py-12">ไม่มี Script ในหน้านี้</div>';
+    return;
+  }
+
+  list.innerHTML = scripts.map(s => {
+    const isSelected = selectedIds.has(String(s.id));
+    const subtitle = s.deleted_at
+      ? 'อยู่ในถังขยะ'
+      : s.suspended_at
+        ? 'ถูกระงับ'
+        : s.is_visible ? 'แสดงในหน้าร้าน' : 'ซ่อนจากหน้าร้าน';
+
+    return `
+      <article class="script-card ${isSelected ? 'selected' : ''}"
+        data-card-id="${escapeHtml(s.id)}" tabindex="0"
+        aria-label="${escapeHtml(s.title)}">
+        ${currentTab === 'trash' ? `
+          <input class="select-circle" type="checkbox"
+            aria-label="เลือก ${escapeHtml(s.title)}"
+            data-check-id="${escapeHtml(s.id)}"
+            ${isSelected ? 'checked' : ''}>
+        ` : ''}
+        <h3 class="font-bold text-lg">${escapeHtml(s.title)}</h3>
+        <p class="text-sm text-slate-400 mt-1">${escapeHtml(s.description || 'ไม่มีรายละเอียด')}</p>
+        <p class="text-xs text-slate-500 mt-3">${escapeHtml(subtitle)}</p>
+        ${s.suspended_at && !s.deleted_at
+          ? '<p class="text-xs text-amber-400 mt-1">Script นี้ถูกระงับโดยผู้ดูแล</p>' : ''}
+        ${currentTab === 'owned' ? `
+          <div class="flex gap-2 mt-4">
+            <button class="btn border border-slate-700" data-edit-id="${escapeHtml(s.id)}">แก้ไข</button>
+            <button class="btn border border-red-900 text-red-300" data-trash-id="${escapeHtml(s.id)}">ย้ายลงถังขยะ</button>
+          </div>
+        ` : ''}
+      </article>`;
+  }).join('');
+
+  // Checkbox clicks affect only their own card.
+  list.querySelectorAll('[data-check-id]').forEach(input => {
+    input.addEventListener('click', event => event.stopPropagation());
+    input.addEventListener('change', event => {
+      const id = String(event.currentTarget.dataset.checkId);
+      if (event.currentTarget.checked) selectedIds.add(id);
+      else selectedIds.delete(id);
+      renderScripts();
+      updateActionBar();
+    });
+  });
+
+  // Clicking the card toggles only that card.
+  list.querySelectorAll('[data-card-id]').forEach(card => {
+    const toggle = () => {
+      if (currentTab !== 'trash') return;
+      const id = String(card.dataset.cardId);
+      if (selectedIds.has(id)) selectedIds.delete(id);
+      else selectedIds.add(id);
+      renderScripts();
+      updateActionBar();
+    };
+    card.addEventListener('click', event => {
+      if (event.target.closest('button,input')) return;
+      toggle();
+    });
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        if (event.target === card) {
+          event.preventDefault();
+          toggle();
+        }
+      }
+    });
+  });
+
+  list.querySelectorAll('[data-edit-id]').forEach(btn => {
+    btn.addEventListener('click', event => {
+      event.stopPropagation();
+      const script = scripts.find(s => String(s.id) === btn.dataset.editId);
+      if (script) openEditor(script);
+    });
+  });
+
+  list.querySelectorAll('[data-trash-id]').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.stopPropagation();
+      const id = btn.dataset.trashId;
+      if (!confirm('ย้าย Script นี้ลงถังขยะหรือไม่?')) return;
+      await runRpc('trash_script', { p_script_id: Number(id) }, 'ย้ายลงถังขยะแล้ว');
+    });
+  });
+}
+
+async function runRpc(name, args, successText) {
+  message('กำลังดำเนินการ...');
+  const { error } = await db.rpc(name, args);
+  if (error) {
+    message('ดำเนินการไม่สำเร็จ: ' + error.message);
+    return false;
+  }
+  message(successText);
+  closeEditor();
+  await loadScripts();
+  return true;
+}
+
+$('scriptForm').addEventListener('submit', async event => {
+  event.preventDefault();
+
+  const title = $('title').value.trim();
+  const code = $('code').value;
+
+  if (!title || !code.trim()) {
+    message('กรุณากรอกชื่อและโค้ด Script');
+    return;
+  }
+
+  const payload = {
+    title,
+    description: $('description').value.trim(),
+    image: $('image').value.trim() || null,
+    code,
+    category_id: $('category').value || null,
+    distributor: $('distributor').value.trim() || null,
+    status: $('status').value,
+    is_visible: $('isVisible').checked
+  };
+
+  const id = $('scriptId').value;
+  message('กำลังบันทึก...');
+
+  const result = id
+    ? await db.from('scripts').update(payload)
+        .eq('id', Number(id)).eq('owner_id', currentUser.id)
+        .is('deleted_at', null).select('id')
+    : await db.from('scripts').insert({
+        ...payload,
+        owner_id: currentUser.id
+      }).select('id');
+
+  if (result.error) {
+    message('บันทึกไม่สำเร็จ: ' + result.error.message);
+    return;
+  }
+
+  if (id && (!result.data || result.data.length === 0)) {
+    message('ไม่มีสิทธิ์แก้ไข Script นี้ หรือ Script อยู่ในถังขยะ');
+    return;
+  }
+
+  message('บันทึกเรียบร้อย');
+  closeEditor();
+  await loadScripts();
+});
+
+$('ownedTab').addEventListener('click', async () => {
+  currentTab = 'owned';
+  $('ownedTab').className = 'btn bg-blue-600';
+  $('trashTab').className = 'btn border border-slate-700';
+  $('addBtn').classList.remove('hidden');
+  closeEditor();
+  await loadScripts();
+});
+
+$('trashTab').addEventListener('click', async () => {
+  currentTab = 'trash';
+  $('trashTab').className = 'btn bg-blue-600';
+  $('ownedTab').className = 'btn border border-slate-700';
+  $('addBtn').classList.add('hidden');
+  closeEditor();
+  await loadScripts();
+});
+
+$('addBtn').addEventListener('click', () => openEditor());
+$('cancelEdit').addEventListener('click', closeEditor);
+
+$('restoreBtn').addEventListener('click', async () => {
+  const ids = [...selectedIds];
+  if (!ids.length) return;
+  if (!confirm(`กู้คืน Script ที่เลือก ${ids.length} รายการหรือไม่?`)) return;
+
+  for (const id of ids) {
+    const { error } = await db.rpc('restore_script', {
+      p_script_id: Number(id)
+    });
+    if (error) {
+      message(`กู้คืน ID ${id} ไม่สำเร็จ: ${error.message}`);
+      return;
+    }
+  }
+
+  selectedIds.clear();
+  message('กู้คืนเรียบร้อย');
+  await loadScripts();
+});
+
+$('deleteBtn').addEventListener('click', async () => {
+  const ids = [...selectedIds];
+  if (!ids.length) return;
+
+  const confirmed = confirm(
+    `คำเตือน: ลบถาวร ${ids.length} รายการที่เลือกใช่หรือไม่?\nการลบนี้ไม่สามารถกู้คืนได้`
+  );
+  if (!confirmed) return;
+
+  for (const id of ids) {
+    const { error } = await db.rpc('permanently_delete_script', {
+      p_script_id: Number(id)
+    });
+    if (error) {
+      message(`ลบ ID ${id} ไม่สำเร็จ: ${error.message}`);
+      return;
+    }
+  }
+
+  selectedIds.clear();
+  message('ลบถาวรเรียบร้อย');
+  await loadScripts();
+});
+
+$('loginBtn').addEventListener('click', async () => {
+  const { error } = await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: location.href.split('#')[0] }
+  });
+  if (error) message(error.message);
+});
+
+$('logoutBtn').addEventListener('click', async () => {
+  await db.auth.signOut();
+  location.reload();
+});
+
+async function init() {
+  const { data: { session } } = await db.auth.getSession();
+  currentUser = session?.user ?? null;
+
+  $('authPanel').classList.toggle('hidden', !!currentUser);
+  $('appPanel').classList.toggle('hidden', !currentUser);
+  $('logoutBtn').classList.toggle('hidden', !currentUser);
+
+  if (!currentUser) return;
+
+  try {
+    await loadCategories();
+    await loadScripts();
+  } catch (error) {
+    message(error.message || 'เกิดข้อผิดพลาด');
+  }
+}
+
+db.auth.onAuthStateChange((_event, session) => {
+  currentUser = session?.user ?? null;
+  if (currentUser) init();
+});
+
+init();
+</script>
+</body>
+</html>
