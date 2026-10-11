@@ -723,6 +723,15 @@
             <button class="primary-btn" onclick="showPage('scripts')">
               📜 จัดการ Scripts
             </button>
+            
+            <button
+  class="primary-btn"
+  type="button"
+  onclick="showPage('ninja-file')"
+>
+  🥷 จัดการไฟล์ Roblox นินจา
+            </button>
+            
           </div>
 
           <p style="color:#687186;font-size:14px;line-height:1.8;margin:0;">
@@ -789,6 +798,82 @@
             </table>
 
           </div>
+
+        </div>
+
+      </section>
+
+      <!-- =========================
+           ROBLOX NINJA FILE
+      ========================== -->
+
+      <section id="page-ninja-file" class="page hidden">
+
+        <div class="card">
+
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">
+                🥷 จัดการไฟล์ Roblox นินจา
+              </h2>
+
+              <div class="page-desc">
+                อัปโหลดไฟล์เป็นฉบับร่าง และเผยแพร่เมื่อกดบันทึกเท่านั้น
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="ninjaFileInput">
+              เลือกไฟล์ Roblox นินจา
+            </label>
+
+            <input
+              id="ninjaFileInput"
+              type="file"
+            >
+
+            <p id="ninjaDraftInfo" class="page-desc">
+              ยังไม่ได้เลือกไฟล์
+            </p>
+          </div>
+
+          <div class="form-actions">
+
+            <button
+              id="ninjaCancelBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              ยกเลิกฉบับร่าง
+            </button>
+
+            <button
+              id="ninjaUploadBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              📤 อัปโหลดฉบับร่าง
+            </button>
+
+            <button
+              id="ninjaPublishBtn"
+              class="primary-btn"
+              type="button"
+              disabled
+            >
+              💾 บันทึกและเผยแพร่
+            </button>
+
+          </div>
+
+          <p
+            id="ninjaStatus"
+            class="page-desc"
+            role="status"
+          >
+            ยังไม่มีการดำเนินการ
+          </p>
 
         </div>
 
