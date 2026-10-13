@@ -2383,109 +2383,75 @@
 
 
     async function editScript(id) {
+  try {
+    let script = scriptsCache.find(
+      s => Number(s.id) === Number(id)
+    );
 
-      const script =
-        scriptsCache.find(
-          s => Number(s.id) === Number(id)
-        );
+    // ถ้าไม่พบในแคช ให้ลองดึงจาก Supabase
+    if (!script) {
+      const { data, error } = await supabase
+        .from("scripts")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
 
-      if (!script) return;
-
-      currentScriptId =
-        script.id;
-
-      currentScriptImage =
-        script.image || null;
-
-
-      document.getElementById(
-        "scriptModalTitle"
-      ).textContent =
-        "แก้ไข Script";
-
-
-      document.getElementById(
-        "scriptTitle"
-      ).value =
-        script.title || "";
-
-
-      document.getElementById(
-        "scriptDescription"
-      ).value =
-        script.description || "";
-
-
-      document.getElementById(
-        "scriptDistributor"
-      ).value =
-        script.distributor || "";
-
-
-      document.getElementById(
-        "scriptCode"
-      ).value =
-        script.code || "";
-
-
-      document.getElementById(
-        "scriptStatus"
-      ).value =
-        script.status || "online";
-
-
-      document.getElementById(
-        "scriptVisible"
-      ).value =
-        script.is_visible
-          ? "true"
-          : "false";
-
-
-      document.getElementById(
-        "scriptCategory"
-      ).value =
-        script.category_id || "";
-
-
-      const preview =
-        document.getElementById(
-          "scriptImagePreview"
-        );
-
-
-      if (script.image) {
-
-        preview.src =
-          script.image;
-
-        preview.classList.remove(
-          "hidden"
-        );
-
-      } else {
-
-        preview.classList.add(
-          "hidden"
-        );
-
-      }
-
-
-      document.getElementById(
-        "scriptImageFile"
-      ).value = "";
-
-
-      document
-        .getElementById("scriptModal")
-        .classList.remove("hidden");
-
+      if (error) throw error;
+      script = data;
     }
 
+    if (!script) {
+      alert("ไม่พบ Script นี้ กรุณารีโหลดหน้าแล้วลองใหม่");
+      return;
+    }
 
-    window.editScript =
-      editScript;
+    currentScriptId = script.id;
+    currentScriptImage = script.image || null;
+
+    document.getElementById("scriptModalTitle").textContent =
+      "แก้ไข Script";
+
+    document.getElementById("scriptTitle").value =
+      script.title || "";
+
+    document.getElementById("scriptDescription").value =
+      script.description || "";
+
+    document.getElementById("scriptDistributor").value =
+      script.distributor || "";
+
+    document.getElementById("scriptCode").value =
+      script.code || "";
+
+    document.getElementById("scriptStatus").value =
+      script.status || "online";
+
+    document.getElementById("scriptVisible").value =
+      script.is_visible ? "true" : "false";
+
+    document.getElementById("scriptCategory").value =
+      script.category_id ?? "";
+
+    const preview = document.getElementById("scriptImagePreview");
+
+    if (script.image) {
+      preview.src = script.image;
+      preview.classList.remove("hidden");
+    } else {
+      preview.src = "";
+      preview.classList.add("hidden");
+    }
+
+    document.getElementById("scriptImageFile").value = "";
+
+    document.getElementById("scriptModal").classList.remove("hidden");
+  } catch (error) {
+    console.error("editScript error:", error);
+    alert("โหลดข้อมูล Script ไม่สำเร็จ: " + error.message);
+  }
+}
+
+window.editScript = editScript;
 
 
     async function uploadImage(
