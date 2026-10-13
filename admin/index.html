@@ -3266,8 +3266,6 @@
     let ninjaDraftPath = null;
     let ninjaIsBusy = false;
 
-    const ninjaBucket = "roblox-ninja";
-
     const ninjaFileInput =
       document.getElementById("ninjaFileInput");
 
@@ -3286,143 +3284,120 @@
     const ninjaCancelBtn =
       document.getElementById("ninjaCancelBtn");
 
+    // เปลี่ยนช่องเลือกไฟล์เดิมเป็นช่องวางลิงก์ Drive
+    ninjaFileInput.type = "url";
+    ninjaFileInput.accept = "";
+    ninjaFileInput.removeAttribute("multiple");
+    ninjaFileInput.placeholder =
+      "วางลิงก์ Google Drive ที่นี่";
+    ninjaFileInput.value = "";
+
+    // เพิ่มช่องชื่อไฟล์
+    const ninjaFileNameInput =
+      document.createElement("input");
+
+    ninjaFileNameInput.type = "text";
+    ninjaFileNameInput.id = "ninjaFileNameInput";
+    ninjaFileNameInput.placeholder = "ชื่อไฟล์ที่ต้องการเผยแพร่";
+    ninjaFileNameInput.style.width = "100%";
+    ninjaFileNameInput.style.marginTop = "10px";
+    ninjaFileNameInput.style.padding = "12px";
+    ninjaFileNameInput.style.borderRadius = "8px";
+    ninjaFileNameInput.style.border = "1px solid #888";
+    ninjaFileNameInput.maxLength = 200;
+
+    ninjaFileInput.insertAdjacentElement(
+      "afterend",
+      ninjaFileNameInput
+    );
 
     function setNinjaStatus(message) {
       ninjaStatus.textContent = message;
     }
 
-
     function setNinjaBusy(busy) {
       ninjaIsBusy = busy;
-
-      ninjaFileInput.disabled = busy;
       ninjaUploadBtn.disabled = busy;
-      ninjaCancelBtn.disabled = busy;
-
       ninjaPublishBtn.disabled =
-        busy || !ninjaDraftPath;
+        busy || !ninjaDraftPath || !ninjaDraftFile;
+      ninjaCancelBtn.disabled = busy;
     }
 
+    function getNinjaDriveLink(value) {
+      try {
+        const url = new URL(value.trim());
 
-    ninjaFileInput.addEventListener(
-      "change",
-      () => {
-        ninjaDraftFile =
-          ninjaFileInput.files?.[0] || null;
-
-        ninjaDraftPath = null;
-
-        ninjaPublishBtn.disabled = true;
-
-        if (!ninjaDraftFile) {
-          ninjaDraftInfo.textContent =
-            "ยังไม่ได้เลือกไฟล์";
-
-          setNinjaStatus(
-            "เลือกไฟล์เพื่อเริ่มสร้างฉบับร่าง"
-          );
-
-          return;
+        if (
+          url.hostname !== "drive.google.com" &&
+          url.hostname !== "docs.google.com"
+        ) {
+          return null;
         }
 
-        const sizeMB =
-          (ninjaDraftFile.size / 1024 / 1024)
-            .toFixed(2);
+        const match =
+          url.pathname.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
 
-        ninjaDraftInfo.textContent =
-          `ไฟล์: ${ninjaDraftFile.name} (${sizeMB} MB)`;
+        const idFromQuery = url.searchParams.get("id");
+        const fileId = match ? match[1] : idFromQuery;
 
-        setNinjaStatus(
-          "เลือกไฟล์แล้ว กดอัปโหลดฉบับร่างได้เลย"
-        );
+        if (!fileId) return null;
+
+        return url.href;
+      } catch {
+        return null;
       }
-    );
+    }
 
+    function resetNinjaDraft() {
+      ninjaDraftFile = null;
+      ninjaDraftPath = null;
+      ninjaFileInput.value = "";
+      ninjaFileNameInput.value = "";
+      ninjaDraftInfo.textContent = "ยังไม่ได้เลือกฉบับร่าง";
+      ninjaPublishBtn.disabled = true;
+    }
 
     ninjaUploadBtn.addEventListener(
       "click",
-      async () => {
+      () => {
         if (ninjaIsBusy) return;
 
         if (!currentUser) {
+          setNinjaStatus("กรุณาเข้าสู่ระบบแอดมินก่อน");
+          return;
+        }
+
+        const link =
+          getNinjaDriveLink(ninjaFileInput.value);
+
+        const fileName =
+          ninjaFileNameInput.value.trim();
+
+        if (!link) {
           setNinjaStatus(
-            "กรุณาเข้าสู่ระบบแอดมินก่อน"
+            "กรุณาวางลิงก์ไฟล์ Google Drive ที่ถูกต้อง"
           );
           return;
         }
 
-        if (!ninjaDraftFile) {
-          setNinjaStatus(
-            "กรุณาเลือกไฟล์ก่อนอัปโหลด"
-          );
+        if (!fileName) {
+          setNinjaStatus("กรุณากรอกชื่อไฟล์");
           return;
         }
 
-        if (ninjaDraftFile.size > 50 * 1024 * 1024) {
-          setNinjaStatus(
-            "ไฟล์มีขนาดเกิน 50 MB"
-          );
-          return;
-        }
+        ninjaDraftPath = link;
+        ninjaDraftFile = { name: fileName };
 
-        setNinjaBusy(true);
+        ninjaDraftInfo.textContent =
+          "พร้อมเผยแพร่: " + fileName;
+
+        ninjaPublishBtn.disabled = false;
+
         setNinjaStatus(
-          "กำลังอัปโหลดฉบับร่าง..."
+          "ตรวจสอบลิงก์แล้ว ขั้นต่อไปกดบันทึกและเผยแพร่"
         );
-
-        try {
-          const safeName =
-            ninjaDraftFile.name
-              .replace(/[^\w.\-() ]/g, "_")
-              .replace(/\s+/g, "_");
-
-          const uniqueName =
-            `${crypto.randomUUID()}-${safeName}`;
-
-          const path =
-            `drafts/${uniqueName}`;
-
-          const { error } =
-            await supabaseClient
-              .storage
-              .from(ninjaBucket)
-              .upload(path, ninjaDraftFile, {
-                upsert: false,
-                contentType:
-                  ninjaDraftFile.type ||
-                  "application/octet-stream"
-              });
-
-          if (error) throw error;
-
-          ninjaDraftPath = path;
-
-          ninjaDraftInfo.textContent =
-            `อัปโหลดฉบับร่างแล้ว: ${ninjaDraftFile.name}`;
-
-          ninjaPublishBtn.disabled = false;
-
-          setNinjaStatus(
-            "อัปโหลดสำเร็จแล้ว แต่ยังไม่เผยแพร่สู่หน้าเว็บ"
-          );
-
-        } catch (error) {
-          console.error(
-            "Ninja draft upload error:",
-            error
-          );
-
-          setNinjaStatus(
-            "อัปโหลดไม่สำเร็จ: " +
-            (error.message || "เกิดข้อผิดพลาด")
-          );
-
-        } finally {
-          setNinjaBusy(false);
-        }
       }
     );
-
 
     ninjaPublishBtn.addEventListener(
       "click",
@@ -3430,102 +3405,72 @@
         if (ninjaIsBusy) return;
 
         if (!currentUser) {
-          setNinjaStatus(
-            "กรุณาเข้าสู่ระบบแอดมินก่อน"
-          );
+          setNinjaStatus("กรุณาเข้าสู่ระบบแอดมินก่อน");
           return;
         }
 
         if (!ninjaDraftPath || !ninjaDraftFile) {
-          setNinjaStatus(
-            "กรุณาอัปโหลดฉบับร่างก่อนเผยแพร่"
-          );
+          setNinjaStatus("กรุณาตรวจสอบลิงก์ก่อนเผยแพร่");
           return;
         }
 
         const confirmed = confirm(
-          "ยืนยันเผยแพร่ไฟล์นี้? ผู้เข้าชมจะเห็นไฟล์ใหม่นี้แทนไฟล์เดิม"
+          "ยืนยันเผยแพร่ลิงก์ Google Drive นี้? ผู้เข้าชมจะเห็นไฟล์ใหม่นี้แทนไฟล์เดิม"
         );
 
         if (!confirmed) return;
 
         setNinjaBusy(true);
-        setNinjaStatus(
-          "กำลังบันทึกและเผยแพร่..."
-        );
+        setNinjaStatus("กำลังบันทึกและเผยแพร่...");
 
         try {
-          const { error } =
-            await supabaseClient
-              .from("roblox_ninja_publication")
-              .upsert(
-                {
-                  id: true,
-                  file_path: ninjaDraftPath,
-                  file_name: ninjaDraftFile.name,
-                  published_at:
-                    new Date().toISOString(),
-                  updated_at:
-                    new Date().toISOString()
-                },
-                {
-                  onConflict: "id"
-                }
-              );
+          const now = new Date().toISOString();
+
+          const { error } = await supabaseClient
+            .from("roblox_ninja_publication")
+            .upsert(
+              {
+                id: true,
+                file_path: ninjaDraftPath,
+                file_name: ninjaDraftFile.name,
+                published_at: now,
+                updated_at: now
+              },
+              { onConflict: "id" }
+            );
 
           if (error) throw error;
 
           setNinjaStatus(
-            "เผยแพร่สำเร็จแล้ว! หน้าเว็บดาวน์โหลดจะใช้ไฟล์ใหม่นี้"
+            "บันทึกลิงก์สำเร็จแล้ว! ต้องเชื่อมหน้าเว็บดาวน์โหลดให้รองรับลิงก์นี้ด้วย"
           );
 
-          ninjaDraftFile = null;
-          ninjaDraftPath = null;
-          ninjaFileInput.value = "";
-
-          ninjaDraftInfo.textContent =
-            "ไม่มีฉบับร่างค้างอยู่";
+          resetNinjaDraft();
 
         } catch (error) {
-          console.error(
-            "Ninja publish error:",
-            error
-          );
+          console.error("Ninja publish error:", error);
 
           setNinjaStatus(
             "เผยแพร่ไม่สำเร็จ: " +
-            (error.message || "เกิดข้อผิดพลาด") +
-            " — ไฟล์ที่เผยแพร่เดิมจะยังไม่ถูกเปลี่ยนหากการบันทึกล้มเหลว"
+            (error.message || "เกิดข้อผิดพลาด")
           );
-
         } finally {
           setNinjaBusy(false);
         }
       }
     );
 
-
     ninjaCancelBtn.addEventListener(
       "click",
       () => {
         if (ninjaIsBusy) return;
 
-        ninjaDraftFile = null;
-        ninjaDraftPath = null;
-        ninjaFileInput.value = "";
-
-        ninjaDraftInfo.textContent =
-          "ยังไม่ได้เลือกไฟล์";
-
-        ninjaPublishBtn.disabled = true;
-
-        setNinjaStatus(
-          "ยกเลิกฉบับร่างในหน้านี้แล้ว"
-        );
+        resetNinjaDraft();
+        setNinjaStatus("ยกเลิกฉบับร่างแล้ว");
       }
     );
-        
 
+                                    
     /* ==========================================
        START
     ========================================== */
