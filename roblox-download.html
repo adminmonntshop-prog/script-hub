@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ดาวน์โหลด Roblox Script | Monnt Hub</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * { font-family: 'Prompt', sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at top left, #d1fae5 0, transparent 38%),
+        radial-gradient(circle at bottom right, #dbeafe 0, transparent 40%),
+        #f8fafc;
+    }
+    .download-card {
+      box-shadow: 0 25px 70px rgba(15, 23, 42, .10);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-slate-800">
+  <header class="border-b border-slate-200/80 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4">
+      <a href="./" class="flex items-center gap-3 font-bold text-slate-900">
+        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 text-white">
+          <i class="fa-solid fa-code text-lg"></i>
+        </span>
+        <span>Monnt Hub</span>
+      </a>
+
+      <a href="./" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold transition hover:bg-slate-50">
+        <i class="fa-solid fa-arrow-left mr-1"></i>
+        กลับหน้าแรก
+      </a>
+    </div>
+  </header>
+
+  <main class="flex min-h-[calc(100vh-77px)] items-center justify-center px-4 py-10">
+    <section class="download-card w-full max-w-xl rounded-[2rem] border border-white bg-white/95 p-6 text-center sm:p-10">
+
+      <div class="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-100 text-emerald-600">
+        <i class="fa-solid fa-file-arrow-down text-4xl"></i>
+      </div>
+
+      <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
+        <i class="fa-solid fa-shield-halved"></i>
+        Monnt Hub File Center
+      </div>
+
+      <h1 class="text-2xl font-extrabold text-slate-900 sm:text-3xl">
+        ดาวน์โหลด Roblox Script
+      </h1>
+
+      <p class="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-500 sm:text-base">
+        รับไฟล์จากผู้ดูแลเว็บไซต์โดยตรง เมื่อมีการเผยแพร่ไฟล์แล้ว ปุ่มดาวน์โหลดจะพร้อมใช้งานที่นี่
+      </p>
+
+      <div class="my-7 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left">
+        <div class="flex items-start gap-3">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-slate-500 shadow-sm">
+            <i class="fa-solid fa-file"></i>
+          </span>
+          <div>
+            <p class="font-semibold text-slate-800">ไฟล์ Roblox Script</p>
+            <p id="fileStatus" class="mt-1 text-sm leading-6 text-amber-700">
+              กำลังตรวจสอบสถานะไฟล์...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <a
+        id="downloadButton"
+        href="#"
+        class="pointer-events-none flex w-full items-center justify-center gap-3 rounded-2xl bg-slate-300 px-5 py-4 text-base font-bold text-white shadow-lg sm:text-lg"
+        aria-disabled="true"
+      >
+        <i class="fa-solid fa-download"></i>
+        <span>ยังไม่มีไฟล์ให้ดาวน์โหลด</span>
+      </a>
+
+      <p class="mt-4 text-xs leading-6 text-slate-400">
+        ปุ่มดาวน์โหลดจะเปิดใช้งานเมื่อแอดมินเผยแพร่ไฟล์จริงแล้วเท่านั้น
+      </p>
+
+      <a
+        href="./contact/"
+        class="mt-6 inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
+      >
+        <i class="fa-solid fa-comments"></i>
+        ติดต่อสอบถาม
+      </a>
+
+    </section>
+  </main>
+
+  <script>
+    // ขั้นต่อไปจะเชื่อมส่วนนี้กับไฟล์ที่เผยแพร่จากหน้า Admin
+    // ตอนนี้ปิดการดาวน์โหลดไว้ เพื่อไม่ให้มีลิงก์ไฟล์ที่ยังไม่มีจริง
+    document.getElementById('fileStatus').textContent =
+      'ยังไม่มีไฟล์ที่เผยแพร่ กรุณากลับมาตรวจสอบภายหลัง';
+  </script>
+</body>
+</html>
