@@ -101,11 +101,89 @@
     </section>
   </main>
 
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ขั้นต่อไปจะเชื่อมส่วนนี้กับไฟล์ที่เผยแพร่จากหน้า Admin
-    // ตอนนี้ปิดการดาวน์โหลดไว้ เพื่อไม่ให้มีลิงก์ไฟล์ที่ยังไม่มีจริง
-    document.getElementById('fileStatus').textContent =
-      'ยังไม่มีไฟล์ที่เผยแพร่ กรุณากลับมาตรวจสอบภายหลัง';
+    const downloadSupabase = window.supabase.createClient(
+      "https://ofwlofzqxfdqctmogntu.supabase.co",
+      "sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld"
+    );
+
+    const fileStatus = document.getElementById("fileStatus");
+    const downloadButton = document.getElementById("downloadButton");
+
+    async function loadPublishedFile() {
+      fileStatus.textContent = "กำลังตรวจสอบสถานะไฟล์...";
+      fileStatus.className = "mt-1 text-sm leading-6 text-amber-700";
+
+      try {
+        const { data, error } = await downloadSupabase
+          .from("roblox_ninja_publication")
+          .select("file_path, file_name, published_at")
+          .eq("id", true)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (!data || !data.file_path) {
+          throw new Error("NO_PUBLISHED_FILE");
+        }
+
+        const fileUrl = new URL(data.file_path);
+
+        if (
+          !["drive.google.com", "docs.google.com"].includes(fileUrl.hostname) ||
+          fileUrl.protocol !== "https:"
+        ) {
+          throw new Error("INVALID_FILE_URL");
+        }
+
+        fileStatus.textContent =
+          "พร้อมดาวน์โหลด: " + (data.file_name || "Roblox Script");
+
+        fileStatus.className = "mt-1 text-sm leading-6 text-emerald-700";
+
+        downloadButton.href = fileUrl.href;
+        downloadButton.target = "_blank";
+        downloadButton.rel = "noopener noreferrer";
+        downloadButton.classList.remove(
+          "pointer-events-none",
+          "bg-slate-300"
+        );
+        downloadButton.classList.add(
+          "bg-emerald-600",
+          "hover:bg-emerald-700"
+        );
+        downloadButton.setAttribute("aria-disabled", "false");
+
+        downloadButton.querySelector("span").textContent =
+          "ดาวน์โหลด " + (data.file_name || "Roblox Script");
+
+      } catch (error) {
+        console.error("โหลดข้อมูลไฟล์ไม่สำเร็จ:", error);
+
+        downloadButton.href = "#";
+        downloadButton.classList.add("pointer-events-none");
+        downloadButton.classList.remove(
+          "bg-emerald-600",
+          "hover:bg-emerald-700"
+        );
+        downloadButton.classList.add("bg-slate-300");
+        downloadButton.setAttribute("aria-disabled", "true");
+        downloadButton.querySelector("span").textContent =
+          "ยังไม่มีไฟล์ให้ดาวน์โหลด";
+
+        if (error.message === "NO_PUBLISHED_FILE") {
+          fileStatus.textContent =
+            "ยังไม่มีไฟล์ที่เผยแพร่ กรุณากลับมาตรวจสอบภายหลัง";
+        } else {
+          fileStatus.textContent =
+            "ตรวจสอบไฟล์ไม่สำเร็จ กรุณาลองใหม่ภายหลัง";
+        }
+      }
+    }
+
+    loadPublishedFile();
   </script>
 </body>
 </html>
