@@ -2671,14 +2671,14 @@ window.editScript = editScript;
               );
 
         } else {
-
-          result =
-            await supabaseClient
-              .from("scripts")
-              .insert(payload);
-
-        }
-
+  result =
+    await supabaseClient
+      .from("scripts")
+      .insert({
+        ...payload,
+        owner_id: currentUser.id
+      });
+    }
 
         if (result.error)
           throw result.error;
