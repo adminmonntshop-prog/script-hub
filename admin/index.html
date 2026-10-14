@@ -1851,56 +1851,52 @@
        DASHBOARD
     ========================================== */
 
-    async function loadDashboard() {
+ 
+async function loadDashboard() {
+  try {
+    const {
+      data: scripts,
+      error: scriptsError
+    } = await supabaseClient
+      .from("scripts")
+      .select("id,status,is_visible");
 
-      try {
+    if (scriptsError) throw scriptsError;
 
-        const {
-          data: scripts
-        } = await supabaseClient
-          .from("scripts")
-          .select("id,status,is_visible");
+    const {
+      data: categories,
+      error: categoriesError
+    } = await supabaseClient
+      .from("categories")
+      .select("id");
 
-        const {
-          data: categories
-        } = await supabaseClient
-          .from("categories")
-          .select("id");
+    if (categoriesError) throw categoriesError;
 
-        scriptsCache =
-          scripts || [];
+    // ใช้ตัวแปรเฉพาะ Dashboard
+    // ห้ามเขียนทับ scriptsCache เพราะใช้เก็บข้อมูลเต็ม
+    const dashboardScripts = scripts || [];
 
-        document.getElementById(
-          "statScripts"
-        ).textContent =
-          scriptsCache.length;
+    document.getElementById("statScripts").textContent =
+      dashboardScripts.length;
 
-        document.getElementById(
-          "statVisible"
-        ).textContent =
-          scriptsCache.filter(
-            s => s.is_visible
-          ).length;
+    document.getElementById("statVisible").textContent =
+      dashboardScripts.filter(
+        s => s.is_visible
+      ).length;
 
-        document.getElementById(
-          "statOnline"
-        ).textContent =
-          scriptsCache.filter(
-            s => s.status === "online"
-          ).length;
+    document.getElementById("statOnline").textContent =
+      dashboardScripts.filter(
+        s => s.status === "online"
+      ).length;
 
-        document.getElementById(
-          "statCategories"
-        ).textContent =
-          (categories || []).length;
+    document.getElementById("statCategories").textContent =
+      (categories || []).length;
 
-      } catch (error) {
+  } catch (error) {
+    console.error("Dashboard:", error);
+  }
+}
 
-        console.log("Dashboard:", error);
-
-      }
-
-    }
 
 
     /* ==========================================
