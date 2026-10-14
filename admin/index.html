@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
-<head>
+<html lbrand>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monnt Hub Admin</title>
@@ -2699,8 +2698,9 @@ window.editScript = editScript;
         );
 
         alert(
-          "ไม่สามารถบันทึก Script ได้"
-        );
+  "บันทึกไม่สำเร็จ: " +
+  (error?.message || error?.details || error?.hint || "ไม่ทราบสาเหตุ")
+);
 
       } finally {
 
