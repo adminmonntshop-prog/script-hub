@@ -3591,6 +3591,195 @@ window.editScript = editScript;
       }
     );
 
+    
+    /* ==========================================
+       PUBLISHER MANAGEMENT
+    ========================================== */
+
+    const publisherList =
+      document.getElementById("publisherList");
+
+    const addPublisherBtn =
+      document.getElementById("addPublisherBtn");
+
+    function publisherMessage(message) {
+      let box = document.getElementById("publisherMessage");
+
+      if (!box) {
+        box = document.createElement("div");
+        box.id = "publisherMessage";
+        box.style.cssText =
+          "margin-bottom:14px;padding:12px;border-radius:12px;" +
+          "background:#eef0ff;color:#3730a3;font-size:14px;";
+
+        publisherList.parentElement.insertBefore(box, publisherList);
+      }
+
+      box.textContent = message;
+    }
+
+    async function loadPublishers() {
+      if (!publisherList) return;
+
+      publisherList.replaceChildren();
+
+      const loading = document.createElement("div");
+      loading.className = "publisher-empty";
+      loading.textContent = "กำลังโหลดรายชื่อผู้เผยแพร่...";
+      publisherList.appendChild(loading);
+
+      const { data, error } = await supabaseClient
+        .from("publisher_permissions")
+        .select("user_id,email,is_suspended,created_at")
+        .order("created_at", { ascending: false });
+
+      publisherList.replaceChildren();
+
+      if (error) {
+        const errorBox = document.createElement("div");
+        errorBox.className = "publisher-empty";
+        errorBox.textContent = "โหลดรายชื่อไม่สำเร็จ: " + error.message;
+        publisherList.appendChild(errorBox);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "publisher-empty";
+        empty.textContent = "ยังไม่มีผู้ได้รับสิทธิ์เผยแพร่";
+        publisherList.appendChild(empty);
+        return;
+      }
+
+      data.forEach(publisher => {
+        const item = document.createElement("div");
+        item.className = "publisher-item";
+
+        const details = document.createElement("div");
+        const email = document.createElement("div");
+        email.className = "publisher-email";
+        email.textContent = publisher.email;
+
+        const status = document.createElement("span");
+        status.className = publisher.is_suspended
+          ? "publisher-status suspended"
+          : "publisher-status";
+        status.textContent = publisher.is_suspended
+          ? "ระงับสิทธิ์แล้ว"
+          : "ใช้งานได้";
+
+        details.append(email, status);
+
+        const actions = document.createElement("div");
+        actions.className = "publisher-actions";
+
+        const suspendBtn = document.createElement("button");
+        suspendBtn.className = "publisher-btn-neutral";
+        suspendBtn.textContent = publisher.is_suspended
+          ? "ยกเลิกระงับ"
+          : "ระงับ";
+
+        suspendBtn.addEventListener("click", async () => {
+          const suspend = !publisher.is_suspended;
+
+          if (!confirm(suspend
+            ? "ต้องการระงับสิทธิ์ผู้เผยแพร่รายนี้หรือไม่?"
+            : "ต้องการคืนสิทธิ์ผู้เผยแพร่รายนี้หรือไม่?")) return;
+
+          suspendBtn.disabled = true;
+
+          const { error } = await supabaseClient.rpc(
+            "admin_set_publisher_suspended",
+            {
+              p_user_id: publisher.user_id,
+              p_suspended: suspend
+            }
+          );
+
+          suspendBtn.disabled = false;
+
+          if (error) {
+            publisherMessage("ดำเนินการไม่สำเร็จ: " + error.message);
+            return;
+          }
+
+          await loadPublishers();
+          publisherMessage(suspend
+            ? "ระงับสิทธิ์เรียบร้อยแล้ว"
+            : "คืนสิทธิ์เรียบร้อยแล้ว");
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "publisher-btn-danger";
+        deleteBtn.textContent = "ลบสิทธิ์";
+
+        deleteBtn.addEventListener("click", async () => {
+          if (!confirm(
+            "ต้องการลบสิทธิ์ผู้เผยแพร่รายนี้หรือไม่? สคริปต์เดิมจะไม่ถูกลบ"
+          )) return;
+
+          const { error } = await supabaseClient.rpc(
+            "admin_remove_publisher",
+            { p_user_id: publisher.user_id }
+          );
+
+          if (error) {
+            publisherMessage("ลบสิทธิ์ไม่สำเร็จ: " + error.message);
+            return;
+          }
+
+          await loadPublishers();
+          publisherMessage("ลบสิทธิ์เรียบร้อยแล้ว");
+        });
+
+        actions.append(suspendBtn, deleteBtn);
+        item.append(details, actions);
+        publisherList.appendChild(item);
+      });
+    }
+
+    if (addPublisherBtn) {
+      addPublisherBtn.addEventListener("click", async () => {
+        const email = prompt(
+          "กรอกอีเมลของบัญชีที่เคยเข้าสู่ระบบเว็บไซต์แล้ว"
+        );
+
+        if (email === null) return;
+
+        const normalizedEmail = email.trim().toLowerCase();
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+          publisherMessage("กรุณากรอกอีเมลให้ถูกต้อง");
+          return;
+        }
+
+        addPublisherBtn.disabled = true;
+
+        const { error } = await supabaseClient.rpc(
+          "admin_add_publisher",
+          { p_email: normalizedEmail }
+        );
+
+        addPublisherBtn.disabled = false;
+
+        if (error) {
+          publisherMessage("เพิ่มผู้เผยแพร่ไม่สำเร็จ: " + error.message);
+          return;
+        }
+
+        await loadPublishers();
+        publisherMessage("เพิ่มผู้เผยแพร่เรียบร้อยแล้ว");
+      });
+    }
+
+    const publishersNav =
+      document.querySelector('[data-page="publishers"]');
+
+    if (publishersNav) {
+      publishersNav.addEventListener("click", loadPublishers);
+    }
+
+
                                     
     /* ==========================================
        START
