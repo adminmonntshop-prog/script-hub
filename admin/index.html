@@ -3592,6 +3592,7 @@ window.editScript = editScript;
     );
 
     
+     
     /* ==========================================
        PUBLISHER MANAGEMENT
     ========================================== */
@@ -3603,19 +3604,148 @@ window.editScript = editScript;
       document.getElementById("addPublisherBtn");
 
     function publisherMessage(message) {
+      if (!publisherList) return;
+
       let box = document.getElementById("publisherMessage");
 
       if (!box) {
         box = document.createElement("div");
         box.id = "publisherMessage";
         box.style.cssText =
-          "margin-bottom:14px;padding:12px;border-radius:12px;" +
-          "background:#eef0ff;color:#3730a3;font-size:14px;";
+          "margin-bottom:14px;padding:13px 15px;border-radius:14px;" +
+          "background:#f0edff;color:#5141a8;font-size:14px;line-height:1.6;";
 
         publisherList.parentElement.insertBefore(box, publisherList);
       }
 
       box.textContent = message;
+    }
+
+    function publisherDialog({
+      title,
+      message,
+      input = false,
+      confirmText = "ยืนยัน",
+      danger = false
+    }) {
+      return new Promise(resolve => {
+        const overlay = document.createElement("div");
+
+        overlay.style.cssText =
+          "position:fixed;inset:0;z-index:10000;" +
+          "display:flex;align-items:center;justify-content:center;" +
+          "padding:20px;background:rgba(31,24,64,.58);" +
+          "backdrop-filter:blur(7px);";
+
+        const panel = document.createElement("div");
+
+        panel.style.cssText =
+          "width:100%;max-width:410px;padding:25px;" +
+          "border:1px solid rgba(255,255,255,.8);" +
+          "border-radius:24px;background:linear-gradient(145deg,#fff,#f7f4ff);" +
+          "box-shadow:0 24px 80px rgba(35,20,80,.24);" +
+          "font-family:inherit;box-sizing:border-box;";
+
+        const accent = document.createElement("div");
+        accent.style.cssText =
+          "width:44px;height:5px;border-radius:9px;" +
+          "background:linear-gradient(90deg,#8065ee,#b39aff);" +
+          "margin-bottom:19px;";
+
+        const heading = document.createElement("h2");
+        heading.textContent = title;
+        heading.style.cssText =
+          "margin:0 0 10px;font-size:21px;line-height:1.45;" +
+          "color:#292344;font-weight:750;";
+
+        const body = document.createElement("p");
+        body.textContent = message;
+        body.style.cssText =
+          "margin:0 0 20px;font-size:14px;line-height:1.8;" +
+          "color:#6b6680;white-space:pre-line;";
+
+        panel.append(accent, heading, body);
+
+        let field = null;
+
+        if (input) {
+          field = document.createElement("input");
+          field.type = "email";
+          field.placeholder = "name@example.com";
+          field.autocomplete = "email";
+          field.setAttribute("aria-label", "อีเมลผู้เผยแพร่");
+          field.style.cssText =
+            "display:block;width:100%;box-sizing:border-box;" +
+            "padding:13px 14px;margin:0 0 20px;" +
+            "border:1px solid #ded8f5;border-radius:13px;" +
+            "background:white;color:#292344;font-size:15px;" +
+            "outline-color:#8a70ed;";
+
+          panel.appendChild(field);
+        }
+
+        const actions = document.createElement("div");
+        actions.style.cssText =
+          "display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;";
+
+        const cancel = document.createElement("button");
+        cancel.type = "button";
+        cancel.textContent = "ยกเลิก";
+        cancel.style.cssText =
+          "padding:11px 17px;border:1px solid #e2def0;" +
+          "border-radius:12px;background:white;color:#5c5573;" +
+          "font-size:14px;font-weight:650;cursor:pointer;";
+
+        const accept = document.createElement("button");
+        accept.type = "button";
+        accept.textContent = confirmText;
+        accept.style.cssText =
+          "padding:11px 18px;border:0;border-radius:12px;" +
+          "background:" + (danger
+            ? "linear-gradient(135deg,#dc4568,#bb294f)"
+            : "linear-gradient(135deg,#8065ee,#6848d7)") + ";" +
+          "color:white;font-size:14px;font-weight:700;cursor:pointer;" +
+          "box-shadow:0 5px 14px rgba(93,65,170,.17);";
+
+        let finished = false;
+
+        function close(value) {
+          if (finished) return;
+          finished = true;
+          document.removeEventListener("keydown", onKey);
+          overlay.remove();
+          resolve(value);
+        }
+
+        function onKey(event) {
+          if (event.key === "Escape") close(null);
+
+          if (event.key === "Enter" && field) {
+            event.preventDefault();
+            accept.click();
+          }
+        }
+
+        cancel.addEventListener("click", () => close(null));
+
+        accept.addEventListener("click", () => {
+          close(field ? field.value.trim() : true);
+        });
+
+        overlay.addEventListener("click", event => {
+          if (event.target === overlay) close(null);
+        });
+
+        actions.append(cancel, accept);
+        panel.appendChild(actions);
+        overlay.appendChild(panel);
+        document.body.appendChild(overlay);
+
+        document.addEventListener("keydown", onKey);
+
+        if (field) field.focus();
+        else accept.focus();
+      });
     }
 
     async function loadPublishers() {
@@ -3636,18 +3766,18 @@ window.editScript = editScript;
       publisherList.replaceChildren();
 
       if (error) {
-        const errorBox = document.createElement("div");
-        errorBox.className = "publisher-empty";
-        errorBox.textContent = "โหลดรายชื่อไม่สำเร็จ: " + error.message;
-        publisherList.appendChild(errorBox);
+        const box = document.createElement("div");
+        box.className = "publisher-empty";
+        box.textContent = "โหลดรายชื่อไม่สำเร็จ: " + error.message;
+        publisherList.appendChild(box);
         return;
       }
 
       if (!data || data.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "publisher-empty";
-        empty.textContent = "ยังไม่มีผู้ได้รับสิทธิ์เผยแพร่";
-        publisherList.appendChild(empty);
+        const box = document.createElement("div");
+        box.className = "publisher-empty";
+        box.textContent = "ยังไม่มีผู้ได้รับสิทธิ์เผยแพร่";
+        publisherList.appendChild(box);
         return;
       }
 
@@ -3682,31 +3812,39 @@ window.editScript = editScript;
         suspendBtn.addEventListener("click", async () => {
           const suspend = !publisher.is_suspended;
 
-          if (!confirm(suspend
-            ? "ต้องการระงับสิทธิ์ผู้เผยแพร่รายนี้หรือไม่?"
-            : "ต้องการคืนสิทธิ์ผู้เผยแพร่รายนี้หรือไม่?")) return;
+          const ok = await publisherDialog({
+            title: suspend ? "ระงับสิทธิ์ผู้เผยแพร่" : "คืนสิทธิ์ผู้เผยแพร่",
+            message: suspend
+              ? "บัญชีนี้จะไม่สามารถใช้สิทธิ์เผยแพร่ได้ ต้องการดำเนินการต่อหรือไม่?"
+              : "ต้องการคืนสิทธิ์เผยแพร่ให้บัญชีนี้หรือไม่?",
+            confirmText: suspend ? "ระงับสิทธิ์" : "คืนสิทธิ์",
+            danger: suspend
+          });
+
+          if (!ok) return;
 
           suspendBtn.disabled = true;
 
-          const { error } = await supabaseClient.rpc(
-            "admin_set_publisher_suspended",
-            {
-              p_user_id: publisher.user_id,
-              p_suspended: suspend
-            }
-          );
+          try {
+            const { error } = await supabaseClient.rpc(
+              "admin_set_publisher_suspended",
+              {
+                p_user_id: publisher.user_id,
+                p_suspended: suspend
+              }
+            );
 
-          suspendBtn.disabled = false;
+            if (error) throw error;
 
-          if (error) {
+            await loadPublishers();
+            publisherMessage(
+              suspend ? "ระงับสิทธิ์เรียบร้อยแล้ว" : "คืนสิทธิ์เรียบร้อยแล้ว"
+            );
+          } catch (error) {
             publisherMessage("ดำเนินการไม่สำเร็จ: " + error.message);
-            return;
+          } finally {
+            suspendBtn.disabled = false;
           }
-
-          await loadPublishers();
-          publisherMessage(suspend
-            ? "ระงับสิทธิ์เรียบร้อยแล้ว"
-            : "คืนสิทธิ์เรียบร้อยแล้ว");
         });
 
         const deleteBtn = document.createElement("button");
@@ -3714,22 +3852,33 @@ window.editScript = editScript;
         deleteBtn.textContent = "ลบสิทธิ์";
 
         deleteBtn.addEventListener("click", async () => {
-          if (!confirm(
-            "ต้องการลบสิทธิ์ผู้เผยแพร่รายนี้หรือไม่? สคริปต์เดิมจะไม่ถูกลบ"
-          )) return;
+          const ok = await publisherDialog({
+            title: "ลบสิทธิ์ผู้เผยแพร่",
+            message:
+              "ต้องการลบสิทธิ์ของบัญชีนี้หรือไม่?\n\nสคริปต์เดิมจะไม่ถูกลบ",
+            confirmText: "ลบสิทธิ์",
+            danger: true
+          });
 
-          const { error } = await supabaseClient.rpc(
-            "admin_remove_publisher",
-            { p_user_id: publisher.user_id }
-          );
+          if (!ok) return;
 
-          if (error) {
+          deleteBtn.disabled = true;
+
+          try {
+            const { error } = await supabaseClient.rpc(
+              "admin_remove_publisher",
+              { p_user_id: publisher.user_id }
+            );
+
+            if (error) throw error;
+
+            await loadPublishers();
+            publisherMessage("ลบสิทธิ์เรียบร้อยแล้ว");
+          } catch (error) {
             publisherMessage("ลบสิทธิ์ไม่สำเร็จ: " + error.message);
-            return;
+          } finally {
+            deleteBtn.disabled = false;
           }
-
-          await loadPublishers();
-          publisherMessage("ลบสิทธิ์เรียบร้อยแล้ว");
         });
 
         actions.append(suspendBtn, deleteBtn);
@@ -3740,13 +3889,17 @@ window.editScript = editScript;
 
     if (addPublisherBtn) {
       addPublisherBtn.addEventListener("click", async () => {
-        const email = prompt(
-          "กรอกอีเมลของบัญชีที่เคยเข้าสู่ระบบเว็บไซต์แล้ว"
-        );
+        const email = await publisherDialog({
+          title: "เพิ่มผู้มีสิทธิ์เผยแพร่",
+          message:
+            "กรอกอีเมลของบัญชีที่สมัครและเข้าสู่ระบบ Script Hub แล้ว",
+          input: true,
+          confirmText: "เพิ่มผู้เผยแพร่"
+        });
 
         if (email === null) return;
 
-        const normalizedEmail = email.trim().toLowerCase();
+        const normalizedEmail = email.toLowerCase();
 
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
           publisherMessage("กรุณากรอกอีเมลให้ถูกต้อง");
@@ -3755,20 +3908,21 @@ window.editScript = editScript;
 
         addPublisherBtn.disabled = true;
 
-        const { error } = await supabaseClient.rpc(
-          "admin_add_publisher",
-          { p_email: normalizedEmail }
-        );
+        try {
+          const { error } = await supabaseClient.rpc(
+            "admin_add_publisher",
+            { p_email: normalizedEmail }
+          );
 
-        addPublisherBtn.disabled = false;
+          if (error) throw error;
 
-        if (error) {
+          await loadPublishers();
+          publisherMessage("เพิ่มผู้เผยแพร่เรียบร้อยแล้ว");
+        } catch (error) {
           publisherMessage("เพิ่มผู้เผยแพร่ไม่สำเร็จ: " + error.message);
-          return;
+        } finally {
+          addPublisherBtn.disabled = false;
         }
-
-        await loadPublishers();
-        publisherMessage("เพิ่มผู้เผยแพร่เรียบร้อยแล้ว");
       });
     }
 
@@ -3778,8 +3932,7 @@ window.editScript = editScript;
     if (publishersNav) {
       publishersNav.addEventListener("click", loadPublishers);
     }
-
-
+                 
                                     
     /* ==========================================
        START
