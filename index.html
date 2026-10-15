@@ -3056,8 +3056,42 @@ publisherSubmitForm?.addEventListener('submit', async event => {
     const description =
       document.getElementById('publisherScriptDescription').value.trim();
 
-    const image =
-      document.getElementById('publisherScriptImage').value.trim();
+    
+const imageFile =
+  document.getElementById('publisherScriptImageFile').files[0];
+
+let image =
+  document.getElementById('publisherScriptImage').value.trim();
+
+if (imageFile) {
+  if (!imageFile.type.startsWith('image/')) {
+    throw new Error('กรุณาเลือกไฟล์รูปภาพ');
+  }
+
+  if (imageFile.size > 8 * 1024 * 1024) {
+    throw new Error('รูปภาพต้องมีขนาดไม่เกิน 8 MB');
+  }
+
+  const safeName = imageFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const filePath =
+    `publisher-uploads/${currentUser.id}/${Date.now()}-${safeName}`;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from('site')
+    .upload(filePath, imageFile, {
+      cacheControl: '3600',
+      upsert: false
+    });
+
+  if (uploadError) throw uploadError;
+
+  const { data: publicUrlData } = supabaseClient.storage
+    .from('site')
+    .getPublicUrl(filePath);
+
+  image = publicUrlData.publicUrl;
+}
+
 
     const categoryId =
       document.getElementById('publisherScriptCategory').value || null;
@@ -3264,6 +3298,17 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
         <div>
           <label for="publisherScriptImage" class="mb-1.5 block text-sm font-semibold text-slate-700">ลิงก์รูปภาพ (ถ้ามี)</label>
           <input id="publisherScriptImage" type="url" class="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100" placeholder="https://...">
+          
+<input
+  id="publisherScriptImageFile"
+  type="file"
+  accept="image/*"
+  class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3"
+/>
+<p class="mt-1 text-xs text-slate-500">
+  เลือกรูปจากแกลเลอรีหรือไฟล์ในเครื่อง ขนาดไม่เกิน 8 MB
+</p>
+
         </div>
 
         <div>
