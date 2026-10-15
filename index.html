@@ -2865,6 +2865,8 @@ window.location.href =
       }
     );
 
+  document.addEventListener('DOMContentLoaded', () => {
+
     
 /* =========================
    PUBLISHER SUBMISSION
@@ -3114,6 +3116,8 @@ supabaseClient.auth.getSession().then(({ data }) => {
 supabaseClient.auth.onAuthStateChange((_event, session) => {
   refreshPublisherPermission(session?.user || null);
 });
+
+}); // ปิด DOMContentLoaded    
 
 
     /* =========================
