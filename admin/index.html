@@ -260,6 +260,114 @@
       font-weight: 600;
     }
 
+    
+    /* =========================
+       PUBLISHER MANAGEMENT
+    ========================= */
+
+    .publisher-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .publisher-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .publisher-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid #e8eaf3;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(47,58,100,.05);
+    }
+
+    .publisher-email {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+      font-weight: 600;
+      color: #27304a;
+    }
+
+    .publisher-status {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      background: #ecfdf5;
+      color: #047857;
+    }
+
+    .publisher-status.suspended {
+      background: #fff1f2;
+      color: #be123c;
+    }
+
+    .publisher-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .publisher-actions button {
+      border: 0;
+      border-radius: 11px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .publisher-btn-primary {
+      color: white;
+      background: linear-gradient(135deg,#4f46e5,#7c3aed);
+    }
+
+    .publisher-btn-neutral {
+      color: #4f46e5;
+      background: #eef0ff;
+    }
+
+    .publisher-btn-danger {
+      color: #be123c;
+      background: #fff1f2;
+    }
+
+    .publisher-empty {
+      padding: 28px 16px;
+      text-align: center;
+      color: #7b8498;
+      background: #fff;
+      border: 1px dashed #d8dcef;
+      border-radius: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .publisher-item {
+        align-items: flex-start;
+      }
+
+      .publisher-actions {
+        width: 100%;
+      }
+
+      .publisher-actions button {
+        flex: 1;
+      }
+    }
+
+
     /* =========================
        CARDS
     ========================= */
@@ -647,6 +755,12 @@
         📄 ข้อกำหนด / นโยบาย
       </button>
 
+      
+      <button class="nav-btn" data-page="publishers">
+        ผู้มีสิทธิ์เผยแพร่
+      </button>
+
+
       <div class="nav-divider"></div>
 
       <button class="nav-btn" id="returnHomeBtn">
@@ -972,6 +1086,42 @@
         </div>
 
       </section>
+
+      
+      <!-- =========================
+           PUBLISHER MANAGEMENT
+      ========================== -->
+
+      <section id="page-publishers" class="page hidden">
+        <div class="card">
+          <h2 class="section-title">ผู้มีสิทธิ์เผยแพร่</h2>
+
+          <p class="page-desc">
+            จัดการอีเมลของผู้ที่ได้รับอนุญาตให้ส่งคำขอเผยแพร่สคริปต์
+          </p>
+
+          <div class="publisher-toolbar">
+            <div>
+              <strong>รายชื่อผู้เผยแพร่</strong>
+            </div>
+
+            <button
+              type="button"
+              class="publisher-btn-primary"
+              id="addPublisherBtn"
+            >
+              เพิ่ม
+            </button>
+          </div>
+
+          <div id="publisherList" class="publisher-list">
+            <div class="publisher-empty">
+              กำลังเตรียมข้อมูลผู้เผยแพร่
+            </div>
+          </div>
+        </div>
+      </section>
+
 
 
       <!-- =========================
