@@ -2865,6 +2865,256 @@ window.location.href =
       }
     );
 
+    
+/* =========================
+   PUBLISHER SUBMISSION
+========================= */
+
+const publishScriptMenuButton =
+  document.getElementById('publishScriptMenuButton');
+
+const publisherSubmitModal =
+  document.getElementById('publisherSubmitModal');
+
+const publisherSubmitForm =
+  document.getElementById('publisherSubmitForm');
+
+const publisherSubmitMessage =
+  document.getElementById('publisherSubmitMessage');
+
+const publisherSubmitButton =
+  document.getElementById('publisherSubmitButton');
+
+let publisherPermission = null;
+
+function showPublisherMessage(message, type = 'success') {
+  if (!publisherSubmitMessage) return;
+
+  publisherSubmitMessage.textContent = message;
+  publisherSubmitMessage.classList.remove(
+    'hidden',
+    'bg-red-50',
+    'text-red-700',
+    'bg-emerald-50',
+    'text-emerald-700'
+  );
+
+  publisherSubmitMessage.classList.add(
+    type === 'error' ? 'bg-red-50' : 'bg-emerald-50',
+    type === 'error' ? 'text-red-700' : 'text-emerald-700'
+  );
+}
+
+function closePublisherSubmitModal() {
+  publisherSubmitModal?.classList.add('hidden');
+}
+
+function showSuspendedPublisherModal() {
+  const overlay = document.createElement('div');
+
+  overlay.className =
+    'fixed inset-0 z-[3000] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm';
+
+  overlay.innerHTML = `
+    <div class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
+      <div class="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-5 text-white">
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15">
+          <i class="fa-solid fa-shield-halved text-xl"></i>
+        </div>
+        <h2 class="mt-4 text-xl font-bold">ไม่สามารถเผยแพร่สคริปต์ได้</h2>
+      </div>
+      <div class="p-6">
+        <p class="text-sm leading-7 text-slate-600">
+          คุณไม่มีสิทธิ์เผยแพร่สคริปต์ เนื่องจากบัญชีของคุณถูกระงับสิทธิ์โดยผู้ดูแลระบบ (Admin)
+        </p>
+        <button type="button"
+          class="mt-6 w-full rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-3 font-semibold text-white hover:brightness-105">
+          รับทราบ
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('button').addEventListener('click', () => {
+    overlay.remove();
+  });
+}
+
+async function refreshPublisherPermission(user = currentUser) {
+  publisherPermission = null;
+
+  if (publishScriptMenuButton) {
+    publishScriptMenuButton.classList.add('hidden');
+  }
+
+  if (!user) return;
+
+  const { data, error } = await supabaseClient
+    .from('publisher_permissions')
+    .select('user_id, is_suspended')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error('ตรวจสอบสิทธิ์ผู้เผยแพร่:', error);
+    return;
+  }
+
+  if (!data) return;
+
+  publisherPermission = data;
+
+  // ผู้ถูกระงับยังเห็นปุ่ม เพื่อให้ระบบแจ้งเหตุผลเมื่อกด
+  publishScriptMenuButton?.classList.remove('hidden');
+}
+
+function fillPublisherCategories() {
+  const select = document.getElementById('publisherScriptCategory');
+  if (!select) return;
+
+  select.innerHTML =
+    '<option value="">ไม่มีหมวดหมู่</option>';
+
+  allCategories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category.id;
+    option.textContent = category.name;
+    select.appendChild(option);
+  });
+}
+
+publishScriptMenuButton?.addEventListener('click', async () => {
+  closeMenu();
+
+  // ตรวจสิทธิ์ล่าสุดทุกครั้งที่กดปุ่ม
+  await refreshPublisherPermission();
+
+  if (!currentUser) {
+    showToast('กรุณาเข้าสู่ระบบก่อน', 'error');
+    return;
+  }
+
+  if (!publisherPermission) {
+    showToast('บัญชีนี้ไม่มีสิทธิ์เผยแพร่สคริปต์', 'error');
+    return;
+  }
+
+  if (publisherPermission.is_suspended) {
+    showSuspendedPublisherModal();
+    return;
+  }
+
+  fillPublisherCategories();
+  publisherSubmitMessage?.classList.add('hidden');
+  publisherSubmitModal?.classList.remove('hidden');
+});
+
+document.getElementById('publisherSubmitClose')
+  ?.addEventListener('click', closePublisherSubmitModal);
+
+document.getElementById('publisherSubmitCancel')
+  ?.addEventListener('click', closePublisherSubmitModal);
+
+publisherSubmitModal?.addEventListener('click', event => {
+  if (event.target === publisherSubmitModal) {
+    closePublisherSubmitModal();
+  }
+});
+
+publisherSubmitForm?.addEventListener('submit', async event => {
+  event.preventDefault();
+
+  if (!currentUser) {
+    showPublisherMessage('กรุณาเข้าสู่ระบบใหม่อีกครั้ง', 'error');
+    return;
+  }
+
+  publisherSubmitButton.disabled = true;
+  publisherSubmitButton.textContent = 'กำลังส่งคำขอ...';
+
+  try {
+    // ตรวจสอบสิทธิ์ล่าสุดก่อนส่งคำขอ
+    await refreshPublisherPermission();
+
+    if (!publisherPermission) {
+      throw new Error('บัญชีนี้ไม่มีสิทธิ์เผยแพร่สคริปต์');
+    }
+
+    if (publisherPermission.is_suspended) {
+      closePublisherSubmitModal();
+      showSuspendedPublisherModal();
+      return;
+    }
+
+    const title =
+      document.getElementById('publisherScriptTitle').value.trim();
+
+    const description =
+      document.getElementById('publisherScriptDescription').value.trim();
+
+    const image =
+      document.getElementById('publisherScriptImage').value.trim();
+
+    const categoryId =
+      document.getElementById('publisherScriptCategory').value || null;
+
+    const distributor =
+      document.getElementById('publisherScriptDistributor').value.trim();
+
+    const code =
+      document.getElementById('publisherScriptCode').value;
+
+    const { error } = await supabaseClient.rpc(
+      'submit_publication_request',
+      {
+        p_script_id: null,
+        p_title: title,
+        p_description: description || null,
+        p_image: image || null,
+        p_code: code,
+        p_category_id: categoryId,
+        p_distributor: distributor || null
+      }
+    );
+
+    if (error) throw error;
+
+    showPublisherMessage(
+      'คุณได้ส่งคำขอไปยัง admin เรียบร้อยแล้ว โปรดรอแอดมินตรวจสอบ'
+    );
+
+    publisherSubmitForm.reset();
+
+    showToast(
+      'คุณได้ส่งคำขอไปยัง admin เรียบร้อยแล้ว โปรดรอแอดมินตรวจสอบ',
+      'success'
+    );
+
+  } catch (error) {
+    console.error('ส่งคำขอเผยแพร่:', error);
+
+    showPublisherMessage(
+      error?.message || 'ส่งคำขอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+      'error'
+    );
+
+  } finally {
+    publisherSubmitButton.disabled = false;
+    publisherSubmitButton.textContent = 'ส่งคำขอให้ Admin';
+  }
+});
+
+// ตรวจสอบเมื่อเปิดหน้าเว็บ และเมื่อเข้าสู่ระบบหรือออกจากระบบ
+supabaseClient.auth.getSession().then(({ data }) => {
+  refreshPublisherPermission(data?.session?.user || null);
+});
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  refreshPublisherPermission(session?.user || null);
+});
+
 
     /* =========================
        START
