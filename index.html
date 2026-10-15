@@ -506,6 +506,21 @@
           class="fa-solid fa-chevron-right ml-auto text-xs text-slate-400"
         ></i>
       </a>
+
+      
+      <!-- Publisher: hidden until permission is checked -->
+      <button
+        id="publishScriptMenuButton"
+        type="button"
+        class="hidden w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-violet-50 hover:text-violet-700"
+      >
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </span>
+        <span>เผยแพร่สคริปต์</span>
+        <i class="fa-solid fa-chevron-right ml-auto text-xs text-slate-400"></i>
+      </button>
+
       
      <!-- Google Login -->
 
@@ -2965,6 +2980,68 @@ window.location.href =
 
   </script>
 
+  
+  <!-- Publisher submission modal -->
+  <div id="publisherSubmitModal" class="hidden fixed inset-0 z-[2000] flex items-center justify-center overflow-y-auto bg-slate-950/50 p-4 backdrop-blur-sm">
+    <div class="my-auto w-full max-w-xl overflow-hidden rounded-3xl border border-white/70 bg-white shadow-2xl">
+      <div class="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-5 text-white">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold">เผยแพร่สคริปต์</h2>
+            <p class="mt-1 text-sm text-white/80">ส่งคำขอให้ Admin ตรวจสอบก่อนเผยแพร่</p>
+          </div>
+          <button id="publisherSubmitClose" type="button" aria-label="ปิดหน้าต่าง" class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 hover:bg-white/25">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <form id="publisherSubmitForm" class="space-y-4 p-5 sm:p-6">
+        <div>
+          <label for="publisherScriptTitle" class="mb-1.5 block text-sm font-semibold text-slate-700">ชื่อสคริปต์</label>
+          <input id="publisherScriptTitle" maxlength="150" required class="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100" placeholder="กรอกชื่อสคริปต์">
+        </div>
+
+        <div>
+          <label for="publisherScriptDescription" class="mb-1.5 block text-sm font-semibold text-slate-700">รายละเอียด</label>
+          <textarea id="publisherScriptDescription" rows="3" maxlength="5000" class="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100" placeholder="อธิบายรายละเอียดสคริปต์"></textarea>
+        </div>
+
+        <div>
+          <label for="publisherScriptImage" class="mb-1.5 block text-sm font-semibold text-slate-700">ลิงก์รูปภาพ (ถ้ามี)</label>
+          <input id="publisherScriptImage" type="url" class="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100" placeholder="https://...">
+        </div>
+
+        <div>
+          <label for="publisherScriptCategory" class="mb-1.5 block text-sm font-semibold text-slate-700">หมวดหมู่</label>
+          <select id="publisherScriptCategory" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100">
+            <option value="">ไม่มีหมวดหมู่</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="publisherScriptDistributor" class="mb-1.5 block text-sm font-semibold text-slate-700">ผู้จัดทำ / ผู้แจกจ่าย (ถ้ามี)</label>
+          <input id="publisherScriptDistributor" maxlength="150" class="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100" placeholder="ชื่อผู้จัดทำ">
+        </div>
+
+        <div>
+          <label for="publisherScriptCode" class="mb-1.5 block text-sm font-semibold text-slate-700">โค้ดสคริปต์</label>
+          <textarea id="publisherScriptCode" rows="8" required spellcheck="false" class="w-full rounded-xl border border-slate-200 bg-slate-950 px-4 py-3 font-mono text-sm text-emerald-300 outline-none focus:ring-4 focus:ring-violet-200" placeholder="วางโค้ดสคริปต์ที่นี่"></textarea>
+        </div>
+
+        <div id="publisherSubmitMessage" class="hidden rounded-xl px-4 py-3 text-sm leading-6" role="status"></div>
+
+        <div class="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:justify-end">
+          <button id="publisherSubmitCancel" type="button" class="rounded-xl border border-slate-200 px-5 py-3 font-semibold text-slate-600 hover:bg-slate-50">ยกเลิก</button>
+          <button id="publisherSubmitButton" type="submit" class="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-violet-200 hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60">
+            ส่งคำขอให้ Admin
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  
 </body>
 
 </html>
