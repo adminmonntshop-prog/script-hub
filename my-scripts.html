@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>สคริปต์ของฉัน - Monnt Hub</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Prompt', sans-serif; }
+textarea { resize: vertical; }
+</style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<header class="border-b bg-white">
+  <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+    <a href="./" class="font-bold text-violet-700">
+      <i class="fa-solid fa-code mr-2"></i>Monnt Hub
+    </a>
+    <a href="./" class="rounded-xl border px-4 py-2 text-sm">กลับหน้าหลัก</a>
+  </div>
+</header>
+
+<main class="mx-auto max-w-5xl px-4 py-8">
+  <section class="mb-6 rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-600 p-6 text-white shadow-lg">
+    <h1 class="text-2xl font-bold">
+      <i class="fa-solid fa-folder-open mr-2"></i>สคริปต์ของฉัน
+    </h1>
+    <p class="mt-2 text-sm text-white/80">
+      ดูสคริปต์ของคุณ และส่งคำขอแก้ไขให้ Admin ตรวจสอบก่อนเผยแพร่
+    </p>
+  </section>
+
+  <div class="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <div class="rounded-2xl border bg-white p-4">
+      <p class="text-xs text-slate-500">สคริปต์ทั้งหมด</p>
+      <p id="countAll" class="mt-1 text-2xl font-bold">—</p>
+    </div>
+    <div class="rounded-2xl border bg-white p-4">
+      <p class="text-xs text-slate-500">เผยแพร่อยู่</p>
+      <p id="countLive" class="mt-1 text-2xl font-bold text-emerald-600">—</p>
+    </div>
+    <div class="col-span-2 rounded-2xl border bg-white p-4 sm:col-span-1">
+      <p class="text-xs text-slate-500">ระงับหรืออยู่ในถังขยะ</p>
+      <p id="countOther" class="mt-1 text-2xl font-bold text-amber-600">—</p>
+    </div>
+  </div>
+
+  <div class="mb-4 flex items-center justify-between gap-3">
+    <h2 class="text-lg font-bold">รายการของฉัน</h2>
+    <button id="refreshButton" class="rounded-xl border bg-white px-4 py-2 text-sm">
+      <i class="fa-solid fa-rotate mr-1"></i>รีเฟรช
+    </button>
+  </div>
+
+  <div id="message" class="mb-4 hidden rounded-xl p-4 text-sm"></div>
+  <div id="scriptList" class="grid gap-4 sm:grid-cols-2"></div>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://ofwlofzqxfdqctmogntu.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_JMUKzfqgrnXJwYy_zjLzKg_vMDyJTld';
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      flowType: 'pkce'
+    }
+  }
+);
+
+const list = document.getElementById('scriptList');
+const message = document.getElementById('message');
+
+let currentUser = null;
+let myScripts = [];
+
+function showMessage(text, error = false) {
+  message.textContent = text;
+  message.className = 'mb-4 rounded-xl p-4 text-sm ' +
+    (error ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700');
+}
+
+function getStatus(script) {
+  if (script.deleted_at) return 'อยู่ในถังขยะ';
+  if (script.suspended_at) return 'ถูกระงับ';
+  if (script.is_visible === false) return 'ไม่แสดงบนหน้าเว็บ';
+  return 'เผยแพร่อยู่';
+}
+
+async function loadScripts() {
+  list.innerHTML = '<div class="rounded-2xl border bg-white p-8 text-center">กำลังโหลด...</div>';
+  message.classList.add('hidden');
+
+  const { data: { user }, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !user) {
+    currentUser = null;
+    list.innerHTML = '';
+    showMessage('กรุณาเข้าสู่ระบบก่อนดูสคริปต์ของคุณ', true);
+    return;
+  }
+
+  currentUser = user;
+
+  const { data, error } = await supabaseClient
+    .from('scripts')
+    .select('id,title,description,image,code,status,category_id,distributor,is_visible,owner_id,suspended_at,deleted_at,created_at')
+    .eq('owner_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    list.innerHTML = '';
+    showMessage('โหลดสคริปต์ไม่สำเร็จ: ' + error.message, true);
+    return;
+  }
+
+  myScripts = data || [];
+
+  document.getElementById('countAll').textContent = myScripts.length;
+  document.getElementById('countLive').textContent =
+    myScripts.filter(s => !s.deleted_at && !s.suspended_at && s.is_visible !== false).length;
+  document.getElementById('countOther').textContent =
+    myScripts.filter(s => s.deleted_at || s.suspended_at || s.is_visible === false).length;
+
+  list.innerHTML = '';
+
+  if (!myScripts.length) {
+    list.innerHTML = `
+      <div class="rounded-2xl border border-dashed bg-white p-8 text-center sm:col-span-2">
+        <i class="fa-solid fa-folder-open mb-3 text-3xl text-violet-400"></i>
+        <h3 class="font-bold">ยังไม่มีสคริปต์ของคุณ</h3>
+        <p class="mt-2 text-sm text-slate-500">
+          สคริปต์ที่ Admin อนุมัติและเป็นของคุณจะแสดงที่นี่
+        </p>
+        <a href="./" class="mt-4 inline-block rounded-xl bg-violet-600 px-5 py-3 text-white">
+          กลับหน้าหลัก
+        </a>
+      </div>`;
+    return;
+  }
+
+  myScripts.forEach(script => {
+    const card = document.createElement('article');
+    card.className = 'rounded-2xl border bg-white p-5 shadow-sm';
+
+    const title = document.createElement('h3');
+    title.className = 'break-words font-bold';
+    title.textContent = script.title || 'ไม่มีชื่อสคริปต์';
+
+    const status = document.createElement('p');
+    status.className = 'my-2 text-sm text-slate-500';
+    status.textContent = getStatus(script);
+
+    const description = document.createElement('p');
+    description.className = 'mb-4 whitespace-pre-wrap break-words text-sm text-slate-600';
+    description.textContent = script.description || 'ไม่มีคำอธิบาย';
+
+    card.append(title, status, description);
+
+    if (script.image) {
+      const image = document.createElement('img');
+      image.src = script.image;
+      image.alt = '';
+      image.className = 'mb-3 max-h-48 w-full rounded-xl object-cover';
+      image.onerror = () => image.remove();
+      card.prepend(image);
+    }
+
+    const editButton = document.createElement('button');
+    editButton.className = 'rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white';
+    editButton.textContent = 'ขอแก้ไข';
+    editButton.addEventListener('click', () => {
+      showMessage('สคริปต์ ID ' + script.id + ': ขั้นตอนส่งคำขอแก้ไขจะเชื่อมกับระบบอนุมัติของ Admin');
+    });
+
+    card.appendChild(editButton);
+    list.appendChild(card);
+  });
+}
+
+document.getElementById('refreshButton')
+  .addEventListener('click', loadScripts);
+
+supabaseClient.auth.onAuthStateChange(() => {
+  loadScripts();
+});
+
+loadScripts();
+</script>
+</body>
+</html>
