@@ -3155,7 +3155,7 @@ window.editScript = editScript;
           .from("legal_pages")
           .select("*")
           .eq(
-            "type",
+            "id",
             type
           )
           .maybeSingle();
@@ -3236,8 +3236,13 @@ window.editScript = editScript;
           .from("legal_pages")
           .upsert(
             {
-              type:
-                currentLegalType,
+              id:
+  currentLegalType,
+
+title:
+  currentLegalType === "terms"
+    ? "ข้อกำหนดการให้บริการ"
+    : "นโยบายความเป็นส่วนตัว",
 
               content,
 
@@ -3246,7 +3251,7 @@ window.editScript = editScript;
             },
             {
               onConflict:
-                "type"
+                "id"
             }
           );
 
