@@ -57,6 +57,69 @@ textarea { resize: vertical; }
 
   <div id="message" class="mb-4 hidden rounded-xl p-4 text-sm"></div>
   <div id="scriptList" class="grid gap-4 sm:grid-cols-2"></div>
+
+<div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 p-4">
+  <div class="mx-auto my-8 max-w-2xl rounded-2xl bg-white p-5 shadow-xl">
+    <h2 class="text-xl font-bold">ส่งคำขอแก้ไขสคริปต์</h2>
+    <p class="mt-1 text-sm text-slate-500">
+      ข้อมูลใหม่จะรอแอดมินตรวจสอบก่อนนำไปเผยแพร่
+    </p>
+
+    <form id="editForm" class="mt-5 space-y-4">
+      <input type="hidden" id="editScriptId">
+
+      <div>
+        <label for="editTitle" class="mb-1 block text-sm font-semibold">ชื่อสคริปต์</label>
+        <input id="editTitle" required maxlength="150"
+          class="w-full rounded-xl border p-3">
+      </div>
+
+      <div>
+        <label for="editDescription" class="mb-1 block text-sm font-semibold">คำอธิบาย</label>
+        <textarea id="editDescription" rows="3"
+          class="w-full rounded-xl border p-3"></textarea>
+      </div>
+
+      <div>
+        <label for="editImage" class="mb-1 block text-sm font-semibold">URL รูปภาพ</label>
+        <input id="editImage" type="url" maxlength="2000"
+          placeholder="https://..."
+          class="w-full rounded-xl border p-3">
+      </div>
+
+      <div>
+        <label for="editCategory" class="mb-1 block text-sm font-semibold">หมวดหมู่</label>
+        <select id="editCategory" class="w-full rounded-xl border bg-white p-3">
+          <option value="">ไม่ระบุหมวดหมู่</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="editDistributor" class="mb-1 block text-sm font-semibold">ผู้จัดจำหน่าย</label>
+        <input id="editDistributor" maxlength="200"
+          class="w-full rounded-xl border p-3">
+      </div>
+
+      <div>
+        <label for="editCode" class="mb-1 block text-sm font-semibold">โค้ดสคริปต์</label>
+        <textarea id="editCode" required rows="12" spellcheck="false"
+          class="w-full rounded-xl border p-3 font-mono text-sm"></textarea>
+      </div>
+
+      <div id="editFormMessage" class="hidden rounded-xl p-3 text-sm"></div>
+
+      <div class="flex flex-wrap justify-end gap-2">
+        <button type="button" id="cancelEdit"
+          class="rounded-xl border px-4 py-2">ยกเลิก</button>
+        <button type="submit" id="submitEdit"
+          class="rounded-xl bg-violet-600 px-4 py-2 font-semibold text-white">
+          ส่งคำขอให้แอดมิน
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 </main>
 
 <script>
@@ -81,6 +144,136 @@ const message = document.getElementById('message');
 
 let currentUser = null;
 let myScripts = [];
+  
+const editModal = document.getElementById('editModal');
+const editForm = document.getElementById('editForm');
+const editFormMessage = document.getElementById('editFormMessage');
+const editSubmitButton = document.getElementById('submitEdit');
+
+function showEditMessage(text, isError = false) {
+  editFormMessage.textContent = text;
+  editFormMessage.className =
+    'rounded-xl p-3 text-sm ' +
+    (isError ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700');
+}
+
+async function openEditForm(script) {
+  if (!currentUser) {
+    showMessage('กรุณาเข้าสู่ระบบก่อน', true);
+    return;
+  }
+
+  editForm.reset();
+  editFormMessage.className = 'hidden';
+  document.getElementById('editScriptId').value = script.id;
+  document.getElementById('editTitle').value = script.title || '';
+  document.getElementById('editDescription').value = script.description || '';
+  document.getElementById('editImage').value = script.image || '';
+  document.getElementById('editDistributor').value = script.distributor || '';
+  document.getElementById('editCode').value = script.code || '';
+
+  const categorySelect = document.getElementById('editCategory');
+  categorySelect.innerHTML = '<option value="">ไม่ระบุหมวดหมู่</option>';
+
+  const { data: categories, error } = await supabaseClient
+    .from('categories')
+    .select('id,name')
+    .order('name');
+
+  if (error) {
+    showMessage('โหลดหมวดหมู่ไม่สำเร็จ: ' + error.message, true);
+    return;
+  }
+
+  for (const category of categories || []) {
+    const option = document.createElement('option');
+    option.value = category.id;
+    option.textContent = category.name;
+    categorySelect.appendChild(option);
+  }
+
+  categorySelect.value = script.category_id || '';
+  editModal.classList.remove('hidden');
+}
+
+document.getElementById('cancelEdit').addEventListener('click', () => {
+  editModal.classList.add('hidden');
+});
+
+editForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  if (!currentUser) {
+    showEditMessage('กรุณาเข้าสู่ระบบใหม่อีกครั้ง', true);
+    return;
+  }
+
+  const scriptId = Number(document.getElementById('editScriptId').value);
+  const script = myScripts.find(item => item.id === scriptId);
+
+  if (!script || script.owner_id !== currentUser.id) {
+    showEditMessage('ไม่พบสคริปต์ของคุณหรือไม่มีสิทธิ์แก้ไข', true);
+    return;
+  }
+
+  if (script.deleted_at || script.suspended_at) {
+    showEditMessage('สคริปต์ที่ถูกลบหรือระงับไม่สามารถส่งคำขอแก้ไขได้', true);
+    return;
+  }
+
+  const title = document.getElementById('editTitle').value.trim();
+  const code = document.getElementById('editCode').value;
+  const image = document.getElementById('editImage').value.trim();
+
+  if (!title || !code.trim()) {
+    showEditMessage('กรุณากรอกชื่อและโค้ดสคริปต์', true);
+    return;
+  }
+
+  if (image) {
+    try {
+      const url = new URL(image);
+      if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+        throw new Error('invalid protocol');
+      }
+    } catch {
+      showEditMessage('URL รูปภาพไม่ถูกต้อง', true);
+      return;
+    }
+  }
+
+  editSubmitButton.disabled = true;
+  editSubmitButton.textContent = 'กำลังส่งคำขอ...';
+
+  try {
+    const { data, error } = await supabaseClient.rpc(
+      'submit_publication_request',
+      {
+        p_script_id: scriptId,
+        p_title: title,
+        p_description: document.getElementById('editDescription').value.trim(),
+        p_image: image,
+        p_code: code,
+        p_category_id: document.getElementById('editCategory').value || null,
+        p_distributor: document.getElementById('editDistributor').value.trim()
+      }
+    );
+
+    if (error) throw error;
+
+    showMessage(
+      'ส่งคำขอแก้ไขเรียบร้อยแล้ว เลขที่คำขอ: ' + data +
+      ' กรุณารอแอดมินตรวจสอบ'
+    );
+    editModal.classList.add('hidden');
+  } catch (error) {
+    showEditMessage('ส่งคำขอไม่สำเร็จ: ' + error.message, true);
+  } finally {
+    editSubmitButton.disabled = false;
+    editSubmitButton.textContent = 'ส่งคำขอให้แอดมิน';
+  }
+});
+
 
 function showMessage(text, error = false) {
   message.textContent = text;
@@ -179,6 +372,8 @@ async function loadScripts() {
     editButton.className = 'rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white';
     editButton.textContent = 'ขอแก้ไข';
     editButton.addEventListener('click', () => {
+  openEditForm(script);
+});
       showMessage('สคริปต์ ID ' + script.id + ': ขั้นตอนส่งคำขอแก้ไขจะเชื่อมกับระบบอนุมัติของ Admin');
     });
 
